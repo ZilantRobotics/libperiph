@@ -2,6 +2,7 @@
 #define __LEDS_ROTATION_HPP
 
 #include "stm32f3xx.h"
+#include "soft_timer.hpp"
 
 /**
 * @brief Мигание светодиодами по кругу с разной скоростью
@@ -16,18 +17,23 @@ class LedsRotation
 			COUNTERCLOCKWISE_ACCELERATION = 2, 
 			COUNTERCLOCKWISE_DECELERATION = 3,
 		};
-		uint32_t Counter;
+		enum
+		{
+			BLINK_PERIOD_MIN = 10,		// 10 мс
+			BLINK_PERIOD_MAX = 100,		// 100 мс
+			BLINK_PERION_ITERATION = 10,// 10 мс
+		};
+		SoftTimer Timer;
 		uint8_t LedOnNumber;
 		uint8_t LedOnNumberPrevious;
-		uint16_t TimerDivider;
-		uint8_t DirectionOfRotation;
+		uint8_t BlinkPeriod;
+		uint8_t Direction;
 	public:
 		LedsRotation(): 
-			Counter(0), 
 			LedOnNumber(TargetBase::LD_MIN),
 			LedOnNumberPrevious(TargetBase::LD_MIN),
-			TimerDivider(1),
-			DirectionOfRotation(CLOCKWISE_ACCELERATION) {}
+			BlinkPeriod(BLINK_PERIOD_MIN),
+			Direction(CLOCKWISE_ACCELERATION) {}
 		void LedsRotarion();
 		
 };

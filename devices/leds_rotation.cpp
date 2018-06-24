@@ -14,7 +14,7 @@ extern TargetBase Target;
 */
 void LedsRotation::LedsRotarion()
 {
-	if (!(Counter & TimerDivider))
+	if (Timer.GetStatus() != TIMER_WORKING)
 	{
 		// 1. Зажигаем нужный светодиод:
 		Target.LedOff(LedOnNumberPrevious);
@@ -22,7 +22,7 @@ void LedsRotation::LedsRotarion()
 		LedOnNumberPrevious = LedOnNumber;
 		
 		// 2. Регулируем направление переключения светодиодов:
-		if (DirectionOfRotation & COUNTERCLOCKWISE_ACCELERATION)
+		if (Direction & COUNTERCLOCKWISE_ACCELERATION)
 		{
 			if (LedOnNumber == TargetBase::LD_MIN)
 				LedOnNumber = TargetBase::LD_MAX;
@@ -39,21 +39,21 @@ void LedsRotation::LedsRotarion()
 		// 3. Регулируем скорость переключения светодиодов:
 		if (LedOnNumber == 10)
 		{
-			if ( ((DirectionOfRotation == CLOCKWISE_ACCELERATION) || (DirectionOfRotation == COUNTERCLOCKWISE_ACCELERATION)) )
+			if ( ((Direction == CLOCKWISE_ACCELERATION) || (Direction == COUNTERCLOCKWISE_ACCELERATION)) )
 			{
-				if (TimerDivider != 16383)						
-					TimerDivider = (TimerDivider << 1) + 1;
-				else													// if more slow
-					DirectionOfRotation = 3 & (~DirectionOfRotation);	// меняем направление вращения и ускорение хитрым способом
+				if (BlinkPeriod != BLINK_PERIOD_MAX)						
+					BlinkPeriod += BLINK_PERION_ITERATION;
+				else// (more slow)
+					Direction = 3 & (~Direction);	// хитрая формула
 			}
 			else												
 			{
-				if (TimerDivider > 2)							
-					TimerDivider = TimerDivider >> 1;
-				else													// if more fast
-					DirectionOfRotation &= ~1;	 						// меняем ускорение хитрым способом
+				if (BlinkPeriod > BLINK_PERIOD_MIN)							
+					BlinkPeriod -= BLINK_PERION_ITERATION;
+				else// (more fast)
+					Direction &= ~1;	// хитрая формула
 			}
 		}
+		Timer.StartMs(BlinkPeriod);
 	}
-	Counter++;
 }
