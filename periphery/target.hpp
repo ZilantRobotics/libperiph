@@ -16,7 +16,6 @@ class TargetBase
 			GPIO_Mode_AF = 2,	///< Alternate function Mode 
 			GPIO_Mode_AN = 3,	///< Analog Mode 
 		};
-		uint32_t counter;
 	public:
 		enum Led_t
 		{

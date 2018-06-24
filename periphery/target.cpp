@@ -12,13 +12,18 @@ TargetBase Target;
 */
 void TargetBase::InitGPIO()
 {
-	// Init variables
-	counter = 0;
-	
     // Clocking GPIO
-    RCC->AHBENR = RCC_AHBENR_GPIOBEN |		// Clocking GPIO B
+    RCC->AHBENR = RCC_AHBENR_GPIOAEN |		// Clocking GPIO A
+				  RCC_AHBENR_GPIOBEN |		// Clocking GPIO B
 				  RCC_AHBENR_GPIODEN |		// Clocking GPIO D
 				  RCC_AHBENR_GPIOEEN;		// Clocking GPIO E
+	
+	// PORTA
+	GPIOA->MODER |= (GPIO_Mode_AN << GPIO_MODER_MODER0_Pos) |	// PORTA0, analog input
+					(GPIO_Mode_AN << GPIO_MODER_MODER1_Pos);	// PORTA1, analog input
+	
+	GPIOA->OTYPER = 0;	// Output type, Push-Pull
+	GPIOA->OSPEEDR = 0;	// Speed - Low
 	
 	// PORTB
     GPIOB->MODER =	(GPIO_Mode_OUT << 0*2)  |		// PORTB0,

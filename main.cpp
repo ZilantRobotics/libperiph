@@ -1,5 +1,5 @@
 /**
-* @file target.cpp
+* @file main.cpp
 * @brief Реализация основного рабочего цикла
 */
 
@@ -7,17 +7,19 @@
 #include <target.hpp>
 #include <soft_timer.hpp>
 #include <leds_rotation.hpp>
+#include <adc.hpp>
 
 extern TargetBase Target;
 extern LedsRotation Leds;
-
+extern ADC Adc;
 
 int main()
 {
     Target.InitGPIO();
-    SoftTimer Timer;
+	Adc.Init();
     while (1)
     {
+		volatile uint16_t value = Adc.Do();
 		Leds.LedsRotarion();
 	}
 }
