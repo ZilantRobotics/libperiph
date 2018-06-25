@@ -3,6 +3,11 @@
 
 #include "stm32f3xx.h"
 
+enum
+{
+	SYSCLOCK = 8000000,	///< 8 MHz - system clock frequency
+};
+
 /**
 * @brief Äנאיגונ ןכאעû
 */

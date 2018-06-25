@@ -15,6 +15,7 @@ void TargetBase::InitGPIO()
     // Clocking GPIO
     RCC->AHBENR = RCC_AHBENR_GPIOAEN |		// Clocking GPIO A
 				  RCC_AHBENR_GPIOBEN |		// Clocking GPIO B
+				  RCC_AHBENR_GPIOCEN |		// Clocking GPIO C
 				  RCC_AHBENR_GPIODEN |		// Clocking GPIO D
 				  RCC_AHBENR_GPIOEEN;		// Clocking GPIO E
 	
@@ -41,6 +42,17 @@ void TargetBase::InitGPIO()
     
 	GPIOB->OTYPER = 0;	// Output type, Push-Pull
 	GPIOB->OSPEEDR = 0;	// Speed - Low
+	
+	// PORTC
+    GPIOC->MODER =	(GPIO_Mode_AF << 4*2)  |		// PORTC4, UART1, TX
+					(GPIO_Mode_AF << 5*2);			// PORTC5, UART1, RX
+    
+	GPIOC->OTYPER = 0;	// Output push-pull 
+	GPIOC->OSPEEDR = 3;	// High speed
+	GPIOC->PUPDR = (1 << 2*4) | // Pull-up			// PORTC4, UART1, TX
+				   (1 << 2*5); // Pull-up			// PORTC5, UART1, TX
+	GPIOC->AFR[0] = (7 << GPIO_AFRL_AFRL4_Pos) | 	// PORTC4, UART1, TX
+					(7 << GPIO_AFRL_AFRL5_Pos);		// PORTC5, UART1, RX
 	
 	// PORTD
     GPIOD->MODER =	(GPIO_Mode_OUT << 0*2)  |		// PORTB0,
