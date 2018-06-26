@@ -9,6 +9,7 @@
 #include <leds_rotation.hpp>
 #include <adc.hpp>
 #include <uart.hpp>
+#include <text.hpp>
 
 extern TargetBase Target;
 extern LedsRotation Leds;
@@ -28,21 +29,14 @@ int main()
     {
 		if (Timer.GetStatus() != TIMER_WORKING)
 		{
-			Timer.StartMs(20000);
-			Uart.SendChar('H');
-			Uart.SendChar('e');
-			Uart.SendChar('l');
-			Uart.SendChar('l');
-			Uart.SendChar('o');
-			Uart.SendChar(',');
-			Uart.SendChar(' ');
-			Uart.SendChar('R');
-			Uart.SendChar('o');
-			Uart.SendChar('m');
-			Uart.SendChar('a');
-			Uart.SendChar('\n');
+			Timer.StartMs(500);
+			uint16_t value = Adc.Do();
+			uint8_t buf[12];
+			num2str(value, (char*)buf);
+			Uart.SendArr(buf, 12);
+			Uart.SendArr("\n", 1);
 		}
-		volatile uint16_t value = Adc.Do();
+		
 		Leds.LedsRotarion();
 	}
 }

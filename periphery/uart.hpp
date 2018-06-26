@@ -11,7 +11,8 @@
 struct UART
 {
 	void Init();
-	void SendChar(const char c);
+	void SendArr(const uint8_t* arr, uint8_t length);
+	void SendChar(const uint8_t byte);
 };
 
 

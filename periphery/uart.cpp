@@ -4,8 +4,12 @@
 */
 
 #include <uart.hpp>
-uint8_t usartData;
+//uint8_t usartData;
 
+
+/**
+* @brief Инициализация UART
+*/
 void UART::Init()
 {
 	//__enable_irq();
@@ -33,17 +37,31 @@ void UART::Init()
 	
 }
 
-void UART::SendChar(const char c) 
+
+/**
+* @brief Отправить массив данных
+*/
+void UART::SendArr(const uint8_t* arr, uint8_t length)
 {
-	USART1->TDR = (c & 0xFF);
-	volatile uint32_t val_1 = USART1->ISR;
-	while( !(USART1->ISR & USART_ISR_TC) )//Data transfered to shift register
+	while(length--)
 	{
-		volatile uint32_t val_2 = USART1->ISR;
+		SendChar( *(arr++) );
 	}
 }
 
 
+/**
+* @brief Отправить один байт данных
+* @param byte - байт
+*/
+void UART::SendChar(const uint8_t byte) 
+{
+	USART1->TDR = byte;
+	while( !(USART1->ISR & USART_ISR_TC) );
+}
+
+
+/*
 extern "C"
 {
 	void USART1_IRQHandler()
@@ -55,3 +73,4 @@ extern "C"
 		}
 	}
 }
+*/
