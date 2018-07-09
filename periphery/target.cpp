@@ -12,6 +12,21 @@ TargetBase Target;
 */
 void TargetBase::InitGPIO()
 {
+	enum
+	{
+		GPIO_Mode_IN = 0,	///< Input Mode
+		GPIO_Mode_OUT = 1,	///< Output Mode 
+		GPIO_Mode_AF = 2,	///< Alternate function Mode 
+		GPIO_Mode_AN = 3,	///< Analog Mode 
+		
+		GPIO_OUTPUT_TYPE_PUSH_PULL = 0,
+		GPIO_OUTPUT_TYPE_OPEN_DRAIN = 1,
+		
+		GPIO_PUPDR_NO_PULL_UP_NO_PULL_DOWN = 0,
+		GPIO_PUPDR_PULL_UP = 1,
+		GPIO_PUPDR_PULL_DOWN = 2,
+	};
+	
     // Clocking GPIO
     RCC->AHBENR = RCC_AHBENR_GPIOAEN |		// Clocking GPIO A
 				  RCC_AHBENR_GPIOBEN |		// Clocking GPIO B
@@ -23,7 +38,7 @@ void TargetBase::InitGPIO()
 	GPIOA->MODER |= (GPIO_Mode_AN << GPIO_MODER_MODER0_Pos) |	// PORTA0, analog input
 					(GPIO_Mode_AN << GPIO_MODER_MODER1_Pos);	// PORTA1, analog input
 	
-	GPIOA->OTYPER = 0;	// Output type, Push-Pull
+	GPIOA->OTYPER = GPIO_OUTPUT_TYPE_PUSH_PULL;	// Output type, Push-Pull
 	GPIOA->OSPEEDR = 0;	// Speed - Low
 	
 	// PORTB
@@ -40,17 +55,17 @@ void TargetBase::InitGPIO()
 					(GPIO_Mode_OUT << 10*2) |		// PORTB10,
 					(GPIO_Mode_OUT << 11*2);		// PORTB11,
     
-	GPIOB->OTYPER = 0;	// Output type, Push-Pull
+	GPIOB->OTYPER = GPIO_OUTPUT_TYPE_PUSH_PULL;		// Output type, Push-Pull
 	GPIOB->OSPEEDR = 0;	// Speed - Low
 	
 	// PORTC
-    GPIOC->MODER =	(GPIO_Mode_AF << 4*2)  |		// PORTC4, UART1, TX
-					(GPIO_Mode_AF << 5*2);			// PORTC5, UART1, RX
+    GPIOC->MODER =	(GPIO_Mode_AF << GPIO_MODER_MODER4_Pos)  |	// PORTC4, UART1, TX
+					(GPIO_Mode_AF << GPIO_MODER_MODER5_Pos);	// PORTC5, UART1, RX
     
 	GPIOC->OTYPER = 0;	// Output push-pull 
-	GPIOC->OSPEEDR = 3;	// High speed
-	GPIOC->PUPDR = (1 << 2*4) | // Pull-up			// PORTC4, UART1, TX
-				   (1 << 2*5); // Pull-up			// PORTC5, UART1, TX
+	GPIOC->OSPEEDR = 0;	// speed
+	GPIOC->PUPDR = (GPIO_PUPDR_PULL_UP << 2*4) | 				// PORTC4, UART1, TX
+				   (GPIO_PUPDR_NO_PULL_UP_NO_PULL_DOWN << 2*5); // PORTC5, UART1, RX
 	GPIOC->AFR[0] = (7 << GPIO_AFRL_AFRL4_Pos) | 	// PORTC4, UART1, TX
 					(7 << GPIO_AFRL_AFRL5_Pos);		// PORTC5, UART1, RX
 	

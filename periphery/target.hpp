@@ -13,14 +13,6 @@ enum
 */
 class TargetBase
 {
-	private:
-		enum
-		{
-			GPIO_Mode_IN = 0,	///< Input Mode
-			GPIO_Mode_OUT = 1,	///< Output Mode 
-			GPIO_Mode_AF = 2,	///< Alternate function Mode 
-			GPIO_Mode_AN = 3,	///< Analog Mode 
-		};
 	public:
 		enum Led_t
 		{
