@@ -1,12 +1,14 @@
 /**
 * @file uart.cpp
-* @brief Реализация UART
+* @brief uart implementation
 */
 
 #include <uart.hpp>
 #include <string.h>	// for memcpy (why not <cstring>???)
+#include "target.hpp"
 
-Buffer BufferRX;
+UART UART1;
+UART UART2;
 
 enum
 {
@@ -30,10 +32,46 @@ enum
 
 
 /**
-* @brief Инициализация UART
+* @brief Init UART
 */
-void UART::Init()
+void UART::Init(uint8_t uartNumber)
 {
+	// Check correctness
+	if (IsItInit)
+		return;
+	
+	// Select UART register and clock and interrupt enable
+	switch (uartNumber)
+	{
+		case 1:
+			UARTX = USART1;
+			RCC->APB2ENR |= RCC_APB2ENR_USART1EN;
+			NVIC_EnableIRQ(USART1_IRQn);
+			break;
+		case 2:
+			UARTX = USART2;
+			RCC->APB1ENR |= RCC_APB1ENR_USART2EN;
+			NVIC_EnableIRQ(USART2_IRQn);
+			break;
+		case 3:
+			UARTX = USART3;
+			RCC->APB1ENR |= RCC_APB1ENR_USART3EN;
+			NVIC_EnableIRQ(USART3_IRQn);
+			break;
+		case 4:
+			UARTX = UART4;
+			RCC->APB1ENR |= RCC_APB1ENR_UART4EN;
+			NVIC_EnableIRQ(UART4_IRQn);
+			break;
+		case 5:
+			UARTX = UART5;
+			RCC->APB1ENR |= RCC_APB1ENR_UART5EN;
+			NVIC_EnableIRQ(UART5_IRQn);
+			break;
+		default:
+			return;
+	}
+	
 	// UART configuration
 	enum
 	{
@@ -53,29 +91,31 @@ void UART::Init()
 					USART_CR3_DMAR, 		// DMA mode is disabled for reception
 	};
 	
-	// 0. Clock and interrupt enable
-	RCC->APB2ENR |= RCC_APB2ENR_USART1EN;
-	NVIC_EnableIRQ(USART1_IRQn);
-	
 	// 1. Configure UART
-	USART1->CR3 = CR3_CONFIG;	
-	USART1->CR1 = CR1_CONFIG;
+	UARTX->CR3 = CR3_CONFIG;	
+	UARTX->CR1 = CR1_CONFIG;
 	
 	// 2. Select the desired baud rate using the baud rate register USART_BRR 
-	USART1->BRR = BAUD_RATE_128000;
+	UARTX->BRR = BAUD_RATE_128000;
 	
 	// 3. Enable USART
-	USART1->CR1 |=  USART_CR1_UE;
+	UARTX->CR1 |=  USART_CR1_UE;
+	IsItInit = UART_IS_INITIALIZED;
 }
 
 
 /**
-* @brief Отправить массив данных
-* @param arr - указатель на массив
-* @param len - длина массива
+* @brief Send array of data
+* @param arr - pointer to array
+* @param len - length of array
 */
 void UART::SendArr(const uint8_t* arr, const uint8_t& len)
 {
+	// Check correctness
+	if(!IsItInit)
+		return;
+	
+	// Main algorithm
 	uint8_t length = len;
 	while(length--)
 	{
@@ -87,20 +127,20 @@ void UART::SendArr(const uint8_t* arr, const uint8_t& len)
 
 
 /**
-* @brief Отправить один байт данных
-* @param byte - байт
+* @brief Send one data byte
+* @param byte - data byte
 */
 void UART::SendChar(const uint8_t byte) 
 {
-	USART1->TDR = byte;
-	while( !(USART1->ISR & USART_ISR_TC) );
+	UARTX->TDR = byte;
+	while( !(UARTX->ISR & USART_ISR_TC) );
 }
 
 
 /**
-* @brief Получить указатель на массив данных и длину массива
-* @param ptrArr - указатель на массив данных
-* @param length - ссылка на длину массива данных
+* @brief Get pointer on data array and length of array
+* @param ptrArr - pointer on data array
+* @param length - link on length of array
 */
 void UART::GetData(uint8_t* ptrArr, uint8_t& length)
 {
@@ -109,7 +149,7 @@ void UART::GetData(uint8_t* ptrArr, uint8_t& length)
 
 
 /**
-* @brief Обработчик прерываний UART
+* @brief Interrupt handler UART
 */
 extern "C"
 {
@@ -118,7 +158,7 @@ extern "C"
 		// If Read data register not empty
 		if ( (USART1->ISR & USART_ISR_RXNE) )
 		{	
-			BufferRX.Push(USART1->RDR);
+			UART1.BufferRX.Push(USART1->RDR);
 		}
 		// If Overrun error
 		if ( USART1->ISR & USART_ISR_ORE)
@@ -126,12 +166,25 @@ extern "C"
 			USART1->ICR |= USART_ICR_ORECF;
 		}
 	}
+	void USART2_IRQHandler()
+	{
+		// If Read data register not empty
+		if ( (USART2->ISR & USART_ISR_RXNE) )
+		{	
+			UART2.BufferRX.Push(USART2->RDR);
+		}
+		// If Overrun error
+		if ( USART2->ISR & USART_ISR_ORE)
+		{
+			USART2->ICR |= USART_ICR_ORECF;
+		}
+	}
 }
 
 
 /**
-* @brief Положить байт в буффер
-* @param byte - байт
+* @brief Push byte to buffer
+* @param byte - byte of data
 */
 void Buffer::Push(const uint8_t byte)
 {
@@ -143,9 +196,9 @@ void Buffer::Push(const uint8_t byte)
 
 
 /**
-* @brief Получить указатель на начало буфера и его длину
-* @param destptr - указатель массив, в который будут записаны данные
-* @param length - кол-во записанных байтов данных
+* @brief Get pointer of buffer head and his length
+* @param destptr - pointer of buffer head, which data will be written
+* @param length - number of data bytes, which will be written
 */
 void Buffer::PopAll(uint8_t* destptr, uint8_t& length)
 {

@@ -15,17 +15,21 @@
 extern TargetBase Target;
 extern LedsRotation Leds;
 extern ADC Adc;
+extern UART UART1;
+extern UART UART2;
+UART* Debug = &UART1;
+UART* ESP8266 = &UART2;
 
 DMA Dma;
 
 int main()
 {
 	SoftTimer Timer;
-	UART Debug;
 	
     Target.InitGPIO();
 	Adc.Init();
-	Debug.Init();
+	Debug->Init(UART_1);
+	ESP8266->Init(UART_2);
 	Timer.StartMs(1000);
 	
 	// Check DMA
@@ -46,12 +50,15 @@ int main()
 			value = value*0.7326;	// 3000/2^12
 			uint8_t buf[6] = {0};
 			num2str(value, (char*)buf);
-			Debug.SendArr(buf, 6);
-			Debug.SendArr("mV\n", 3);
+			Debug->SendArr(buf, 6);
+			Debug->SendArr("mV\n", 3);
+			ESP8266->SendArr(buf, 6);
+			ESP8266->SendArr("mV\n", 3);
 			
 			// UART receive
-			Debug.GetData(ptrUartRX, length);
-			Debug.SendArr(ptrUartRX, length);
+			Debug->GetData(ptrUartRX, length);
+			ptrUartRX[0]++;
+			Debug->SendArr(ptrUartRX, length);
 		}
 		
 		Leds.LedsRotarion();

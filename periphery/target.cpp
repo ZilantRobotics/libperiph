@@ -36,10 +36,16 @@ void TargetBase::InitGPIO()
 	
 	// PORTA
 	GPIOA->MODER |= (GPIO_Mode_AN << GPIO_MODER_MODER0_Pos) |	// PORTA0, analog input
-					(GPIO_Mode_AN << GPIO_MODER_MODER1_Pos);	// PORTA1, analog input
+					(GPIO_Mode_AN << GPIO_MODER_MODER1_Pos) |	// PORTA1, analog input
+					(GPIO_Mode_AF << GPIO_MODER_MODER2_Pos) |	// PORTA2, USART2_TX
+					(GPIO_Mode_AF << GPIO_MODER_MODER3_Pos) ;	// PORTA3, USART2_RX
 	
-	GPIOA->OTYPER = GPIO_OUTPUT_TYPE_PUSH_PULL;	// Output type, Push-Pull
+	GPIOA->OTYPER = 0;	// Output type, Push-Pull
 	GPIOA->OSPEEDR = 0;	// Speed - Low
+	GPIOA->PUPDR = (GPIO_PUPDR_PULL_UP << 2*2) | 				// PORTA2, UART2, TX
+				   (GPIO_PUPDR_NO_PULL_UP_NO_PULL_DOWN << 2*3); // PORTA3, UART2, RX
+	GPIOA->AFR[0] = (7 << GPIO_AFRL_AFRL2_Pos) | 				// PORTA2, UART2, TX
+					(7 << GPIO_AFRL_AFRL3_Pos);					// PORTA3, UART2, RX
 	
 	// PORTB
     GPIOB->MODER =	(GPIO_Mode_OUT << 0*2)  |		// PORTB0,
