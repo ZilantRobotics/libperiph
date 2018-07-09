@@ -10,7 +10,8 @@
 #include <adc.hpp>
 #include <uart.hpp>
 #include <text.hpp>
-#include <dma.hpp>
+#include <seven_segments_indicators.hpp>
+//#include <dma.hpp>
 
 extern TargetBase Target;
 extern LedsRotation Leds;
@@ -19,8 +20,9 @@ extern UART UART1;
 extern UART UART2;
 UART* Debug = &UART1;
 UART* ESP8266 = &UART2;
+Indicators Indicator;
 
-DMA Dma;
+//DMA Dma;
 
 int main()
 {
@@ -38,16 +40,17 @@ int main()
 	
 	uint8_t ptrUartRX[256] = {0};
 	uint8_t length = 0;
+	
     while (1)
     {
+		uint16_t value;
 		if (Timer.GetStatus() != TIMER_WORKING)
 		{
 			// Timer
 			Timer.StartMs(500);
 			
 			// Adc
-			uint16_t value = Adc.Do();
-			value = value*0.7326;	// 3000/2^12
+			value = Adc.Do() * 0.7326;	// 3000/2^12
 			uint8_t buf[6] = {0};
 			num2str(value, (char*)buf);
 			Debug->SendArr(buf, 6);
@@ -60,6 +63,10 @@ int main()
 			ptrUartRX[0]++;
 			Debug->SendArr(ptrUartRX, length);
 		}
+		
+		// seven
+		Indicator.SetNumber(value*0.1);
+		// seven
 		
 		Leds.LedsRotarion();
 	}
