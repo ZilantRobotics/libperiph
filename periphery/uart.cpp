@@ -96,7 +96,7 @@ void UART::Init(uint8_t uartNumber)
 	UARTX->CR1 = CR1_CONFIG;
 	
 	// 2. Select the desired baud rate using the baud rate register USART_BRR 
-	UARTX->BRR = BAUD_RATE_128000;
+	UARTX->BRR = BAUD_RATE_115200;
 	
 	// 3. Enable USART
 	UARTX->CR1 |=  USART_CR1_UE;

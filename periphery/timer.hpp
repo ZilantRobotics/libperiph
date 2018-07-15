@@ -5,7 +5,7 @@
 #include "target.hpp"
 
 /**
-* @brief Таймер2
+* @brief Timer2
 */
 struct Timer2
 {

@@ -1,6 +1,6 @@
 /**
-* @file timer.cpp
-* @brief Реализация программного таймера
+* @file soft_timer.cpp
+* @brief Implementation of software timer
 */
 
 #include <soft_timer.hpp>
@@ -8,7 +8,7 @@
 Timer2 SoftTimer::HardTimer;
 
 /**
-* @brief Конструктор программного таймера
+* @brief Constructor of software timer
 */
 SoftTimer::SoftTimer(): Status(TIMER_CREATED)
 {
@@ -20,8 +20,8 @@ SoftTimer::SoftTimer(): Status(TIMER_CREATED)
 
 
 /**
-* @brief Запуск таймер на время в мкс
-* @param timeUs - время в мкс
+* @brief Run Timer on Time in us
+* @param timeUs - time in us
 */
 void SoftTimer::StartUs(uint16_t timeUs)
 {
@@ -30,8 +30,8 @@ void SoftTimer::StartUs(uint16_t timeUs)
 
 
 /**
-* @brief Запуск таймер на время в мс
-* @param timeMs - время в мкс
+* @brief Run Timer on Time in ms
+* @param timeUs - time in ms
 */
 void SoftTimer::StartMs(uint16_t timeMs)
 {
@@ -53,8 +53,8 @@ void SoftTimer::StartMs(uint16_t timeMs)
 
 
 /**
-* @brief Получить статус таймера
-* @return status - статус таймера 
+* @brief Get status of timer
+* @return status - timer status
 */
 uint8_t SoftTimer::GetStatus()
 {
@@ -68,8 +68,8 @@ uint8_t SoftTimer::GetStatus()
 
 
 /**
-* @brief Получить статус таймера
-* @return status - статус таймера 
+* @brief Get info whether the timer has stopped
+* @return status - timer status
 */
 uint8_t SoftTimer::IsTimerEnd(uint32_t nowCount)
 {

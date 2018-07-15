@@ -6,42 +6,42 @@
 
 enum TimerStatus_t
 {
-	TIMER_CREATED = 0,
-	TIMER_WORKING = 1,
-	TIMER_WAITING = 2,
-	TIMER_STOPPED = 3,
-	TIMER_FINISHED = 4,
+	TIMER_CREATED = 0,	///< Timer is created, but is not working
+	TIMER_WORKING = 1,	///< Timer is working
+	TIMER_WAITING = 2,	///< Timer is waiting
+	TIMER_STOPPED = 3,	///< Timer is stopped
+	TIMER_FINISHED = 4,	///< Timer is finished
 };
 
 /**
-* @brief Программный таймер
+* @brief Software timer
 */
 class SoftTimer
 {
 	public:
-		SoftTimer();
-		void StartUs(uint16_t timeUs);
-		void StartMs(uint16_t timeMs);
-		void Continue();
-		void Wait();
-		void Stop();
-		uint8_t GetStatus();
-		uint32_t GetRestTime();
-		uint32_t GetElapsedTime();
+		/// Main methods:
+		SoftTimer();							/// Constructor
+		void StartUs(uint16_t timeUs);			/// Start timer in us
+		void StartMs(uint16_t timeMs);			/// Start timer in us
+		void Continue();						/// Continue timer
+		void Wait();							/// Wait timer (u can continue it)
+		void Stop();							/// Stop timer (u can't continue it)
+		uint8_t GetStatus();					/// Get status
+		uint32_t GetRestTime();					/// Get rest time
+		uint32_t GetElapsedTime();				/// Get elapsed time
 	private:
-		TimerStatus_t  Status;
+		uint8_t  StartOverflows;				///< Start Overflows
+		uint8_t  RestOverflows;					///< Rest Overflows
+		uint8_t  EndOverflows;					///< End Overflows
 		
-		uint8_t  StartOverflows;
-		uint8_t  RestOverflows;
-		uint8_t  EndOverflows;
+		uint32_t StartCount;					///< Start Count
+		uint32_t RestCount;						///< Rest Count
+		uint32_t EndCount;						///< End Count
+	
+		TimerStatus_t Status;					///< Status
+		static Timer2 HardTimer;				///< Hard Timer			
 		
-		uint32_t StartCount;
-		uint32_t RestCount;
-		uint32_t EndCount;
-	
-		static Timer2 HardTimer;
-	
-		uint8_t IsTimerEnd(uint32_t nowCount);
+		uint8_t IsTimerEnd(uint32_t nowCount);	/// Is Timer End
 };
 
 

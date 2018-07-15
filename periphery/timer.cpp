@@ -1,6 +1,6 @@
 /**
 * @file timer.cpp
-* @brief Реализация таймера
+* @brief Implementation of work with timers
 */
 
 #include <timer.hpp>
@@ -10,7 +10,7 @@ extern TargetBase Target;
 uint8_t OverflowsCount = 0;
 
 /**
-* @brief Инициализация таймера
+* @brief Init timer
 */
 void Timer2::Init()
 {
@@ -28,9 +28,8 @@ void Timer2::Init()
 
 
 /**
-* @brief Получить по ссылке значение счетчика и кол-во прерываний
-* @param count - ссылка на переменную, храняющую значение счетчика
-* @param interruptCount - ссылка на кол-во прерываний
+* @brief Get value of counter register
+* @return value of count register
 */
 uint32_t Timer2::GetCount()
 {
@@ -39,8 +38,8 @@ uint32_t Timer2::GetCount()
 
 
 /**
-* @brief Получить значение кол-ва переполнений таймера
-* @return OverflowCount - кол-во переполнений таймера
+* @brief Get number of timer overflows
+* @return OverflowCount - number of timer overflows
 */
 uint8_t Timer2::GetOverflowsCount()
 {
@@ -49,7 +48,7 @@ uint8_t Timer2::GetOverflowsCount()
 
 
 /**
-* @brief Прерывание таймера2 по переполнению
+* @brief TIM2 interrupt handler
 */
 extern "C"
 {

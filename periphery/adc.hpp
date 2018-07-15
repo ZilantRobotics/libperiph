@@ -5,7 +5,7 @@
 
 
 /**
-* @brief Äנאיגונ ÀÖÏ
+* @brief Driver ADC
 */
 struct ADC
 {

@@ -5,7 +5,7 @@
 #include "soft_timer.hpp"
 
 /**
-* @brief Мигание светодиодами по кругу с разной скоростью
+* @brief Class of LED's blinking
 */
 class LedsRotation
 {
@@ -19,9 +19,9 @@ class LedsRotation
 		};
 		enum
 		{
-			BLINK_PERIOD_MIN = 10,		// 10 мс
-			BLINK_PERIOD_MAX = 100,		// 100 мс
-			BLINK_PERION_ITERATION = 10,// 10 мс
+			BLINK_PERIOD_MIN = 10,		///< 10 ms
+			BLINK_PERIOD_MAX = 100,		///< 100 ms
+			BLINK_PERION_ITERATION = 10,///< 10 ms
 		};
 		SoftTimer Timer;
 		uint8_t LedOnNumber;
@@ -34,7 +34,7 @@ class LedsRotation
 			LedOnNumberPrevious(TargetBase::LD_MIN),
 			BlinkPeriod(BLINK_PERIOD_MIN),
 			Direction(CLOCKWISE_ACCELERATION) {}
-		void LedsRotarion();
+		void Do();
 		
 };
 

@@ -1,6 +1,6 @@
 /**
 * @file main.cpp
-* @brief Реализация основного рабочего цикла
+* @brief Main cycle implementation
 */
 
 #include "stm32f3xx.h"
@@ -8,67 +8,65 @@
 #include <soft_timer.hpp>
 #include <leds_rotation.hpp>
 #include <adc.hpp>
-#include <uart.hpp>
 #include <text.hpp>
 #include <seven_segments_indicators.hpp>
+#include <esp8266.hpp>
+#include <debug.hpp>
 //#include <dma.hpp>
 
 extern TargetBase Target;
 extern LedsRotation Leds;
 extern ADC Adc;
-extern UART UART1;
-extern UART UART2;
-UART* Debug = &UART1;
-UART* ESP8266 = &UART2;
+extern DebugPort Debug;
 Indicators Indicator;
-
+static SoftTimer Timer;
+static SoftTimer TimerIndicator;
+extern WifiEsp8266 Wifi; 
 //DMA Dma;
 
 int main()
 {
-	SoftTimer Timer;
-	
+	/// Modules init
     Target.InitGPIO();
 	Adc.Init();
-	Debug->Init(UART_1);
-	ESP8266->Init(UART_2);
+	Debug.Init();
+	//Wifi.Init();
 	Timer.StartMs(1000);
 	
-	// Check DMA
-	//Dma.Init();
-	//Dma.ConfigureUSART1_TX();
+	/// Variables init
+	uint8_t buffer[256] = "kek\n";
+	uint8_t length = 4;
+	uint8_t indicatorType = 0;
+	uint16_t timeCount = 0;
 	
-	uint8_t ptrUartRX[256] = {0};
-	uint8_t length = 0;
-	
+	/// Main cycle
     while (1)
     {
 		uint16_t value;
+		/// If timer has tripped: start ADC, show in Debug "kek" and shot in indicators ADC value
 		if (Timer.GetStatus() != TIMER_WORKING)
 		{
-			// Timer
-			Timer.StartMs(500);
-			
-			// Adc
-			value = Adc.Do() * 0.7326;	// 3000/2^12
-			uint8_t buf[6] = {0};
-			num2str(value, (char*)buf);
-			Debug->SendArr(buf, 6);
-			Debug->SendArr("mV\n", 3);
-			ESP8266->SendArr(buf, 6);
-			ESP8266->SendArr("mV\n", 3);
-			
-			// UART receive
-			Debug->GetData(ptrUartRX, length);
-			ptrUartRX[0]++;
-			Debug->SendArr(ptrUartRX, length);
+			Timer.StartMs(5000);
+			value = Adc.Do() * 0.7326;	///< 3000/2^12
+			Debug.Transmit(buffer, length);
+			indicatorType = !indicatorType;
+		}
+
+		/// Sevensegments indicators - show value
+		if (indicatorType != 0)
+			Indicator.SetNumber( (uint16_t)(value*0.1) );	/// show voltage
+		else
+			Indicator.SetNumber(timeCount);	/// show time (in second)
+		
+		/// Sevensegments indicators - counter
+		if (TimerIndicator.GetStatus() != TIMER_WORKING)
+		{
+			TimerIndicator.StartMs(1000);
+			timeCount++;
 		}
 		
-		// seven
-		Indicator.SetNumber(value*0.1);
-		// seven
-		
-		Leds.LedsRotarion();
+		/// Leds - rotation
+		Leds.Do();
 	}
 }
 

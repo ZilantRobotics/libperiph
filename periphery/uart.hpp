@@ -19,7 +19,7 @@ enum
 };
 
 /**
-* @brief Буффер данных приема
+* @brief Buffer of receive data
 */
 class Buffer
 {
@@ -40,7 +40,7 @@ class Buffer
 
 
 /**
-* @brief Драйвер UART
+* @brief Driver UART
 */
 class UART
 {

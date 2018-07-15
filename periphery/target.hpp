@@ -9,7 +9,7 @@ enum
 };
 
 /**
-* @brief Äנאיגונ ןכאעû
+* @brief Board driver
 */
 class TargetBase
 {

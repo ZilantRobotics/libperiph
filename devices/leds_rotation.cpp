@@ -1,18 +1,20 @@
 /**
 * @file target.cpp
-* @brief –еализаци€ класса мигани€ светодиодами по кругу с ускорением и замедлением
+* @brief Implementation of a class of circular blinking LED's
 */
 
 #include <target.hpp>
 #include <leds_rotation.hpp>
+#include <adc.hpp>
 
 LedsRotation Leds;
 extern TargetBase Target;
+extern ADC Adc;
 
 /**
-* @brief ћигание светодиодами по очереди с разной скоростью
+* @brief LED's blinking with speed from ADC
 */
-void LedsRotation::LedsRotarion()
+void LedsRotation::Do()
 {
 	if (Timer.GetStatus() != TIMER_WORKING)
 	{
@@ -37,6 +39,8 @@ void LedsRotation::LedsRotarion()
 				LedOnNumber++;
 		}
 		// 3. –егулируем скорость переключени€ светодиодов:
+		BlinkPeriod = Adc.Do() >> 5;
+		/*
 		if (LedOnNumber == 10)
 		{
 			if ( ((Direction == CLOCKWISE_ACCELERATION) || (Direction == COUNTERCLOCKWISE_ACCELERATION)) )
@@ -54,6 +58,7 @@ void LedsRotation::LedsRotarion()
 					Direction &= ~1;	// хитра€ формула
 			}
 		}
+		*/
 		Timer.StartMs(BlinkPeriod);
 	}
 }

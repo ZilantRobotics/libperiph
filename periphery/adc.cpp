@@ -1,20 +1,20 @@
 /**
-* @file timer.cpp
-* @brief Реализация АЦП
+* @file adc.cpp
+* @brief Implementation of ADC
 */
 
 #include <adc.hpp>
 ADC Adc;
 
 /**
-* @brief Инициализация АЦП
+* @brief Init ADC
 * @note Software procedure to enable the ADC
 */
 void ADC::Init()	
 {
 	// ADC1 Clocking and Interrupt enable
 	RCC->AHBENR |= RCC_AHBENR_ADC12EN;
-	RCC->CFGR2 |= RCC_CFGR2_ADCPRE12_DIV1;	// предварительный делитель
+	RCC->CFGR2 |= RCC_CFGR2_ADCPRE12_DIV1;	// prescaler divider
 	
 	// Configuration
 	ADC1_2_COMMON->CCR = 1 << ADC12_CCR_CKMODE_Pos;
@@ -35,9 +35,8 @@ void ADC::Init()
 
 
 /**
-* @brief Инициализация АЦП
-* @note Выполнить преобразование АЦП и вернуть значение
-* @return value - полученное напряжение
+* @brief Convert the ADC and return the value
+* @return value of ADC
 */
 uint16_t ADC::Do()
 {

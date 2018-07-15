@@ -1,6 +1,6 @@
 /**
 * @file target.cpp
-* @brief Реализация базового класса драйвера платы
+* @brief Implementation of the base class driver board
 */
 
 #include <target.hpp>
@@ -8,33 +8,34 @@
 TargetBase Target;
 
 /**
-* @brief Инициализация GPIO
+* @brief Init GPIO
 */
 void TargetBase::InitGPIO()
 {
+	///< Some constans
 	enum
 	{
-		GPIO_Mode_IN = 0,	///< Input Mode
-		GPIO_Mode_OUT = 1,	///< Output Mode 
-		GPIO_Mode_AF = 2,	///< Alternate function Mode 
-		GPIO_Mode_AN = 3,	///< Analog Mode 
+		GPIO_Mode_IN = 0,						///< Input Mode
+		GPIO_Mode_OUT = 1,						///< Output Mode 
+		GPIO_Mode_AF = 2,						///< Alternate function Mode 
+		GPIO_Mode_AN = 3,						///< Analog Mode 
 		
-		GPIO_OUTPUT_TYPE_PUSH_PULL = 0,
-		GPIO_OUTPUT_TYPE_OPEN_DRAIN = 1,
+		GPIO_OUTPUT_TYPE_PUSH_PULL = 0,			///< Push pull
+		GPIO_OUTPUT_TYPE_OPEN_DRAIN = 1,		///< Open drain
 		
-		GPIO_PUPDR_NO_PULL_UP_NO_PULL_DOWN = 0,
-		GPIO_PUPDR_PULL_UP = 1,
-		GPIO_PUPDR_PULL_DOWN = 2,
+		GPIO_PUPDR_NO_PULL_UP_NO_PULL_DOWN = 0,	///< No pull up, no pull down
+		GPIO_PUPDR_PULL_UP = 1,					///< Pull up
+		GPIO_PUPDR_PULL_DOWN = 2,				///< Pull down
 	};
 	
-    // Clocking GPIO
-    RCC->AHBENR = RCC_AHBENR_GPIOAEN |		// Clocking GPIO A
-				  RCC_AHBENR_GPIOBEN |		// Clocking GPIO B
-				  RCC_AHBENR_GPIOCEN |		// Clocking GPIO C
-				  RCC_AHBENR_GPIODEN |		// Clocking GPIO D
-				  RCC_AHBENR_GPIOEEN;		// Clocking GPIO E
+    /// Clocking GPIO
+    RCC->AHBENR = RCC_AHBENR_GPIOAEN |			// Clocking GPIO A
+				  RCC_AHBENR_GPIOBEN |			// Clocking GPIO B
+				  RCC_AHBENR_GPIOCEN |			// Clocking GPIO C
+				  RCC_AHBENR_GPIODEN |			// Clocking GPIO D
+				  RCC_AHBENR_GPIOEEN;			// Clocking GPIO E
 	
-	// PORTA
+	/// PORTA
 	GPIOA->MODER |= (GPIO_Mode_AN << GPIO_MODER_MODER0_Pos) |	// PORTA0, analog input
 					(GPIO_Mode_AN << GPIO_MODER_MODER1_Pos) |	// PORTA1, analog input
 					(GPIO_Mode_AF << GPIO_MODER_MODER2_Pos) |	// PORTA2, USART2_TX
@@ -47,7 +48,7 @@ void TargetBase::InitGPIO()
 	GPIOA->AFR[0] = (7 << GPIO_AFRL_AFRL2_Pos) | 				// PORTA2, UART2, TX
 					(7 << GPIO_AFRL_AFRL3_Pos);					// PORTA3, UART2, RX
 	
-	// PORTB
+	/// PORTB
     GPIOB->MODER =	(GPIO_Mode_OUT << 0*2)  |		// PORTB0,
 					(GPIO_Mode_OUT << 1*2)  |		// PORTB1,
 					(GPIO_Mode_OUT << 2*2)  |		// PORTB2,
@@ -64,7 +65,7 @@ void TargetBase::InitGPIO()
 	GPIOB->OTYPER = GPIO_OUTPUT_TYPE_PUSH_PULL;		// Output type, Push-Pull
 	GPIOB->OSPEEDR = 0;	// Speed - Low
 	
-	// PORTC
+	/// PORTC
     GPIOC->MODER =	(GPIO_Mode_AF << GPIO_MODER_MODER4_Pos)  |	// PORTC4, UART1, TX
 					(GPIO_Mode_AF << GPIO_MODER_MODER5_Pos);	// PORTC5, UART1, RX
     
@@ -75,7 +76,7 @@ void TargetBase::InitGPIO()
 	GPIOC->AFR[0] = (7 << GPIO_AFRL_AFRL4_Pos) | 	// PORTC4, UART1, TX
 					(7 << GPIO_AFRL_AFRL5_Pos);		// PORTC5, UART1, RX
 	
-	// PORTD
+	/// PORTD
     GPIOD->MODER =	(GPIO_Mode_OUT << 0*2)  |		// PORTB0,
 					(GPIO_Mode_OUT << 2*2)  |		// PORTB2,
 					(GPIO_Mode_OUT << 4*2)  |		// PORTB4,
@@ -88,7 +89,7 @@ void TargetBase::InitGPIO()
 	GPIOD->OTYPER = 0;	// Output type, Push-Pull
 	GPIOD->OSPEEDR = 0;	// Speed - Low
 	
-	// PORTE
+	/// PORTE
 	GPIOE->MODER =	(GPIO_Mode_OUT << 8*2)  |		// PORTE8,  LD4,
 					(GPIO_Mode_OUT << 9*2)	|		// PORTE9,  LD3,
 					(GPIO_Mode_OUT << 10*2) |		// PORTE10, LD5,
@@ -104,19 +105,21 @@ void TargetBase::InitGPIO()
 
 
 /**
-* @brief Включить указанный светодиод на плате
+* @brief Turn on this led from board
 */
 void TargetBase::LedOn(uint8_t ledNumber)
 {
-	GPIOE->ODR |= (1 << ledNumber);
+	if ( (ledNumber <= LD_MAX) && (ledNumber >= LD_MIN) )
+		GPIOE->ODR |= (1 << ledNumber);
 }
 
 
 /**
-* @brief Выключить указанный светодиод на плате
+* @brief Turn off this led from board
 */
 void TargetBase::LedOff(uint8_t ledNumber)
 {
-	GPIOE->ODR &= ~(1 << ledNumber);
+	if ( (ledNumber <= LD_MAX) && (ledNumber >= LD_MIN) )
+		GPIOE->ODR &= ~(1 << ledNumber);
 }
 
