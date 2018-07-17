@@ -105,36 +105,56 @@ void UART::Init(uint8_t uartNumber)
 
 
 /**
-* @brief Send array of data
-* @param arr - pointer to array
-* @param len - length of array
+* @brief Transmit null-terminated string
+* @param str - pointer to null-terminated string
 */
-void UART::SendArr(const uint8_t* arr, const uint8_t& len)
+template <class T>
+void UART::TransmitString(const T* str)
 {
 	// Check correctness
 	if(!IsItInit)
 		return;
 	
 	// Main algorithm
-	uint8_t length = len;
-	while(length--)
-	{
-		if (*arr != 0) 
-			SendChar( *arr );
-		arr++;
-	}
+	while(*str != 0x00)
+		TransmitChar( *str++ );
 }
+template void UART::TransmitString(const uint8_t* str);
+template void UART::TransmitString(const char* str);
+
+
+/**
+* @brief Send array of data
+* @param arr - pointer to array
+* @param len - length of array
+*/
+template <class T>
+void UART::TransmitArr(const T* arr, uint8_t length)
+{
+	// Check correctness
+	if(!IsItInit)
+		return;
+	
+	// Main algorithm
+	while(length--)
+		TransmitChar( *arr++ );
+}
+template void UART::TransmitArr(const uint8_t* arr, uint8_t length);
+template void UART::TransmitArr(const char* arr, uint8_t length);
 
 
 /**
 * @brief Send one data byte
 * @param byte - data byte
 */
-void UART::SendChar(const uint8_t byte) 
+template <class T>
+void UART::TransmitChar(const T byte) 
 {
 	UARTX->TDR = byte;
 	while( !(UARTX->ISR & USART_ISR_TC) );
 }
+template void UART::TransmitChar(const uint8_t byte);
+template void UART::TransmitChar(const char byte);
 
 
 /**
@@ -142,10 +162,13 @@ void UART::SendChar(const uint8_t byte)
 * @param ptrArr - pointer on data array
 * @param length - link on length of array
 */
-void UART::GetData(uint8_t* ptrArr, uint8_t& length)
+template <class T>
+void UART::ReceiveArr(T* ptrArr, uint8_t& length)
 {
-	BufferRX.PopAll(ptrArr, length);
+	BufferRX.PopAll((uint8_t*)ptrArr, length);
 }
+template void UART::ReceiveArr(uint8_t* ptrArr, uint8_t& length);
+template void UART::ReceiveArr(char* ptrArr, uint8_t& length);
 
 
 /**

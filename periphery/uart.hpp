@@ -47,11 +47,16 @@ class UART
 	public:
 		UART(): IsItInit(UART_IS_NOT_INITIALIZED) {};
 		void Init(uint8_t uartNumber);
-		void SendArr(const uint8_t* arr, const uint8_t& len);
-		void GetData(uint8_t* ptrArr, uint8_t& length);
+		template <class T>
+		void TransmitString(const T* str);
+		template <class T>
+		void TransmitArr(const T* arr, uint8_t length);
+		template <class T>
+		void ReceiveArr(T* ptrArr, uint8_t& length);
 		Buffer BufferRX;
 	private:
-		void SendChar(const uint8_t byte);
+		template <class T>
+		void TransmitChar(const T byte);
 		uint8_t IsItInit;
 		uint8_t UartNumber;
 		USART_TypeDef* UARTX;
