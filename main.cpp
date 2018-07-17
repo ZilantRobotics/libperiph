@@ -30,11 +30,11 @@ int main()
     Target.InitGPIO();
 	Adc.Init();
 	Debug.Init();
-	//Wifi.Init();
+	Wifi.Init();
 	Timer.StartMs(1000);
 	
 	/// Variables init
-	uint8_t buffer[256] = "kek\n";
+	uint8_t buffer[256] = {0};
 	uint8_t length = 4;
 	uint8_t indicatorType = 0;
 	uint16_t timeCount = 0;
@@ -43,12 +43,15 @@ int main()
     while (1)
     {
 		uint16_t value;
-		/// If timer has tripped: start ADC, show in Debug "kek" and shot in indicators ADC value
+		/// If timer has tripped: start ADC, show in Debug "kek" and show in indicators ADC value
 		if (Timer.GetStatus() != TIMER_WORKING)
 		{
-			Timer.StartMs(5000);
+			Timer.StartMs(10000);
 			value = Adc.Do() * 0.7326;	///< 3000/2^12
+			num2str(value, buffer);
 			Debug.Transmit(buffer, length);
+			Debug.Transmit("\n");
+			Wifi.Transmit(buffer, length);
 			indicatorType = !indicatorType;
 		}
 

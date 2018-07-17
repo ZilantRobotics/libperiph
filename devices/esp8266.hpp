@@ -1,3 +1,8 @@
+/**
+* @file esp8266.hpp
+* @brief Class of wi-fi module ESP8266
+*/
+
 #ifndef __ESP8266_HPP
 #define __ESP8266_HPP
 
@@ -11,14 +16,14 @@ class WifiEsp8266
 {
 	public:
 		void Init();
-		void GetResponse(uint8_t* ptrArr, uint8_t& length);
+	
+		template <class T>
+		void GetResponse(T* ptrArr, uint8_t& length);
+		
+		template <class T>
+		void Transmit(const T* ptrArr, const uint8_t& length);
 	private:
-		void Send_AT();
 		void Send_AT_RST();
-		void Send_AT_CWSAP();
-		void Send_AT_CIPMUX();
-		void Send_AT_CIPSERVER();
-		void Send_AT_CIFSR();
 };
 
 
