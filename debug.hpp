@@ -1,3 +1,8 @@
+/**
+* @file debug.hpp
+* @brief Class of DebugPort
+*/
+
 #ifndef __DEBUG_HPP
 #define __DEBUG_HPP
 
@@ -8,8 +13,15 @@ class DebugPort
 	public:
 		DebugPort(): IsItInit(DEBUG_IS_NOT_INITIALIZED) {};
 		void Init();
-		void Transmit(const uint8_t* arr, const uint8_t& length);
-		void Receive(uint8_t* arr, uint8_t& length);
+			
+		template <class T>
+		void Transmit(const T* arr, const uint8_t& length);
+		
+		template <class T>
+		void Transmit(const T* str);
+		
+		template <class T>
+		void Receive(T* arr, uint8_t& length);
 	private:
 		enum: uint8_t 
 		{
