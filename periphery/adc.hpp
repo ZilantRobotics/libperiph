@@ -5,12 +5,12 @@
 
 
 /**
-* @brief Driver ADC
+* @brief Driver ADC1
 */
 struct ADC
 {
-	void Init();
-	uint16_t Do();
+	void Init();				/// Init ADC1
+	uint16_t Do();				/// Start new process and return last value
 };
 
 

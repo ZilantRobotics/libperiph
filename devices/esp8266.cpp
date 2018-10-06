@@ -58,7 +58,7 @@ void WifiEsp8266::Init()
 					/// Connect to AP 
 					/// Param <ssid> string, AP’s SSID 
 					/// Param <password> string, MAX: 64 bytes ASCII
-					ESP8266->TransmitString("AT+CWJAP=\"ssid\",\"password\"\r\n");
+					ESP8266->TransmitString("AT+CWJAP=\"Room-24\",\"7y1QMxcD\"\r\n");
 					Timer.StartMs(8000);
 					break;
 				case 3:
@@ -71,7 +71,7 @@ void WifiEsp8266::Init()
 					/// Param <type> string, "TCP" or "UDP" 
 					/// Param <remote IP> string, remote IP address
 					/// Param <remote port> string, remote port number
-					ESP8266->TransmitString("AT+CIPSTART=\"TCP\",\"remote IP\",remote port\r\n");
+					ESP8266->TransmitString("AT+CIPSTART=\"TCP\",\"192.168.1.22\",8088\r\n");
 					Timer.StartMs(5000);
 					break;
 				case 5:
@@ -108,7 +108,7 @@ void WifiEsp8266::Transmit(const T* ptrArr, const uint8_t& length)
 		num2str(length+2, str);
 		ESP8266->TransmitArr(str, 1);					/// Send number of bytes
 		ESP8266->TransmitArr("\r\n", 2);				/// Send "\r\n"
-		Timer.StartMs(100);
+		Timer.StartMs(1);
 		while(Timer.GetStatus() == TIMER_WORKING);
 		ESP8266->TransmitArr(ptrArr, length);			/// Send arr of data
 		ESP8266->TransmitString("\r\n");				/// Send arr of data

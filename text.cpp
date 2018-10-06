@@ -11,7 +11,7 @@
 * @param intNum - integer number
 * @param str - pointer to head of string
 */
-void num2str(int32_t intNum, char* str)
+void num2str(int32_t intNum, uint8_t* str)
 {
     uint8_t count = 0;
     char buf;

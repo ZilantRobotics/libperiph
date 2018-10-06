@@ -30,7 +30,7 @@ int main()
     Target.InitGPIO();
 	Adc.Init();
 	Debug.Init();
-	Wifi.Init();
+	//Wifi.Init();
 	Timer.StartMs(1000);
 	
 	/// Variables init
@@ -38,26 +38,42 @@ int main()
 	uint8_t length = 4;
 	uint8_t indicatorType = 0;
 	uint16_t timeCount = 0;
+	uint16_t temperature = 0;
 	
 	/// Main cycle
     while (1)
     {
-		uint16_t value;
+		//uint16_t voltage;
 		/// If timer has tripped: start ADC, show in Debug "kek" and show in indicators ADC value
 		if (Timer.GetStatus() != TIMER_WORKING)
 		{
-			Timer.StartMs(10000);
-			value = Adc.Do() * 0.7326;	///< 3000/2^12
-			num2str(value, buffer);
-			Debug.Transmit(buffer, length);
+			Timer.StartMs(1000);
+			//volatile uint16_t val = Adc.Do();
+			//voltage = Adc.Do() * 0.7326;	///< 3000/2^12
+			
+			// TEMPERATURE
+			const uint8_t temp_25 = 25;
+			const float voltage_at_25 = 1.43;
+			const float slope = 232.558;
+			const float adc_koef = 0.00073242187;
+			float voltage_sense = Adc.Do()*adc_koef;
+			temperature = (voltage_at_25 - voltage_sense)*slope + temp_25;
+			
+			num2str(Adc.Do(), buffer);
+			Debug.Transmit(buffer);
 			Debug.Transmit("\n");
-			Wifi.Transmit(buffer, length);
-			indicatorType = !indicatorType;
+			//Wifi.Transmit(buffer, length);
+			// TEMPERATURE
+			
+			
+			
+			//indicatorType = !indicatorType;
 		}
 
 		/// Sevensegments indicators - show value
-		if (indicatorType != 0)
-			Indicator.SetNumber( (uint16_t)(value*0.1) );	/// show voltage
+		if (indicatorType == 0)
+			//Indicator.SetNumber( (uint16_t)(voltage*0.1) );	/// show voltage
+			Indicator.SetNumber( temperature );	// show temperature
 		else
 			Indicator.SetNumber(timeCount);	/// show time (in second)
 		

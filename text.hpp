@@ -10,7 +10,7 @@ enum
 };
 
 
-void num2str(int32_t num, char* str);
+void num2str(int32_t num, uint8_t* str);
 //void num2str(float floatNum, char* str);
 
 
