@@ -5,7 +5,8 @@
 
 #include <uart.hpp>
 #include <debug.hpp>
-#include "target.hpp"
+#include <target.hpp>
+#include <text.hpp>
 
 extern UART UART1;
 DebugPort Debug;
@@ -25,26 +26,33 @@ void DebugPort::Init()
 * @param arr - pointer to array
 * @param length - length of array
 */
-template <class T>
-void DebugPort::Transmit(const T* arr, const uint8_t& length)
+void DebugPort::Transmit(const uint8_t* arr, const uint8_t& length)
 {
 	UART1.TransmitArr(arr, length);
 }
-template void DebugPort::Transmit(const uint8_t* arr, const uint8_t& length);
-template void DebugPort::Transmit(const char* arr, const uint8_t& length);
 
 
 /**
 * @brief Transmit null-terminated string to Debug Port
 * @param str - pointer to null-terminated string
 */
-template <class T>
-void DebugPort::Transmit(const T* str)
+void DebugPort::Transmit(const uint8_t* str)
 {
 	UART1.TransmitString(str);
 }
-template void DebugPort::Transmit(const uint8_t* arr);
-template void DebugPort::Transmit(const char* arr);
+
+
+/**
+* @brief Transmit Value to Debug Port
+* @param value - value being transmitting
+*/
+void DebugPort::Transmit(uint32_t value)
+{
+	uint8_t buffer[5];	// sizeof(uint32_t) + sizeof('\0')
+	num2str(value, buffer);
+	Debug.Transmit(buffer);
+	Debug.Transmit((uint8_t*)"\n");
+}
 
 
 /**
@@ -52,10 +60,7 @@ template void DebugPort::Transmit(const char* arr);
 * @param arr - pointer to array
 * @param length - length of array
 */
-template <class T>
-void DebugPort::Receive(T* arr, uint8_t& length)
+void DebugPort::Receive(uint8_t* arr, uint8_t& length)
 {
 	UART1.ReceiveArr(arr, length);
 }
-template void DebugPort::Receive(uint8_t* arr, uint8_t& length);
-template void DebugPort::Receive(char* arr, uint8_t& length);
