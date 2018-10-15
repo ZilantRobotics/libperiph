@@ -5,9 +5,8 @@
 
 #include <timer.hpp>
 #include <target.hpp>
-extern TargetBase Target;
 
-uint8_t OverflowsCount = 0;
+uint8_t OverflowsCount = 0;	///< crutch: interrupt like C
 
 /**
 * @brief Init timer

@@ -1,16 +1,22 @@
 /**
 * @file target.cpp
-* @brief Implementation of the base class driver board
+* @brief Driver board class implementation
+*/
+
+/*
+	Short description of file:
+	Guaranteed that there will not be more than one instance of this class.
+	There are 2 ways: static class and singleton.
+	It is assumed that Target class will not have childrens, so static class
+	has been selected.
 */
 
 #include <target.hpp>
 
-TargetBase Target;
-
 /**
-* @brief Init GPIO
+* @brief Init GPIO type, functions and RCC
 */
-void TargetBase::InitGPIO()
+void Target::InitGPIO()
 {
 	///< Some constans
 	enum
@@ -106,8 +112,9 @@ void TargetBase::InitGPIO()
 
 /**
 * @brief Turn on this led from board
+* @param ledNumber - number from LD_MIN to LD_MAX
 */
-void TargetBase::LedOn(uint8_t ledNumber)
+void Target::LedOn(uint8_t ledNumber)
 {
 	if ( (ledNumber <= LD_MAX) && (ledNumber >= LD_MIN) )
 		GPIOE->ODR |= (1 << ledNumber);
@@ -116,10 +123,10 @@ void TargetBase::LedOn(uint8_t ledNumber)
 
 /**
 * @brief Turn off this led from board
+* @param ledNumber - number from LD_MIN to LD_MAX
 */
-void TargetBase::LedOff(uint8_t ledNumber)
+void Target::LedOff(uint8_t ledNumber)
 {
 	if ( (ledNumber <= LD_MAX) && (ledNumber >= LD_MIN) )
 		GPIOE->ODR &= ~(1 << ledNumber);
 }
-

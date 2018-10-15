@@ -8,7 +8,6 @@
 #include <adc.hpp>
 
 LedsRotation Leds;
-extern TargetBase Target;
 extern ADC Adc;
 
 /**
@@ -19,22 +18,22 @@ void LedsRotation::Do()
 	if (Timer.GetStatus() != TIMER_WORKING)
 	{
 		// 1. Зажигаем нужный светодиод:
-		Target.LedOff(LedOnNumberPrevious);
-		Target.LedOn(LedOnNumber);
+		Target::LedOff(LedOnNumberPrevious);
+		Target::LedOn(LedOnNumber);
 		LedOnNumberPrevious = LedOnNumber;
 		
 		// 2. Регулируем направление переключения светодиодов:
 		if (Direction & COUNTERCLOCKWISE_ACCELERATION)
 		{
-			if (LedOnNumber == TargetBase::LD_MIN)
-				LedOnNumber = TargetBase::LD_MAX;
+			if (LedOnNumber == Target::LD_MIN)
+				LedOnNumber = Target::LD_MAX;
 			else
 				LedOnNumber--;
 		}
 		else // if clockwise
 		{
-			if (LedOnNumber == TargetBase::LD_MAX)
-				LedOnNumber = TargetBase::LD_MIN;
+			if (LedOnNumber == Target::LD_MAX)
+				LedOnNumber = Target::LD_MIN;
 			else
 				LedOnNumber++;
 		}

@@ -14,7 +14,6 @@
 #include <debug.hpp>
 //#include <dma.hpp>
 
-extern TargetBase Target;
 extern LedsRotation Leds;
 extern ADC Adc;
 extern DebugPort Debug;
@@ -27,7 +26,7 @@ extern WifiEsp8266 Wifi;
 int main()
 {
 	/// Modules init
-    Target.InitGPIO();
+    Target::InitGPIO();
 	Adc.Init();
 	Debug.Init();
 	//Wifi.Init();
@@ -59,7 +58,7 @@ int main()
 			float voltage_sense = Adc.Do()*adc_koef;
 			temperature = (voltage_at_25 - voltage_sense)*slope + temp_25;
 			
-			num2str(Adc.Do(), buffer);
+			num2str(temperature, buffer);
 			Debug.Transmit(buffer);
 			Debug.Transmit("\n");
 			//Wifi.Transmit(buffer, length);

@@ -3,6 +3,12 @@
 * @brief Implementation of ADC
 */
 
+/*
+There are 4 12-bit successive approximation ADC.
+Each ADC has up to 19 multiplexed channels.
+There are 3 modes: single, continuous, scan and discontinuous.
+*/
+
 #include <adc.hpp>
 ADC Adc;
 

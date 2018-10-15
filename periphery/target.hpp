@@ -11,7 +11,7 @@ enum
 /**
 * @brief Board driver
 */
-class TargetBase
+class Target
 {
 	public:
 		enum Led_t
@@ -27,9 +27,9 @@ class TargetBase
 			LD_MIN = 8,
 			LD_MAX = 15,
 		};
-		void InitGPIO();
-		void LedOn(uint8_t ledNumber);
-		void LedOff(uint8_t ledNumber);
+		static void InitGPIO();
+		static void LedOn(uint8_t ledNumber);
+		static void LedOff(uint8_t ledNumber);
 };
 
 

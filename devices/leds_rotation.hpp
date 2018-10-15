@@ -30,8 +30,8 @@ class LedsRotation
 		uint8_t Direction;
 	public:
 		LedsRotation(): 
-			LedOnNumber(TargetBase::LD_MIN),
-			LedOnNumberPrevious(TargetBase::LD_MIN),
+			LedOnNumber(Target::LD_MIN),
+			LedOnNumberPrevious(Target::LD_MIN),
 			BlinkPeriod(BLINK_PERIOD_MIN),
 			Direction(CLOCKWISE_ACCELERATION) {}
 		void Do();
