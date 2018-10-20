@@ -81,8 +81,21 @@ void Target::InitGPIO()
 					(7 << GPIO_AFRL_AFRL5_Pos);					// PORTC5, UART1, RX
 	
 	/// PORTD
-    GPIOD->MODER =	(GPIO_Mode_IN << 10*2);						// PORTD10 - external interrupt
-	GPIOD->PUPDR = (GPIO_PUPDR_PULL_DOWN << 10*2);				// 
+	/*
+	¹		Moder	PUPDR	OutPutType	Speed	Desription
+	PD[10]	IN		pd		Push-Pull			Left Encoder pin1 - external interrupt
+	PD[11]	IN		pd		Push-Pull			Left Encoder pin2 - input
+	PD[12]	IN		pd		Push-Pull			Right Encoder pin1 - external interrupt
+	PD[13]	IN		pd		Push-Pull			Right Encoder pin2 - input
+	*/
+    GPIOD->MODER =	(GPIO_Mode_IN << GPIO_MODER_MODER10_Pos) |
+					(GPIO_Mode_IN << GPIO_MODER_MODER11_Pos) |
+					(GPIO_Mode_IN << GPIO_MODER_MODER12_Pos) |
+					(GPIO_Mode_IN << GPIO_MODER_MODER13_Pos);
+	GPIOD->PUPDR =	(GPIO_PUPDR_PULL_DOWN << GPIO_PUPDR_PUPDR10_Pos) |
+					(GPIO_PUPDR_PULL_DOWN << GPIO_PUPDR_PUPDR11_Pos) |
+					(GPIO_PUPDR_PULL_DOWN << GPIO_PUPDR_PUPDR12_Pos) |
+					(GPIO_PUPDR_PULL_DOWN << GPIO_PUPDR_PUPDR13_Pos);
 	
 	/// PORTE
 	GPIOE->MODER =	(GPIO_Mode_OUT << 8*2)  |					// PORTE8,  LD4,

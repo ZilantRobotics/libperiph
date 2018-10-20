@@ -34,11 +34,10 @@ int main()
 	//Wifi.Init();
 	Timer.StartMs(1000);
 	TemperatureSensor temperature;
-	Encoder encoder;
-	encoder.Init();
+	Encoder* encoder = Encoder::GetInstance(Encoder::LEFT_ENCODER);
 	
 	/// Variables init
-	uint16_t temperatureValue = 0;
+	//uint16_t value = 0;
 	
 	/// Main cycle
     while (1)
@@ -46,8 +45,8 @@ int main()
 		if (Timer.GetStatus() != TIMER_WORKING)
 		{
 			Timer.StartMs(1000);
-			temperatureValue = temperature.Do();
-			Debug.Transmit(temperatureValue);
+			Debug.Transmit(temperature.Do());
+			Debug.Transmit(encoder->GetPulses());
 		}
 		
 		/// Leds - rotation
