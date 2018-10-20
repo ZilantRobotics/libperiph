@@ -180,7 +180,7 @@ Interrupt_t getRightEncoderInterruptType()
 /**
 * @brief 
 */
-void setLeftEncoderGrowingEngeInterruptType()
+void setLeftEncoderGrowingEdgeInterruptType()
 {
 	EXTI->FTSR &= ~EXTI_FTSR_TR10;
 	EXTI->RTSR |= EXTI_RTSR_TR10;
@@ -190,7 +190,7 @@ void setLeftEncoderGrowingEngeInterruptType()
 /**
 * @brief 
 */
-void setLeftEncoderFallingEngeInterruptType()
+void setLeftEncoderFallingEdgeInterruptType()
 {
 	EXTI->FTSR |= EXTI_FTSR_TR10;
 	EXTI->RTSR &= ~EXTI_RTSR_TR10;
@@ -200,7 +200,7 @@ void setLeftEncoderFallingEngeInterruptType()
 /**
 * @brief 
 */
-void setRightEncoderGrowingEngeInterruptType()
+void setRightEncoderGrowingEdgeInterruptType()
 {
 	EXTI->FTSR &= ~EXTI_FTSR_TR12;
 	EXTI->RTSR |= EXTI_RTSR_TR12;
@@ -210,7 +210,7 @@ void setRightEncoderGrowingEngeInterruptType()
 /**
 * @brief 
 */
-void setRightEncoderFallingEngeInterruptType()
+void setRightEncoderFallingEdgeInterruptType()
 {
 	EXTI->FTSR |= EXTI_FTSR_TR12;
 	EXTI->RTSR &= ~EXTI_RTSR_TR12;
