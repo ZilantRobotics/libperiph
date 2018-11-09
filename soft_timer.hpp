@@ -1,8 +1,8 @@
 #ifndef __SOFT_TIMER_HPP
 #define __SOFT_TIMER_HPP
 
+#include "timer.hpp"
 #include "stm32f3xx.h"
-#include <timer.hpp>
 
 enum TimerStatus_t
 {
@@ -39,7 +39,7 @@ class SoftTimer
 		uint32_t EndCount;						///< End Count
 	
 		TimerStatus_t Status;					///< Status
-		static Timer2 HardTimer;				///< Hard Timer			
+		static Counter HardTimer;				///< Hard Timer			
 		
 		uint8_t IsTimerEnd(uint32_t nowCount);	/// Is Timer End
 };

@@ -6,6 +6,7 @@
 #include "stm32f3xx.h"
 #include <target.hpp>
 #include <soft_timer.hpp>
+#include <timer.hpp>
 #include <leds_rotation.hpp>
 #include <adc.hpp>
 #include <text.hpp>
@@ -38,6 +39,9 @@ int main()
 	
 	/// Variables init
 	//uint16_t value = 0;
+	
+	Pwm pwm;
+	pwm.Init();
 	
 	/// Main cycle
     while (1)

@@ -3,16 +3,16 @@
 * @brief Implementation of software timer
 */
 
-#include <soft_timer.hpp>
+#include "soft_timer.hpp"
 
-Timer2 SoftTimer::HardTimer;
+Counter SoftTimer::HardTimer;
 
 /**
 * @brief Constructor of software timer
 */
 SoftTimer::SoftTimer(): Status(TIMER_CREATED)
 {
-	if (HardTimer.Status == Timer2::HARD_TIMER_NOT_INITIALIZED)
+	if (HardTimer.GetStatus() == HARD_TIMER_NOT_INITIALIZED)
 	{
 		HardTimer.Init();
 	}
@@ -40,7 +40,7 @@ void SoftTimer::StartMs(uint16_t timeMs)
 		StartCount = HardTimer.GetCount();
 		StartOverflows = HardTimer.GetOverflowsCount();
 	
-		EndCount = StartCount + timeMs * Timer2::ONE_MS;
+		EndCount = StartCount + timeMs * ONE_MS;
 		EndOverflows = StartOverflows + ( (EndCount < StartCount) ? 1 : 0);
 	
 		Status = TIMER_WORKING;

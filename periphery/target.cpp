@@ -11,7 +11,7 @@
 	has been selected.
 */
 
-#include <target.hpp>
+#include "target.hpp"
 
 /**
 * @brief Init GPIO type, functions and RCC
@@ -71,18 +71,28 @@ void Target::InitGPIO()
 	GPIOB->OSPEEDR = 0;											// Speed - Low
 	
 	/// PORTC
-    GPIOC->MODER =	(GPIO_Mode_AF << GPIO_MODER_MODER4_Pos)  |	// PORTC4, UART1, TX
-					(GPIO_Mode_AF << GPIO_MODER_MODER5_Pos);	// PORTC5, UART1, RX
-	GPIOC->OTYPER = 0;											// Output push-pull 
-	GPIOC->OSPEEDR = 0;											// speed
-	GPIOC->PUPDR = (GPIO_PUPDR_PULL_UP << 2*4) | 				// PORTC4, UART1, TX
-				   (GPIO_PUPDR_NO_PULL_UP_NO_PULL_DOWN << 2*5); // PORTC5, UART1, RX
-	GPIOC->AFR[0] = (7 << GPIO_AFRL_AFRL4_Pos) | 				// PORTC4, UART1, TX
-					(7 << GPIO_AFRL_AFRL5_Pos);					// PORTC5, UART1, RX
+	/*
+	¹		Moder	PUPDR	OutPutType	Speed	Desription
+	PC[4]	OUT		-		-			-		UART1, TX
+	PC[5]	IN		pd		Push-Pull			UART1, RX
+	PC[6]	AF		-		-			-		Pwm
+	*/
+    GPIOC->MODER =	(GPIO_Mode_AF << GPIO_MODER_MODER4_Pos) |
+					(GPIO_Mode_AF << GPIO_MODER_MODER5_Pos) |
+					(GPIO_Mode_AF << GPIO_MODER_MODER6_Pos);
+					
+	GPIOC->OTYPER = 0;
+	GPIOC->OSPEEDR = 0;
+	GPIOC->PUPDR = (GPIO_PUPDR_PULL_UP << 2*4) |
+				   (GPIO_PUPDR_NO_PULL_UP_NO_PULL_DOWN << 2*5);
+	GPIOC->AFR[0] = (7 << GPIO_AFRL_AFRL4_Pos) |
+					(7 << GPIO_AFRL_AFRL5_Pos) |
+					(2 << GPIO_AFRL_AFRL6_Pos);
 	
 	/// PORTD
 	/*
 	¹		Moder	PUPDR	OutPutType	Speed	Desription
+	PD[6]	OUT		-		-			-		pwm
 	PD[10]	IN		pd		Push-Pull			Left Encoder pin1 - external interrupt
 	PD[11]	IN		pd		Push-Pull			Left Encoder pin2 - input
 	PD[12]	IN		pd		Push-Pull			Right Encoder pin1 - external interrupt
