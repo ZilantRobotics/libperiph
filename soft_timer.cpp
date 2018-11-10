@@ -1,6 +1,6 @@
 /**
 * @file soft_timer.cpp
-* @brief Implementation of software timer
+* @brief Software timer implementation
 */
 
 #include "soft_timer.hpp"
@@ -10,7 +10,7 @@ Counter SoftTimer::HardTimer;
 /**
 * @brief Constructor of software timer
 */
-SoftTimer::SoftTimer(): Status(TIMER_CREATED)
+SoftTimer::SoftTimer(): Status(CREATED)
 {
 	if (HardTimer.GetStatus() == HARD_TIMER_NOT_INITIALIZED)
 	{
@@ -43,11 +43,11 @@ void SoftTimer::StartMs(uint16_t timeMs)
 		EndCount = StartCount + timeMs * ONE_MS;
 		EndOverflows = StartOverflows + ( (EndCount < StartCount) ? 1 : 0);
 	
-		Status = TIMER_WORKING;
+		Status = WORKING;
 	}
 	else
 	{
-		Status = TIMER_FINISHED;
+		Status = FINISHED;
 	}
 }
 
@@ -56,12 +56,11 @@ void SoftTimer::StartMs(uint16_t timeMs)
 * @brief Get status of timer
 * @return status - timer status
 */
-uint8_t SoftTimer::GetStatus()
+SoftTimer::TimerStatus_t SoftTimer::GetStatus()
 {
-	uint32_t nowCount = HardTimer.GetCount();
-	if ( Status == TIMER_WORKING && IsTimerEnd(nowCount) )
+	if ( Status == WORKING && IsTimerEnd() )
     {
-        Status = TIMER_FINISHED;
+        Status = FINISHED;
     }
     return Status;
 }
@@ -69,13 +68,27 @@ uint8_t SoftTimer::GetStatus()
 
 /**
 * @brief Get info whether the timer has stopped
-* @return status - timer status
+* @return true, if timer is end, in other way false
 */
-uint8_t SoftTimer::IsTimerEnd(uint32_t nowCount)
+bool SoftTimer::IsTimerEnd() const
 {
+	uint32_t nowCount = HardTimer.GetCount();
 	uint8_t NowOverflows = HardTimer.GetOverflowsCount();
-    
     if ( (EndOverflows < NowOverflows) || ( (EndOverflows == NowOverflows) && (EndCount <= nowCount) ) )
-        return 1;
-    return 0;
+        return true;
+    return false;
+}
+
+
+/**
+* @brief Get elapsed time
+* @return elapsed time is seconds
+*/
+uint32_t SoftTimer::GetElapsedTime()
+{
+	uint32_t nowCount = HardTimer.GetCount();
+	uint32_t nowOverflow = HardTimer.GetOverflowsCount();
+	if(StartCount > nowCount)
+		return (StartCount - nowCount) / ONE_S + (nowOverflow - StartOverflows)*PERIOD;
+	return (StartCount + nowCount) / ONE_S + (nowOverflow - StartOverflows)*PERIOD; 
 }

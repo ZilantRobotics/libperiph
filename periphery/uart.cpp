@@ -3,9 +3,9 @@
 * @brief uart implementation
 */
 
-#include <uart.hpp>
-#include <string.h>	// for memcpy (why not <cstring>???)
+#include "uart.hpp"
 #include "target.hpp"
+#include <string.h>
 
 UART UART1;
 UART UART2;
@@ -35,7 +35,7 @@ enum
 /**
 * @brief Init UART
 */
-void UART::Init(uint8_t uartNumber)
+void UART::Init(UartNumber_t uartNumber)
 {
 	// Check correctness
 	if (IsItInit)
@@ -44,27 +44,27 @@ void UART::Init(uint8_t uartNumber)
 	// Select UART register and clock and interrupt enable
 	switch (uartNumber)
 	{
-		case 1:
+		case UART_1:
 			UARTX = USART1;
 			RCC->APB2ENR |= RCC_APB2ENR_USART1EN;
 			NVIC_EnableIRQ(USART1_IRQn);
 			break;
-		case 2:
+		case UART_2:
 			UARTX = USART2;
 			RCC->APB1ENR |= RCC_APB1ENR_USART2EN;
 			NVIC_EnableIRQ(USART2_IRQn);
 			break;
-		case 3:
+		case UART_3:
 			UARTX = USART3;
 			RCC->APB1ENR |= RCC_APB1ENR_USART3EN;
 			NVIC_EnableIRQ(USART3_IRQn);
 			break;
-		case 4:
+		case UART_4:
 			UARTX = UART4;
 			RCC->APB1ENR |= RCC_APB1ENR_UART4EN;
 			NVIC_EnableIRQ(UART4_IRQn);
 			break;
-		case 5:
+		case UART_5:
 			UARTX = UART5;
 			RCC->APB1ENR |= RCC_APB1ENR_UART5EN;
 			NVIC_EnableIRQ(UART5_IRQn);
@@ -73,35 +73,19 @@ void UART::Init(uint8_t uartNumber)
 			return;
 	}
 	
-	// UART configuration
-	enum
-	{
-		CR1_CONFIG = 						// Word length = 8 bit
-											// Oversampling by 16
-											// Parity control disabled
-											// Parity selection (if control enabled)
-					0*USART_CR1_TXEIE | 	// TX Interrupt Enable
-					1*USART_CR1_RXNEIE |	// RX Interrupt Enable	
-											// 1 stop bit
-											// CTS disable
-											// RTS disable
-					1*USART_CR1_TE |		// Transmitter enable
-					1*USART_CR1_RE,			// Receiver enable
-		CR2_CONFIG =0,						// Default
-		CR3_CONFIG =USART_CR3_DMAT |		// DMA mode is disabled for transmission
-					USART_CR3_DMAR, 		// DMA mode is disabled for reception
-	};
-	
 	// 1. Configure UART
-	UARTX->CR3 = CR3_CONFIG;	
-	UARTX->CR1 = CR1_CONFIG;
+	UARTX->CR3 = USART_CR3_DMAT |		// DMA mode is disabled for transmission
+					 USART_CR3_DMAR; 	// DMA mode is disabled for reception	
+	UARTX->CR1 = USART_CR1_RXNEIE |		// RX Interrupt Enable	
+				 USART_CR1_TE |			// Transmitter enable
+				 USART_CR1_RE;			// Receiver enable;
 	
 	// 2. Select the desired baud rate using the baud rate register USART_BRR 
 	UARTX->BRR = BAUD_RATE_115200;
 	
 	// 3. Enable USART
 	UARTX->CR1 |=  USART_CR1_UE;
-	IsItInit = UART_IS_INITIALIZED;
+	IsItInit = true;
 }
 
 
@@ -109,19 +93,14 @@ void UART::Init(uint8_t uartNumber)
 * @brief Transmit null-terminated string
 * @param str - pointer to null-terminated string
 */
-template <class T>
-void UART::TransmitString(const T* str)
+void UART::TransmitString(const uint8_t* str)
 {
-	// Check correctness
 	if(!IsItInit)
 		return;
 	
-	// Main algorithm
 	while(*str != 0x00)
 		TransmitChar( *str++ );
 }
-template void UART::TransmitString(const uint8_t* str);
-template void UART::TransmitString(const char* str);
 
 
 /**
@@ -129,33 +108,25 @@ template void UART::TransmitString(const char* str);
 * @param arr - pointer to array
 * @param len - length of array
 */
-template <class T>
-void UART::TransmitArr(const T* arr, uint8_t length)
+void UART::TransmitArr(const uint8_t* arr, uint8_t length)
 {
-	// Check correctness
 	if(!IsItInit)
 		return;
-	
-	// Main algorithm
+
 	while(length--)
 		TransmitChar( *arr++ );
 }
-template void UART::TransmitArr(const uint8_t* arr, uint8_t length);
-template void UART::TransmitArr(const char* arr, uint8_t length);
 
 
 /**
 * @brief Send one data byte
 * @param byte - data byte
 */
-template <class T>
-void UART::TransmitChar(const T byte) 
+void UART::TransmitChar(const uint8_t byte) 
 {
 	UARTX->TDR = byte;
 	while( !(UARTX->ISR & USART_ISR_TC) );
 }
-template void UART::TransmitChar(const uint8_t byte);
-template void UART::TransmitChar(const char byte);
 
 
 /**
@@ -163,13 +134,10 @@ template void UART::TransmitChar(const char byte);
 * @param ptrArr - pointer on data array
 * @param length - link on length of array
 */
-template <class T>
-void UART::ReceiveArr(T* ptrArr, uint8_t& length)
+void UART::ReceiveArr(uint8_t* ptrArr, uint8_t& length)
 {
 	BufferRX.PopAll((uint8_t*)ptrArr, length);
 }
-template void UART::ReceiveArr(uint8_t* ptrArr, uint8_t& length);
-template void UART::ReceiveArr(char* ptrArr, uint8_t& length);
 
 
 /**

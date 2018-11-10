@@ -15,7 +15,7 @@ extern ADC Adc;
 */
 void LedsRotation::Do()
 {
-	if (Timer.GetStatus() != TIMER_WORKING)
+	if (Timer.GetStatus() != SoftTimer::WORKING)
 	{
 		// 1. Зажигаем нужный светодиод:
 		Target::LedOff(LedOnNumberPrevious);

@@ -3,10 +3,10 @@
 * @brief Implementation of Debug Port
 */
 
-#include <uart.hpp>
-#include <debug.hpp>
-#include <target.hpp>
-#include <text.hpp>
+#include "uart.hpp"
+#include "debug.hpp"
+#include "target.hpp"
+#include "text.hpp"
 
 extern UART UART1;
 DebugPort Debug;
@@ -17,7 +17,7 @@ DebugPort Debug;
 */
 void DebugPort::Init()
 {
-	UART1.Init(UART_1);
+	UART1.Init(UART::UART_1);
 }
 
 

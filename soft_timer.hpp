@@ -4,32 +4,33 @@
 #include "timer.hpp"
 #include "stm32f3xx.h"
 
-enum TimerStatus_t
-{
-	TIMER_CREATED = 0,	///< Timer is created, but is not working
-	TIMER_WORKING = 1,	///< Timer is working
-	TIMER_WAITING = 2,	///< Timer is waiting
-	TIMER_STOPPED = 3,	///< Timer is stopped
-	TIMER_FINISHED = 4,	///< Timer is finished
-};
 
 /**
-* @brief Software timer
+* @brief Software stopwatch/timer
 */
 class SoftTimer
 {
 	public:
-		/// Main methods:
+		enum TimerStatus_t
+		{
+			CREATED,				///< Timer is created, but is not working
+			WORKING,				///< Timer is working
+			WAITING,				///< Timer is waiting
+			STOPPED,				///< Timer is stopped
+			FINISHED,				///< Timer is finished
+		};
 		SoftTimer();							/// Constructor
 		void StartUs(uint16_t timeUs);			/// Start timer in us
-		void StartMs(uint16_t timeMs);			/// Start timer in us
+		void StartMs(uint16_t timeMs);			/// Start timer in üs
 		void Continue();						/// Continue timer
 		void Wait();							/// Wait timer (u can continue it)
 		void Stop();							/// Stop timer (u can't continue it)
-		uint8_t GetStatus();					/// Get status
+		TimerStatus_t GetStatus();				/// Get status
 		uint32_t GetRestTime();					/// Get rest time
 		uint32_t GetElapsedTime();				/// Get elapsed time
 	private:
+		bool IsTimerEnd() const;				/// Is Timer End
+	
 		uint8_t  StartOverflows;				///< Start Overflows
 		uint8_t  RestOverflows;					///< Rest Overflows
 		uint8_t  EndOverflows;					///< End Overflows
@@ -40,8 +41,6 @@ class SoftTimer
 	
 		TimerStatus_t Status;					///< Status
 		static Counter HardTimer;				///< Hard Timer			
-		
-		uint8_t IsTimerEnd(uint32_t nowCount);	/// Is Timer End
 };
 
 

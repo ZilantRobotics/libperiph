@@ -3,11 +3,11 @@
 * @brief Implementation of work with esp8266
 */
 
-#include <esp8266.hpp>
-#include <uart.hpp>
-#include <soft_timer.hpp>
-#include <debug.hpp>
-#include <text.hpp>
+#include "esp8266.hpp"
+#include "uart.hpp"
+#include "soft_timer.hpp"
+#include "debug.hpp"
+#include "text.hpp"
 
 
 /// Global and static object's
@@ -24,7 +24,7 @@ WifiEsp8266 Wifi;
 */
 void WifiEsp8266::Init()
 {
-	ESP8266->Init(UART_2);
+	ESP8266->Init(UART::UART_2);
 	uint8_t counterOfCommand = 0;
 	
 	uint8_t arr[256];
@@ -32,7 +32,7 @@ void WifiEsp8266::Init()
 	
 	while (1)
 	{
-		if (Timer.GetStatus() != TIMER_WORKING)
+		if (Timer.GetStatus() != SoftTimer::WORKING)
 		{
 			/// Receive from ESP8266 and transmit to debug
 			ESP8266->ReceiveArr(arr, length);
@@ -46,7 +46,7 @@ void WifiEsp8266::Init()
 					/// Param = 3 => softAP + station mode
 					/// This setting will be stored in the flash system parameter area. 
 					/// It won’t be erased even when the power is off and restarted.
-					ESP8266->TransmitString("AT+CWMODE=3\r\n");
+					ESP8266->TransmitString((uint8_t*)"AT+CWMODE=3\r\n");
 					Timer.StartMs(5000);
 					break;
 				case 1:
@@ -58,12 +58,12 @@ void WifiEsp8266::Init()
 					/// Connect to AP 
 					/// Param <ssid> string, AP’s SSID 
 					/// Param <password> string, MAX: 64 bytes ASCII
-					ESP8266->TransmitString("AT+CWJAP=\"Room-24\",\"7y1QMxcD\"\r\n");
+					ESP8266->TransmitString((uint8_t*)"AT+CWJAP=\"Room-24\",\"7y1QMxcD\"\r\n");
 					Timer.StartMs(8000);
 					break;
 				case 3:
 					/// Get local IP address
-					ESP8266->TransmitString("AT+CIFSR\r\n");
+					ESP8266->TransmitString((uint8_t*)"AT+CIFSR\r\n");
 					Timer.StartMs(4000);
 					break;
 				case 4:
@@ -71,18 +71,18 @@ void WifiEsp8266::Init()
 					/// Param <type> string, "TCP" or "UDP" 
 					/// Param <remote IP> string, remote IP address
 					/// Param <remote port> string, remote port number
-					ESP8266->TransmitString("AT+CIPSTART=\"TCP\",\"192.168.1.22\",8088\r\n");
+					ESP8266->TransmitString((uint8_t*)"AT+CIPSTART=\"TCP\",\"192.168.1.22\",8088\r\n");
 					Timer.StartMs(5000);
 					break;
 				case 5:
 					/// Send data
 					/// Param <length> data length, MAX 2048 bytes
-					ESP8266->TransmitString("AT+CIPSEND=16\r\n");
+					ESP8266->TransmitString((uint8_t*)"AT+CIPSEND=16\r\n");
 					Timer.StartMs(500);
 					break;
 				case 6:
 					/// Data to transmit
-					ESP8266->TransmitString("HELLO FROM STM32");
+					ESP8266->TransmitString((uint8_t*)"HELLO FROM STM32");
 					Timer.StartMs(500);
 					break;
 				default:
@@ -97,25 +97,22 @@ void WifiEsp8266::Init()
 /**
 * @brief Transmit data to TCP server
 */
-template <class T>
-void WifiEsp8266::Transmit(const T* ptrArr, const uint8_t& length)
+void WifiEsp8266::Transmit(const uint8_t* ptrArr, const uint8_t& length)
 {
-	ESP8266->TransmitString("AT+CIPSEND=");				/// Send header
+	ESP8266->TransmitString((uint8_t*)"AT+CIPSEND=");				/// Send header
 	
 	if (length == 4)
 	{
 		uint8_t str[4];
 		num2str(length+2, str);
 		ESP8266->TransmitArr(str, 1);					/// Send number of bytes
-		ESP8266->TransmitArr("\r\n", 2);				/// Send "\r\n"
+		ESP8266->TransmitArr((uint8_t*)"\r\n", 2);				/// Send "\r\n"
 		Timer.StartMs(1);
-		while(Timer.GetStatus() == TIMER_WORKING);
+		while(Timer.GetStatus() == SoftTimer::WORKING);
 		ESP8266->TransmitArr(ptrArr, length);			/// Send arr of data
-		ESP8266->TransmitString("\r\n");				/// Send arr of data
+		ESP8266->TransmitString((uint8_t*)"\r\n");				/// Send arr of data
 	}
 }
-template void WifiEsp8266::Transmit(const uint8_t * ptrArr, const uint8_t& length);
-template void WifiEsp8266::Transmit(const char* ptrArr, const uint8_t& length);
 
 
 /**
@@ -123,7 +120,7 @@ template void WifiEsp8266::Transmit(const char* ptrArr, const uint8_t& length);
 */
 void WifiEsp8266::Send_AT_RST()
 {
-	ESP8266->TransmitString("AT+RST\r\n");
+	ESP8266->TransmitString((uint8_t*)"AT+RST\r\n");
 }
 
 
@@ -132,10 +129,7 @@ void WifiEsp8266::Send_AT_RST()
 * @param ptrArr - pointer on response array
 * @param length - link on length of array
 */
-template <class T>
-void WifiEsp8266::GetResponse(T* ptrArr, uint8_t& length)
+void WifiEsp8266::GetResponse(uint8_t* ptrArr, uint8_t& length)
 {
 	
 }
-template void WifiEsp8266::GetResponse(uint8_t* ptrArr, uint8_t& length);
-template void WifiEsp8266::GetResponse(char* ptrArr, uint8_t& length);

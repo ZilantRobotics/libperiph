@@ -23,6 +23,7 @@ extern DebugPort Debug;
 Indicators Indicator;
 static SoftTimer Timer;
 static SoftTimer TimerIndicator;
+static SoftTimer RealTime;
 extern WifiEsp8266 Wifi; 
 //DMA Dma;
 
@@ -34,6 +35,7 @@ int main()
 	Debug.Init();
 	//Wifi.Init();
 	Timer.StartMs(1000);
+	RealTime.StartMs(1);
 	TemperatureSensor temperature;
 	Encoder* encoder = Encoder::GetInstance(Encoder::LEFT_ENCODER);
 	
@@ -43,11 +45,12 @@ int main()
 	/// Main cycle
     while (1)
     {
-		if (Timer.GetStatus() != TIMER_WORKING)
+		if (Timer.GetStatus() != SoftTimer::WORKING)
 		{
 			Timer.StartMs(1000);
 			Debug.Transmit(temperature.Do());
 			Debug.Transmit(encoder->GetPulses());
+			Debug.Transmit(RealTime.GetElapsedTime());
 		}
 		
 		/// Leds - rotation
