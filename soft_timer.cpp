@@ -14,7 +14,7 @@ SoftTimer::SoftTimer(): Status(TIMER_CREATED)
 {
 	if (HardTimer.GetStatus() == HARD_TIMER_NOT_INITIALIZED)
 	{
-		HardTimer.Init();
+		HardTimer.Init(TIMER_2);
 	}
 }
 

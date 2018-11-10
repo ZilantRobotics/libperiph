@@ -6,7 +6,7 @@
 #include "stm32f3xx.h"
 #include <target.hpp>
 #include <soft_timer.hpp>
-#include <timer.hpp>
+#include <motor.hpp>
 #include <leds_rotation.hpp>
 #include <adc.hpp>
 #include <text.hpp>
@@ -37,11 +37,8 @@ int main()
 	TemperatureSensor temperature;
 	Encoder* encoder = Encoder::GetInstance(Encoder::LEFT_ENCODER);
 	
-	/// Variables init
-	//uint16_t value = 0;
-	
-	Pwm pwm;
-	pwm.Init();
+	Motor motor;
+	motor.Init();
 	
 	/// Main cycle
     while (1)
