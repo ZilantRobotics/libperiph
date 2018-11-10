@@ -35,68 +35,71 @@ void Target::InitGPIO()
 	};
 	
     /// Clocking GPIO
-    RCC->AHBENR = RCC_AHBENR_GPIOAEN |							// Clocking GPIO A
-				  RCC_AHBENR_GPIOBEN |							// Clocking GPIO B
-				  RCC_AHBENR_GPIOCEN |							// Clocking GPIO C
-				  RCC_AHBENR_GPIODEN |							// Clocking GPIO D
-				  RCC_AHBENR_GPIOEEN;							// Clocking GPIO E
-	RCC->APB2ENR |= RCC_APB2ENR_SYSCFGEN;						// Clocking SYSCFG
+    RCC->AHBENR = RCC_AHBENR_GPIOAEN |
+				  RCC_AHBENR_GPIOBEN |
+				  RCC_AHBENR_GPIOCEN |
+				  RCC_AHBENR_GPIODEN |
+				  RCC_AHBENR_GPIOEEN;
+	RCC->APB2ENR |= RCC_APB2ENR_SYSCFGEN;
 	
 	/// PORTA
-	GPIOA->MODER |= (GPIO_Mode_AN << GPIO_MODER_MODER0_Pos) |	// PORTA0, analog input
-					(GPIO_Mode_AN << GPIO_MODER_MODER1_Pos) |	// PORTA1, analog input
-					(GPIO_Mode_AF << GPIO_MODER_MODER2_Pos) |	// PORTA2, USART2_TX
-					(GPIO_Mode_AF << GPIO_MODER_MODER3_Pos) ;	// PORTA3, USART2_RX
-	GPIOA->OTYPER = 0;											// Output type, Push-Pull
-	GPIOA->OSPEEDR = 0;											// Speed - Low
-	GPIOA->PUPDR = (GPIO_PUPDR_PULL_UP << 2*2) | 				// PORTA2, UART2, TX
-				   (GPIO_PUPDR_NO_PULL_UP_NO_PULL_DOWN << 2*3); // PORTA3, UART2, RX
-	GPIOA->AFR[0] = (7 << GPIO_AFRL_AFRL2_Pos) | 				// PORTA2, UART2, TX
-					(7 << GPIO_AFRL_AFRL3_Pos);					// PORTA3, UART2, RX
+	/*
+	¹		Moder	PUPDR	OutPutType	Speed	AF			Desription
+	PA[0]	AN		-		Push-Pull	Low		-			analog input
+	PA[1]	AN		-		Push-Pull	Low		-			analog input
+	PA[2]	AF		pu		Push-Pull	Low		USART2_TX			
+	PA[3]	AF		npu npd	Push-Pull	Low		USART2_RX			
+	*/
+	GPIOA->MODER |= (GPIO_Mode_AN << GPIO_MODER_MODER0_Pos) |
+					(GPIO_Mode_AN << GPIO_MODER_MODER1_Pos) |
+					(GPIO_Mode_AF << GPIO_MODER_MODER2_Pos) |
+					(GPIO_Mode_AF << GPIO_MODER_MODER3_Pos) ;
+	GPIOA->OTYPER = 0;
+	GPIOA->OSPEEDR = 0;
+	GPIOA->PUPDR = (GPIO_PUPDR_PULL_UP << GPIO_PUPDR_PUPDR2_Pos) |
+				   (GPIO_PUPDR_NO_PULL_UP_NO_PULL_DOWN << GPIO_PUPDR_PUPDR3_Pos);
+	GPIOA->AFR[0] = (7 << GPIO_AFRL_AFRL2_Pos) |
+					(7 << GPIO_AFRL_AFRL3_Pos);
 	
 	/// PORTB
-    GPIOB->MODER =	(GPIO_Mode_OUT << 0*2)  |					// PORTB0,
-					(GPIO_Mode_OUT << 1*2)  |					// PORTB1,
-					(GPIO_Mode_OUT << 2*2)  |					// PORTB2,
-					(GPIO_Mode_OUT << 3*2)  |					// PORTB3,
-					(GPIO_Mode_OUT << 4*2)  |					// PORTB4,
-					(GPIO_Mode_OUT << 5*2)  |					// PORTB5,
-					(GPIO_Mode_OUT << 6*2)  |					// PORTB6,
-					(GPIO_Mode_OUT << 7*2)  |					// PORTB7,
-					(GPIO_Mode_OUT << 8*2)  |					// PORTB8,
-					(GPIO_Mode_OUT << 9*2)  |					// PORTB9,
-					(GPIO_Mode_OUT << 10*2) |					// PORTB10,
-					(GPIO_Mode_OUT << 11*2);					// PORTB11,
-	GPIOB->OTYPER = GPIO_OUTPUT_TYPE_PUSH_PULL;					// Output type, Push-Pull
-	GPIOB->OSPEEDR = 0;											// Speed - Low
+	/*
+	¹		Moder	PUPDR	OutPutType	Speed	AF			Desription
+	PB[6]	AF		-		-			-		TIM4_ch_1	Motor 2 pin 1
+	PB[7]	AF		-		-			-		TIM4_ch_2	Motor 2 pin 2
+	*/
+	GPIOB->MODER =	(GPIO_Mode_AF << GPIO_MODER_MODER6_Pos)  |
+					(GPIO_Mode_AF << GPIO_MODER_MODER7_Pos);
+	GPIOB->OTYPER = 0;
+	GPIOB->OSPEEDR = 0;
 	
 	/// PORTC
 	/*
-	¹		Moder	PUPDR	OutPutType	Speed	Desription
-	PC[4]	OUT		-		-			-		UART1, TX
-	PC[5]	IN		pd		Push-Pull			UART1, RX
-	PC[6]	AF		-		-			-		Pwm
+	¹		Moder	PUPDR	OutPutType	Speed	AF			Desription
+	PC[4]	OUT		-		-			-		UART1, TX	
+	PC[5]	IN		pd		Push-Pull	-		UART1, RX	
+	PC[6]	AF		-		-			-		TIM3_ch_1	Motor 1 pin 1
+	PC[7]	AF		-		-			-		TIM3_ch_2	Motor 1 pin 2
 	*/
     GPIOC->MODER =	(GPIO_Mode_AF << GPIO_MODER_MODER4_Pos) |
 					(GPIO_Mode_AF << GPIO_MODER_MODER5_Pos) |
-					(GPIO_Mode_AF << GPIO_MODER_MODER6_Pos);
-					
+					(GPIO_Mode_AF << GPIO_MODER_MODER6_Pos) |
+					(GPIO_Mode_AF << GPIO_MODER_MODER7_Pos);					
 	GPIOC->OTYPER = 0;
 	GPIOC->OSPEEDR = 0;
-	GPIOC->PUPDR = (GPIO_PUPDR_PULL_UP << 2*4) |
-				   (GPIO_PUPDR_NO_PULL_UP_NO_PULL_DOWN << 2*5);
+	GPIOC->PUPDR = (GPIO_PUPDR_PULL_UP << GPIO_PUPDR_PUPDR4_Pos) |
+				   (GPIO_PUPDR_NO_PULL_UP_NO_PULL_DOWN << GPIO_PUPDR_PUPDR5_Pos);
 	GPIOC->AFR[0] = (7 << GPIO_AFRL_AFRL4_Pos) |
 					(7 << GPIO_AFRL_AFRL5_Pos) |
-					(2 << GPIO_AFRL_AFRL6_Pos);
+					(2 << GPIO_AFRL_AFRL6_Pos) |
+					(2 << GPIO_AFRL_AFRL7_Pos);
 	
 	/// PORTD
 	/*
-	¹		Moder	PUPDR	OutPutType	Speed	Desription
-	PD[6]	OUT		-		-			-		pwm
-	PD[10]	IN		pd		Push-Pull			Left Encoder pin1 - external interrupt
-	PD[11]	IN		pd		Push-Pull			Left Encoder pin2 - input
-	PD[12]	IN		pd		Push-Pull			Right Encoder pin1 - external interrupt
-	PD[13]	IN		pd		Push-Pull			Right Encoder pin2 - input
+	¹		Moder	PUPDR	OutPutType	Speed	AF			Desription
+	PD[10]	IN		pd		Push-Pull	-		-			Left Encoder pin1 - external interrupt
+	PD[11]	IN		pd		Push-Pull	-		-			Left Encoder pin2 - input
+	PD[12]	IN		pd		Push-Pull	-		-			Right Encoder pin1 - external interrupt
+	PD[13]	IN		pd		Push-Pull	-		-			Right Encoder pin2 - input
 	*/
     GPIOD->MODER =	(GPIO_Mode_IN << GPIO_MODER_MODER10_Pos) |
 					(GPIO_Mode_IN << GPIO_MODER_MODER11_Pos) |
@@ -108,16 +111,27 @@ void Target::InitGPIO()
 					(GPIO_PUPDR_PULL_DOWN << GPIO_PUPDR_PUPDR13_Pos);
 	
 	/// PORTE
-	GPIOE->MODER =	(GPIO_Mode_OUT << 8*2)  |					// PORTE8,  LD4,
-					(GPIO_Mode_OUT << 9*2)	|					// PORTE9,  LD3,
-					(GPIO_Mode_OUT << 10*2) |					// PORTE10, LD5,
-					(GPIO_Mode_OUT << 11*2) |					// PORTE11, LD7,
-					(GPIO_Mode_OUT << 12*2) |					// PORTE12, LD9,
-					(GPIO_Mode_OUT << 13*2) |					// PORTE13, LD10,
-					(GPIO_Mode_OUT << 14*2) |					// PORTE14, LD8,
-					(GPIO_Mode_OUT << 15*2);					// PORTE15, LD6,
-	GPIOE->OTYPER = 0;											// Output type, Push-Pull
-	GPIOE->OSPEEDR = 0;											// Speed - Low
+	/*
+	¹		Moder	PUPDR	OutPutType	Speed	AF			Desription
+	PE[8]	OUT		-		Push-Pull	Low		-			LD4 (leds rotation)
+	PE[9]	OUT		-		Push-Pull	Low		- 			LD3 (leds rotation)
+	PE[10]	OUT		-		Push-Pull	Low		-			LD5 (leds rotation)
+	PE[11]	OUT		-		Push-Pull	Low		-			LD7 (leds rotation)
+	PE[12]	OUT		-		Push-Pull	Low		-			LD9 (leds rotation)
+	PE[13]	OUT		-		Push-Pull	Low		-			LD10 (leds rotation)
+	PE[14]	OUT		-		Push-Pull	Low		-			LD8 (leds rotation)
+	PE[15]	OUT		-		Push-Pull	Low		-			LD6 (leds rotation)
+	*/
+	GPIOE->MODER =	(GPIO_Mode_OUT << GPIO_MODER_MODER8_Pos)  |
+					(GPIO_Mode_OUT << GPIO_MODER_MODER9_Pos)  |
+					(GPIO_Mode_OUT << GPIO_MODER_MODER10_Pos) |
+					(GPIO_Mode_OUT << GPIO_MODER_MODER11_Pos) |
+					(GPIO_Mode_OUT << GPIO_MODER_MODER12_Pos) |
+					(GPIO_Mode_OUT << GPIO_MODER_MODER13_Pos) |
+					(GPIO_Mode_OUT << GPIO_MODER_MODER14_Pos) |
+					(GPIO_Mode_OUT << GPIO_MODER_MODER15_Pos);
+	GPIOE->OTYPER = 0;
+	GPIOE->OSPEEDR = 0;
 }
 
 
