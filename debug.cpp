@@ -7,6 +7,7 @@
 #include "debug.hpp"
 #include "target.hpp"
 #include "text.hpp"
+#include <string>
 
 extern UART UART1;
 DebugPort Debug;
@@ -18,6 +19,7 @@ DebugPort Debug;
 void DebugPort::Init()
 {
 	UART1.Init(UART::UART_1);
+	RealTime.StartMs(1);
 }
 
 
@@ -28,6 +30,7 @@ void DebugPort::Init()
 */
 void DebugPort::Transmit(const uint8_t* arr, const uint8_t& length)
 {
+	TransmitHeader(1, 1);
 	UART1.TransmitArr(arr, length);
 }
 
@@ -38,6 +41,7 @@ void DebugPort::Transmit(const uint8_t* arr, const uint8_t& length)
 */
 void DebugPort::Transmit(const uint8_t* str)
 {
+	TransmitHeader(1, 1);
 	UART1.TransmitString(str);
 }
 
@@ -48,10 +52,11 @@ void DebugPort::Transmit(const uint8_t* str)
 */
 void DebugPort::Transmit(uint32_t value)
 {
-	uint8_t buffer[5];	// sizeof(uint32_t) + sizeof('\0')
+	TransmitHeader(1, 1);
+	uint8_t buffer[8];
 	num2str(value, buffer);
-	Debug.Transmit(buffer);
-	Debug.Transmit((uint8_t*)"\n");
+	UART1.TransmitString(buffer);
+	UART1.TransmitString((uint8_t*)"\n");
 }
 
 
@@ -62,5 +67,34 @@ void DebugPort::Transmit(uint32_t value)
 */
 void DebugPort::Receive(uint8_t* arr, uint8_t& length)
 {
+	TransmitHeader(1, 1);
 	UART1.ReceiveArr(arr, length);
+}
+
+
+/**
+* @brief Transmit Value to Debug Port
+* @param value - value being transmitting
+*/
+void DebugPort::TransmitHeader(uint8_t port, uint8_t sensor)
+{
+	uint8_t buffer[8];
+	num2str(RealTime.GetElapsedTime()/60, buffer);
+	UART1.TransmitString(buffer);
+	UART1.TransmitString((uint8_t*)".");
+	
+	num2str(RealTime.GetElapsedTime()%60, buffer);
+	UART1.TransmitString(buffer);
+	UART1.TransmitString((uint8_t*)":");
+	
+	
+	if(port == 1)
+		UART1.TransmitString((uint8_t*)"Uart1:");
+	else
+		UART1.TransmitString((uint8_t*)"Uart2:");
+	
+	if(sensor == 1)
+		UART1.TransmitString((uint8_t*)"temperature=:");
+	else
+		UART1.TransmitString((uint8_t*)"Sensor:");
 }
