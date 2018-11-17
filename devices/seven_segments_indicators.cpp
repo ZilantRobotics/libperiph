@@ -17,9 +17,12 @@
 *	7(E)	8(D)	9(dot)	10(C)	11(G)	12		*
 ****************************************************/
 
-#include "stm32f3xx.h"
-#include <seven_segments_indicators.hpp>
+#include "seven_segments_indicators.hpp"
 
+// implement your own version outside
+__attribute__ ((weak)) void seven_segments_incicator_set(uint16_t odr_reg_value) {
+	// GPIOB->ODR = odr_reg_value;
+}
 
 /// 
 enum
@@ -59,21 +62,18 @@ const short code_of_digit[] =
 */
 void Indicators::SetNumber(uint16_t number)
 {
-	if (digit == 0)
-	{
-		GPIOB->ODR = code_of_digit[number/100] | digit3 | dot;
+	uint16_t odr_reg_value;
+	if (digit == 0)	{
+		odr_reg_value = code_of_digit[number/100] | digit3 | dot;
 		digit++;
-	}
-	else if (digit == 1)
-	{
-		GPIOB->ODR = code_of_digit[(number%100)/10] | digit2;
+	} else if (digit == 1) {
+		odr_reg_value = code_of_digit[(number%100)/10] | digit2;
 		digit++;
-	}
-	else
-	{
-		GPIOB->ODR = code_of_digit[number%10] | digit1;
+	} else {
+		odr_reg_value = code_of_digit[number%10] | digit1;
 		digit = 0;
 	}
+	seven_segments_incicator_set(odr_reg_value);
 }
 
 
@@ -83,19 +83,11 @@ void Indicators::SetNumber(uint16_t number)
 */
 void Indicators::SetNumber(float number)
 {
-	if (digit == 0)
-	{
-		//GPIOB->ODR = code_of_digit[number/100] | digit3 | dot;
+	if (digit == 0)	{
 		digit++;
-	}
-	else if (digit == 1)
-	{
-		//GPIOB->ODR = code_of_digit[(number%100)/10] | digit2;
+	} else if (digit == 1) {
 		digit++;
-	}
-	else
-	{
-		//GPIOB->ODR = code_of_digit[number%10] | digit1;
+	} else {
 		digit = 0;
 	}
 }

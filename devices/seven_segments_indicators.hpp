@@ -1,7 +1,7 @@
 #ifndef __SEVEN_SEGMENTS_INDICATORS_HPP
 #define __SEVEN_SEGMENTS_INDICATORS_HPP
 
-#include "stm32f3xx.h"
+#include "stdint.h"
 
 /**
 * @brief Indicators
