@@ -1,5 +1,3 @@
-
-
 /** 
 * @file rangefinder.с
 * @brief Implementation of rangefinder
@@ -19,19 +17,27 @@
  */
 
 #include "rangefinder.h"
-#include "timer.h"
+#include "stdbool.h"
+
 
 static uint32_t range;
-static Timer timer; 
+static uint32_t lastTime;
 
+// должны быть реализованы извне
+void timer_wait_ms(uint16_t ms);
+void timer_wait_us(uint16_t us);
+void rangefinder_set_trig_pin(bool trig_value);
+uint32_t get_time_now();
+
+// приватные функции
+static void rangefinder_give_impulse();
+static uint16_t rangefinder_get_range();
 
 /**
 * @brief Инициализация ултьтразвукового дальномера
 */
 void rangefinder_init()
 {
-    rangefinder_init_interrupt();
-    soft_timer_init(&timer);
     range = 0;
 }
 
@@ -43,26 +49,22 @@ void rangefinder_init()
 uint16_t rangefinder_do()
 {
     rangefinder_give_impulse();
-    timer_start_ms(&timer, 100);
-    while(timer_report(&timer) == TIMER_WORKING);
+    timer_wait_ms(100);
     return rangefinder_get_range();
 }
 
 /**
-* @brief Подать импульс на датчик длительностью минимум 10 мс
+ * @brief Подать импульс на датчик длительностью минимум 10 мс
+ * Заблаговременно устанавливаем ногу в 0
 */
 void rangefinder_give_impulse()
 {
-    /// Заблаговременно устанавливаем ножку в 0
-    RANGEFINDER_OUTPUT = 0;
-    timer_start_us(&timer, 5);
-    while(timer_report(&timer) == TIMER_WORKING);
+    rangefinder_set_trig_pin(false);
+    timer_wait_us(5);
     
-    /// Подаем импульс 10 мкс
-    RANGEFINDER_OUTPUT = 1;
-    timer_start_us(&timer, 10);
-    while(timer_report(&timer) == TIMER_WORKING);
-    RANGEFINDER_OUTPUT = 0;
+    rangefinder_set_trig_pin(true);
+    timer_wait_us(10);
+    rangefinder_set_trig_pin(false);
 }
 
 
@@ -78,21 +80,18 @@ uint16_t rangefinder_get_range()
 /** 
 * @brief Получить медианное значение среди трех измерений дальности
 */
-uint16_t get_median_range()
+uint16_t rangefinder_get_median_range()
 {
     uint16_t range_1 = rangefinder_do();
     uint16_t range_2 = rangefinder_do();
     uint16_t range_3 = rangefinder_do();
     
-    if (range_1 >= range_2)
-    {
+    if (range_1 >= range_2) {
         if (range_1 >= range_3)
             return (range_2 >= range_3) ? range_2 : range_3;
         else
             return range_1;
-    }
-    else
-    {
+    } else {
         if (range_2 >= range_3)
             return (range_1 > range_3) ? range_1 : range_3;
     }
@@ -102,22 +101,15 @@ uint16_t get_median_range()
 
 
 /**
-* @brief Прерывание от дальномера (INT4)
+* @brief Прерывание от дальномера
 */
-void __attribute__((interrupt, no_auto_psv)) _INT4Interrupt(void)
+void rangefinder_handle_interrupt(InterruptType_t interrupt_type)
 {
-    static uint32_t lastTime;
-    uint32_t nowTime = hard_timer_return_time();
+    uint32_t nowTime = get_time_now();
     
-    if ( (RANGEFINDER_TYPE_OF_INTERRUPT) == ENCODER_POSITIVE_EDGE)
-    {
+    if (interrupt_type == ENCODER_POSITIVE_EDGE) {
         lastTime = nowTime;
-        RANGEFINDER_TYPE_OF_INTERRUPT = ENCODER_NEGATIVE_EDGE;
-    }
-    else
-    {
+    } else {
         range = nowTime - lastTime;
-        RANGEFINDER_TYPE_OF_INTERRUPT = ENCODER_POSITIVE_EDGE;
     }
-    IFS3bits.INT4IF = 0;      /// Очистка флага прерывания
 }

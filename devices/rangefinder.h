@@ -6,12 +6,16 @@
 #ifndef RANGEFINDER_H
 #define	RANGEFINDER_H
 
-#include "hard.h"
+#include <stdint.h>
 
-void rangefinder_init();            /// Инициализация датчика
-uint16_t rangefinder_do();          /// Выполнить измерение расстояния
-void rangefinder_give_impulse();    /// Подать импульс на датчик
-uint16_t rangefinder_get_range();   /// Получить измеренное расстояние (в мм)
-uint16_t get_median_range();          /// Получить медианное измеренное расстояние (в мм)
+typedef enum {
+    ENCODER_POSITIVE_EDGE = 0,
+    ENCODER_NEGATIVE_EDGE,
+} InterruptType_t;
+
+void rangefinder_init();
+uint16_t rangefinder_do();
+uint16_t rangefinder_get_median_range();
+void rangefinder_handle_interrupt(InterruptType_t interrupt_type);
 
 #endif	/* RANGEFINDER_H */
