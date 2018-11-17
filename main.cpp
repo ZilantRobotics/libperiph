@@ -4,6 +4,7 @@
 */
 
 #include "stm32f3xx.h"
+#include <stdint.h>
 #include "target.hpp"
 #include "soft_timer.hpp"
 #include "motor.hpp"
