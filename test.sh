@@ -10,3 +10,4 @@ $CC -c devices/seven_segments_indicators.cpp $INC -o build/seven_segments_indica
 
 # $CC -c sensors/encoder.cpp $INC -o build/encoder.o
 $CC -c sensors/temperature_sensor.cpp $INC -o build/temperature_sensor.o
+$CC -c sensors/hmc5883l.cpp $INC -o build/hmc5883l.o
