@@ -2,7 +2,7 @@
 * @file hmc5883l.c
 */
 
-#include "hmc5883l.hpp"
+#include "hmc5883l.h"
 
 void hmc5883l_parse(const uint8_t buf[6], float mag[3]) {
 	int16_t raw_data[3];
