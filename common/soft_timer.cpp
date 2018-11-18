@@ -5,17 +5,24 @@
 
 #include "soft_timer.hpp"
 
-Counter SoftTimer::HardTimer;
+// implement your own version outside
+__attribute__ ((weak)) uint32_t hwTimerGetTicks() {
+	return 0;
+}
+
+__attribute__ ((weak)) uint32_t hwTimerGetOverflows() {
+	return 0;
+}
+
 
 /**
 * @brief Constructor of software timer
 */
-SoftTimer::SoftTimer(): Status(CREATED)
+SoftTimer::SoftTimer(uint32_t sys_clock): Status(CREATED)
 {
-	if (HardTimer.GetStatus() == HARD_TIMER_NOT_INITIALIZED)
-	{
-		HardTimer.Init(TIMER_2);
-	}
+	PERIOD = 1073741824 / sys_clock * 4;
+	ONE_MS = sys_clock/1000;
+	ONE_S = sys_clock;
 }
 
 
@@ -37,8 +44,8 @@ void SoftTimer::StartMs(uint16_t timeMs)
 {
 	if (timeMs != 0)
 	{
-		StartCount = HardTimer.GetCount();
-		StartOverflows = HardTimer.GetOverflowsCount();
+		StartCount = hwTimerGetTicks();
+		StartOverflows = hwTimerGetOverflows();
 	
 		EndCount = StartCount + timeMs * ONE_MS;
 		EndOverflows = StartOverflows + ( (EndCount < StartCount) ? 1 : 0);
@@ -72,8 +79,8 @@ SoftTimer::TimerStatus_t SoftTimer::GetStatus()
 */
 bool SoftTimer::IsTimerEnd() const
 {
-	uint32_t nowCount = HardTimer.GetCount();
-	uint8_t NowOverflows = HardTimer.GetOverflowsCount();
+	uint32_t nowCount = hwTimerGetTicks();
+	uint8_t NowOverflows = hwTimerGetOverflows();
     if ( (EndOverflows < NowOverflows) || ( (EndOverflows == NowOverflows) && (EndCount <= nowCount) ) )
         return true;
     return false;
@@ -86,8 +93,8 @@ bool SoftTimer::IsTimerEnd() const
 */
 uint32_t SoftTimer::GetElapsedTime()
 {
-	uint32_t nowCount = HardTimer.GetCount();
-	uint32_t nowOverflow = HardTimer.GetOverflowsCount();
+	uint32_t nowCount = hwTimerGetTicks();
+	uint32_t nowOverflow = hwTimerGetOverflows();
 	if(StartCount > nowCount)
 		return (StartCount - nowCount) / ONE_S + (nowOverflow - StartOverflows)*PERIOD;
 	return (StartCount + nowCount) / ONE_S + (nowOverflow - StartOverflows)*PERIOD; 

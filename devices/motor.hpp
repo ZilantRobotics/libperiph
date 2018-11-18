@@ -7,7 +7,6 @@
 #define __MOTOR_HPP
 
 #include "timer.hpp"
-#include "stm32f3xx.h"
 
 
 /**
