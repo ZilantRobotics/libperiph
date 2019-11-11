@@ -1,20 +1,25 @@
-# stm32f3discovery
+# libperiph
 
-Репозиторий с примерами реализации периферии и различных устройств для платы stm32f3discovery.
+This repository has an example of periphery and different device drivers implementation.
 
-Периферия:
+It was tested on:
+- stm32f3discovery board,
+- dsPIC33F,
+- stm32f767 nucleo board.
+
+Periphery:
 - adc
 - timer
 - uart
 - gpio
 
-Датчики:
-- энкодер
-- датчик температуры
+Sensors:
+- encoder
+- stm32 temperature sensor
 
-Устройства:
+Devices:
 - esp8266
-- мотор
-- семисегментные индикаторы
-- ультразвуковой дальномер
-- компас
+- motors
+- seven_segments_indicators
+- rangefinder
+- magnetometer
