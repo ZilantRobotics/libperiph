@@ -1,35 +1,41 @@
 /**
 * @file encoder.hpp
-* @brief Class of Encoder
+* @brief Encoder class
 */
+#ifndef ENCODER_HPP
+#define ENCODER_HPP
 
-#ifndef __ENCODER_HPP
-#define __ENCODER_HPP
+#include <stdint.h>
 
-#include "stm32f3xx.h"
-
-class Encoder
+enum EncoderPin
 {
-	public:
-		enum Encoder_t
-		{
-			LEFT_ENCODER,
-			RIGHT_ENCODER,
-			MAX_ENCODER_COUNT,
-		};
-		static Encoder*	GetInstance(Encoder_t);
-		uint32_t GetPulses() const;
-		void ReserPulses();
-	private:
-		static Encoder* EncoderLeftPtr;
-		static Encoder* EncoderRightPtr;
-		Encoder() = delete;
-		Encoder(Encoder_t);
-		Encoder(const Encoder&) = delete;
-        Encoder& operator=(const Encoder&) = delete;
-			
-		uint32_t* Value;
+    LEFT_ENC_A_CH,
+    LEFT_ENC_B_CH,
+    RIGHT_ENC_A_CH,
+    RIGHT_ENC_B_CH,
 };
 
+/**
+* @brief Encoder
+* @details There are few requirements and nuance:
+* For incrementing and decrementing encoders values we use:
+* - EXT (external interrupts with callbacks)
+* For calculating encoders speed (number of impulses which we received for last
+* 0.1 second) we use:
+* We use following GPIO:
+* - PE_10  - left encoder A
+* - PE_12  - left encoder B
+* - PE_14  - right encoder A
+* - PE_15  - right encoder B
+*/
+class Encoder
+{
+public:
+    static void Reset();
+    static int32_t GetLeftValue();
+    static int32_t GetRightValue();
+    static int32_t GetLeftSpeed();
+    static int32_t GetRightSpeed();
+};
 
-#endif //__ULTRASONIC_RANGEFINDER_HPP
+#endif /* ENCODER_HPP */
