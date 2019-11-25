@@ -1,7 +1,16 @@
+/*
+ * Copyright (C) 2019 Dmitry Ponomarev <ponomarevda96@gmail.com>
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 /**
-* @file motors.cpp
-* @brief Motors implementation
-*/
+ * @file motors.cpp
+ * @author d.ponomarev
+ * @brief Motors implementation
+ * @date Nov 11, 2019
+ */
 
 #include <math.h>
 #include "motors.hpp"

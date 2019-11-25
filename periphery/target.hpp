@@ -1,3 +1,16 @@
+/*
+ * Copyright (C) 2018-2019 Dmitry Ponomarev <ponomarevda96@gmail.com>
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
+/**
+ * @file target.hpp
+ * @author d.ponomarev
+ * @date Jun 23, 2018
+ */
+
 #ifndef __TARGET_HPP
 #define __TARGET_HPP
 

@@ -1,7 +1,16 @@
+/*
+ * Copyright (C) 2018-2019 Dmitry Ponomarev <ponomarevda96@gmail.com>
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 /**
-* @file timer.cpp
-* @brief Implementation of work with timers
-*/
+ * @file timer.cpp
+ * @author d.ponomarev
+ * @brief Implementation of work with timers
+ * @date Jun 24, 2018
+ */
 
 #include "timer.hpp"
 #include "target.hpp"

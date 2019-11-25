@@ -1,7 +1,16 @@
+/*
+ * Copyright (C) 2018-2019 Dmitry Ponomarev <ponomarevda96@gmail.com>
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 /**
-* @file target.cpp
-* @brief Driver board class implementation
-*/
+ * @file target.cpp
+ * @author d.ponomarev
+ * @brief Driver board class implementation
+ * @date Jun 23, 2018
+ */
 
 /*
 	Short description of file:
@@ -44,7 +53,7 @@ void Target::InitGPIO()
 	
 	/// PORTA
 	/*
-	¹		Moder	PUPDR	OutPutType	Speed	AF			Desription
+	ï¿½		Moder	PUPDR	OutPutType	Speed	AF			Desription
 	PA[0]	AN		-		Push-Pull	Low		-			analog input
 	PA[1]	AN		-		Push-Pull	Low		-			analog input
 	PA[2]	AF		pu		Push-Pull	Low		USART2_TX			
@@ -63,7 +72,7 @@ void Target::InitGPIO()
 	
 	/// PORTB
 	/*
-	¹		Moder	PUPDR	OutPutType	Speed	AF			Desription
+	ï¿½		Moder	PUPDR	OutPutType	Speed	AF			Desription
 	PB[6]	AF		-		-			-		TIM4_ch_1	Motor 2 pin 1
 	PB[7]	AF		-		-			-		TIM4_ch_2	Motor 2 pin 2
 	*/
@@ -74,7 +83,7 @@ void Target::InitGPIO()
 	
 	/// PORTC
 	/*
-	¹		Moder	PUPDR	OutPutType	Speed	AF			Desription
+	ï¿½		Moder	PUPDR	OutPutType	Speed	AF			Desription
 	PC[4]	OUT		-		-			-		UART1, TX	
 	PC[5]	IN		pd		Push-Pull	-		UART1, RX	
 	PC[6]	AF		-		-			-		TIM3_ch_1	Motor 1 pin 1
@@ -95,7 +104,7 @@ void Target::InitGPIO()
 	
 	/// PORTD
 	/*
-	¹		Moder	PUPDR	OutPutType	Speed	AF			Desription
+	ï¿½		Moder	PUPDR	OutPutType	Speed	AF			Desription
 	PD[10]	IN		pd		Push-Pull	-		-			Left Encoder pin1 - external interrupt
 	PD[11]	IN		pd		Push-Pull	-		-			Left Encoder pin2 - input
 	PD[12]	IN		pd		Push-Pull	-		-			Right Encoder pin1 - external interrupt
@@ -112,7 +121,7 @@ void Target::InitGPIO()
 	
 	/// PORTE
 	/*
-	¹		Moder	PUPDR	OutPutType	Speed	AF			Desription
+	ï¿½		Moder	PUPDR	OutPutType	Speed	AF			Desription
 	PE[8]	OUT		-		Push-Pull	Low		-			LD4 (leds rotation)
 	PE[9]	OUT		-		Push-Pull	Low		- 			LD3 (leds rotation)
 	PE[10]	OUT		-		Push-Pull	Low		-			LD5 (leds rotation)

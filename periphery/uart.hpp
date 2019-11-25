@@ -1,3 +1,17 @@
+/*
+ * Copyright (C) 2018-2019 Dmitry Ponomarev <ponomarevda96@gmail.com>
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
+/**
+ * @file uart.hpp
+ * @brief uart implementation
+ * @author d.ponomarev
+ * @date Jun 26, 2018
+ */
+
 #ifndef __UART_HPP
 #define __UART_HPP
 

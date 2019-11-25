@@ -1,7 +1,16 @@
+/*
+ * Copyright (C) 2018-2019 Dmitry Ponomarev <ponomarevda96@gmail.com>
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 /**
-* @file esp8266.cpp
-* @brief Implementation of work with esp8266
-*/
+ * @file esp8266.cpp
+ * @author d.ponomarev
+ * @brief Implementation of work with esp8266
+ * @date Jul 15, 2018
+ */
 
 #include "esp8266.hpp"
 #include "text.hpp"

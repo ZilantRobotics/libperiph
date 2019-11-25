@@ -1,6 +1,15 @@
+/*
+ * Copyright (C) 2018-2019 Dmitry Ponomarev <ponomarevda96@gmail.com>
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 /**
-* @file hmc5883l.c
-*/
+ * @file hmc5883l.c
+ * @author d.ponomarev
+ * @date Nov 18, 2018
+ */
 
 #include "hmc5883l.h"
 

@@ -1,7 +1,16 @@
+/*
+ * Copyright (C) 2018-2019 Dmitry Ponomarev <ponomarevda96@gmail.com>
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 /**
-* @file seven_segments_indicators.cpp
-* @brief seven segments indicators implementation
-*/
+ * @file seven_segments_indicators.cpp
+ * @author d.ponomarev
+ * @brief seven segments indicators implementation
+ * @date Jul 9, 2018
+ */
 
 /****************************************************
 *	1(1)	2(A)	3(F)	4(2)	5(3)	6(B)	*
