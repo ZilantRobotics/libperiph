@@ -7,12 +7,6 @@ It was tested on:
 - dsPIC33F,
 - stm32f767 nucleo board.
 
-Periphery:
-- adc
-- timer
-- uart
-- gpio
-
 Sensors:
 - encoder
 - stm32 temperature sensor
