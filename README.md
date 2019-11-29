@@ -17,3 +17,4 @@ Devices:
 - seven_segments_indicators
 - rangefinder
 - magnetometer
+- ws2812
