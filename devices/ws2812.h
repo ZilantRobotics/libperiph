@@ -10,8 +10,8 @@
  * @author d.ponomarev
  */
 
-#ifndef INC_WS2812_H_
-#define INC_WS2812_H_
+#ifndef WS2812_H_
+#define WS2812_H_
 
 #include <stdint.h>
 #include <stm32f1xx_hal.h>

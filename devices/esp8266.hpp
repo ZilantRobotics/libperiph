@@ -12,8 +12,8 @@
  * @date Jul 15, 2018
  */
 
-#ifndef __ESP8266_HPP
-#define __ESP8266_HPP
+#ifndef ESP8266_HPP_
+#define ESP8266_HPP_
 
 #include "stdint.h"
 

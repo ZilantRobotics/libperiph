@@ -10,8 +10,8 @@
  * @author d.ponomarev
  */
 
-#ifndef __UBLOX_H_
-#define __UBLOX_H_
+#ifndef UBLOX_H_
+#define UBLOX_H_
 
 #include <stdint.h>
 #include <stddef.h>

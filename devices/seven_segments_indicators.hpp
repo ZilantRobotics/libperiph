@@ -11,8 +11,8 @@
  * @date Jul 9, 2018
  */
 
-#ifndef __SEVEN_SEGMENTS_INDICATORS_HPP
-#define __SEVEN_SEGMENTS_INDICATORS_HPP
+#ifndef SEVEN_SEGMENTS_INDICATORS_HPP__
+#define SEVEN_SEGMENTS_INDICATORS_HPP__
 
 #include "stdint.h"
 
@@ -30,4 +30,4 @@ class Indicators
 };
 
 
-#endif	// __SEVEN_SEGMENTS_INDICATORS_HPP
+#endif	// SEVEN_SEGMENTS_INDICATORS_HPP__

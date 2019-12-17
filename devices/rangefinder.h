@@ -12,8 +12,8 @@
  * @date Nov 17, 2018
  */
 
-#ifndef RANGEFINDER_H
-#define	RANGEFINDER_H
+#ifndef RANGEFINDER_H_
+#define	RANGEFINDER_H_
 
 #include <stdint.h>
 

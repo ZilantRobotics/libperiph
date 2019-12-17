@@ -11,11 +11,11 @@
  * @date Nov 18, 2018
  */
 
-#ifndef INC_HMC5883L_H_
-#define INC_HMC5883L_H_
+#ifndef HMC5883L_H_
+#define HMC5883L_H_
 
 #include <stdint.h>
 
 void hmc5883l_parse(const uint8_t buf[6], float mag[3]);
 
-#endif  // INC_HMC5883L_H_
+#endif  // HMC5883L_H_

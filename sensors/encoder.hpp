@@ -11,8 +11,8 @@
  * @date Oct 20, 2018
  */
 
-#ifndef ENCODER_HPP
-#define ENCODER_HPP
+#ifndef ENCODER_HPP_
+#define ENCODER_HPP_
 
 #include <stdint.h>
 

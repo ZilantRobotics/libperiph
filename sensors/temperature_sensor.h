@@ -11,8 +11,8 @@
  * @date Nov 18, 2018
  */
 
-#ifndef __TEMPERATURE_SENSOR_HPP
-#define __TEMPERATURE_SENSOR_HPP
+#ifndef TEMPERATURE_SENSOR_H_
+#define TEMPERATURE_SENSOR_H_
 
 #include "stdint.h"
 
@@ -22,4 +22,4 @@
 */
 uint32_t temperature_sensor_parse(int32_t raw_adc_value);
 
-#endif //__TEMPERATURE_SENSOR_HPP
+#endif //TEMPERATURE_SENSOR_H_

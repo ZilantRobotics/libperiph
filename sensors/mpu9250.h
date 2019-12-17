@@ -8,10 +8,10 @@
  * @file mpu9250.h
  * @author d.ponomarev
  */
-#ifndef INC_MPU9250_H_
-#define INC_MPU9250_H_
+#ifndef MPU9250_H_
+#define MPU9250_H_
 
 void mpu9250doConvert();
 void mpu9250doParse();
 
-#endif  // INC_MPU9250_H_
+#endif  // MPU9250_H_
