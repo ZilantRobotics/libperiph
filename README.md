@@ -10,6 +10,7 @@ It was tested on:
 Sensors:
 - encoder
 - stm32 temperature sensor
+- mpu9250
 
 Devices:
 - esp8266
