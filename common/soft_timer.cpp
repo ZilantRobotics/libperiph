@@ -15,11 +15,11 @@
 
 // implement your own version outside
 __attribute__ ((weak)) uint32_t hwTimerGetTicks() {
-	return 0;
+    return 0;
 }
 
 __attribute__ ((weak)) uint32_t hwTimerGetOverflows() {
-	return 0;
+    return 0;
 }
 
 
@@ -28,9 +28,9 @@ __attribute__ ((weak)) uint32_t hwTimerGetOverflows() {
 */
 SoftTimer::SoftTimer(uint32_t sys_clock): Status(CREATED)
 {
-	PERIOD = 1073741824 / sys_clock * 4;
-	ONE_MS = sys_clock/1000;
-	ONE_S = sys_clock;
+    PERIOD = 1073741824 / sys_clock * 4;
+    ONE_MS = sys_clock/1000;
+    ONE_S = sys_clock;
 }
 
 
@@ -40,7 +40,7 @@ SoftTimer::SoftTimer(uint32_t sys_clock): Status(CREATED)
 */
 void SoftTimer::StartUs(uint16_t timeUs)
 {
-	
+    
 }
 
 
@@ -50,20 +50,20 @@ void SoftTimer::StartUs(uint16_t timeUs)
 */
 void SoftTimer::StartMs(uint16_t timeMs)
 {
-	if (timeMs != 0)
-	{
-		StartCount = hwTimerGetTicks();
-		StartOverflows = hwTimerGetOverflows();
-	
-		EndCount = StartCount + timeMs * ONE_MS;
-		EndOverflows = StartOverflows + ( (EndCount < StartCount) ? 1 : 0);
-	
-		Status = WORKING;
-	}
-	else
-	{
-		Status = FINISHED;
-	}
+    if (timeMs != 0)
+    {
+        StartCount = hwTimerGetTicks();
+        StartOverflows = hwTimerGetOverflows();
+    
+        EndCount = StartCount + timeMs * ONE_MS;
+        EndOverflows = StartOverflows + ( (EndCount < StartCount) ? 1 : 0);
+    
+        Status = WORKING;
+    }
+    else
+    {
+        Status = FINISHED;
+    }
 }
 
 
@@ -73,7 +73,7 @@ void SoftTimer::StartMs(uint16_t timeMs)
 */
 SoftTimer::TimerStatus_t SoftTimer::GetStatus()
 {
-	if ( Status == WORKING && IsTimerEnd() )
+    if ( Status == WORKING && IsTimerEnd() )
     {
         Status = FINISHED;
     }
@@ -87,8 +87,8 @@ SoftTimer::TimerStatus_t SoftTimer::GetStatus()
 */
 bool SoftTimer::IsTimerEnd() const
 {
-	uint32_t nowCount = hwTimerGetTicks();
-	uint8_t NowOverflows = hwTimerGetOverflows();
+    uint32_t nowCount = hwTimerGetTicks();
+    uint8_t NowOverflows = hwTimerGetOverflows();
     if ( (EndOverflows < NowOverflows) || ( (EndOverflows == NowOverflows) && (EndCount <= nowCount) ) )
         return true;
     return false;
@@ -101,9 +101,9 @@ bool SoftTimer::IsTimerEnd() const
 */
 uint32_t SoftTimer::GetElapsedTime()
 {
-	uint32_t nowCount = hwTimerGetTicks();
-	uint32_t nowOverflow = hwTimerGetOverflows();
-	if(StartCount > nowCount)
-		return (StartCount - nowCount) / ONE_S + (nowOverflow - StartOverflows)*PERIOD;
-	return (StartCount + nowCount) / ONE_S + (nowOverflow - StartOverflows)*PERIOD; 
+    uint32_t nowCount = hwTimerGetTicks();
+    uint32_t nowOverflow = hwTimerGetOverflows();
+    if(StartCount > nowCount)
+        return (StartCount - nowCount) / ONE_S + (nowOverflow - StartOverflows)*PERIOD;
+    return (StartCount + nowCount) / ONE_S + (nowOverflow - StartOverflows)*PERIOD; 
 }

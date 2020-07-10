@@ -15,7 +15,7 @@
 
 void num2str(int32_t intNum, uint8_t* str)
 {
-	uint8_t byteCount = 0;
+    uint8_t byteCount = 0;
     if (intNum < 0)
     {
         intNum = -intNum;
@@ -39,9 +39,9 @@ void num2str(int32_t intNum, uint8_t* str)
     
     }
     
-	// Repositioning the string:
-	uint8_t length = byteCount;
-	char buf;
+    // Repositioning the string:
+    uint8_t length = byteCount;
+    char buf;
     for(byteCount = 0; byteCount < (length >> 1); byteCount++)
     {
         buf = str[length - byteCount - 1];

@@ -11,8 +11,8 @@
  * @date Jul 9, 2018
  */
 
-#ifndef SEVEN_SEGMENTS_INDICATORS_HPP__
-#define SEVEN_SEGMENTS_INDICATORS_HPP__
+#ifndef SEVEN_SEGMENTS_INDICATORS_HPP_
+#define SEVEN_SEGMENTS_INDICATORS_HPP_
 
 #include "stdint.h"
 
@@ -21,13 +21,12 @@
 */
 class Indicators
 {
-	public:
-		Indicators(): digit(0) {};
-		void SetNumber(uint16_t number);
-		void SetNumber(float number);
-	private:
-		uint8_t digit;
+    public:
+        Indicators(): digit(0) {};
+        void SetNumber(uint16_t number);
+        void SetNumber(float number);
+    private:
+        uint8_t digit;
 };
 
-
-#endif	// SEVEN_SEGMENTS_INDICATORS_HPP__
+#endif  // SEVEN_SEGMENTS_INDICATORS_HPP_

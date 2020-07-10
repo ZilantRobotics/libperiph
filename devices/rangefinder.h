@@ -27,4 +27,4 @@ uint16_t rangefinder_do();
 uint16_t rangefinder_get_median_range();
 void rangefinder_handle_interrupt(InterruptType_t interrupt_type);
 
-#endif	/* RANGEFINDER_H */
+#endif  // RANGEFINDER_H_
