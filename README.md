@@ -16,6 +16,7 @@ Devices:
 - esp8266
 - motors
 - seven_segments_indicators
-- rangefinder
+- rangefinder HC-SR05
 - magnetometer
 - ws2812
+- rangefindex sf1xx
