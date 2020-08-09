@@ -22,3 +22,4 @@ Devices:
 - rangefindex sf1xx
 - bmp280
 - ms4252do
+- rm3100
