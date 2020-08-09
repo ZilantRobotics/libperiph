@@ -16,6 +16,9 @@ $CC $FLAGS sensors/hmc5883l.c                       $INC -o build/hmc5883l.o
 $CC $FLAGS sensors/ublox.c                          $INC -o build/ublox.o
 $CC $FLAGS sensors/mpu9250.c                        $INC -o build/mpu9250.o
 $CC $FLAGS sensors/rangesensor_sf1xx.c              $INC -o build/rangesensor_sf1xx.o
+$CC $FLAGS sensors/bmp280.c                         $INC -o build/bmp280.o
+$CC $FLAGS sensors/ms4525do.c                       $INC -o build/ms4525do.o
+$CC $FLAGS sensors/rm3100.c                         $INC -o build/rm3100.o
 
 # depend on hal
 # $CC -c devices/motors.cpp                       $INC -o build/motors.o

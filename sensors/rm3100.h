@@ -5,21 +5,14 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 /**
- * @file ms4525do.h
+ * @file rm3100.h
  * @author d.ponomarev
  */
-#ifndef MS4525DO_H_
-#define MS4525DO_H_
+#ifndef RM3100_H_
+#define RM3100_H_
 
 #include <stdint.h>
 
-#define MS4525DO_ID 0x28<<1 + 1
+float sf1xxParseFromI2C(uint8_t i2c_response_buf[2]);
 
-typedef struct
-{
-	uint8_t rx[4];
-	float temperature;
-	float diff_press_pa_raw;
-} ms4525do_t;
-
-#endif  // MS4525DO_H_
+#endif  // RM3100_H_
