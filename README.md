@@ -20,3 +20,5 @@ Devices:
 - magnetometer
 - ws2812
 - rangefindex sf1xx
+- bmp280
+- ms4252do
