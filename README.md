@@ -19,7 +19,8 @@ Devices:
 - rangefinder HC-SR05
 - magnetometer
 - ws2812
-- rangefindex sf1xx
+- rangefinder sf1xx
 - bmp280
 - ms4252do
 - rm3100
+- rangefinder garmin lite
