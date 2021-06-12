@@ -20,6 +20,7 @@ $CC $FLAGS sensors/bmp280.c                         $INC -o build/bmp280.o
 $CC $FLAGS sensors/ms4525do.c                       $INC -o build/ms4525do.o
 $CC $FLAGS sensors/rm3100.c                         $INC -o build/rm3100.o
 $CC $FLAGS sensors/rangefinder_garmin_lite.c        $INC -o build/rangefinder_garmin_lite.o
+$CC $FLAGS sensors/esc_flame.c                      $INC -o build/esc_flame.o
 
 # depend on hal
 # $CC -c devices/motors.cpp                       $INC -o build/motors.o
