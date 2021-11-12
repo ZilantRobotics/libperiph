@@ -24,3 +24,4 @@ Devices:
 - ms4252do
 - rm3100
 - rangefinder garmin lite
+- rangefindex tf-luna
