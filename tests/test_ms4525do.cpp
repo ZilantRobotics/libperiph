@@ -1,3 +1,10 @@
+/*
+ * Copyright (C) 2021 Dmitry Ponomarev <ponomarevda96@gmail.com>
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 /**
  * @file test_timer_capture.cpp
  * @author d.ponomarev
