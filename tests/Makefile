@@ -5,9 +5,9 @@ GXX_COMPILE=g++ $(COMMON_INCLUDES) $(FLAGS)  -o shell
 
 SRC_UBLOX_TEST=test_ublox.cpp                   ../sensors/ublox.c
 SRC_ESC_FLAME_TEST=test_esc_flame.cpp           ../sensors/esc_flame.c
+SRC_MS4525DO_TEST=test_ms4525do.cpp             ../sensors/ms4525do.c
 
-
-all: esc_flame_test ublox_test
+all: esc_flame_test ublox_test ms4525do_test
 
 esc_flame_test:
 	$(GXX_COMPILE) $(SRC_ESC_FLAME_TEST) $(COMMON_LIBS)
@@ -15,4 +15,8 @@ esc_flame_test:
 
 ublox_test:
 	$(GXX_COMPILE) $(SRC_UBLOX_TEST) $(COMMON_LIBS)
+	./shell
+
+ms4525do_test:
+	$(GXX_COMPILE) $(SRC_MS4525DO_TEST) $(COMMON_LIBS)
 	./shell

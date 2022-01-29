@@ -20,7 +20,7 @@ It was tested on:
 | sensors/esc_flame                 | build + unit tests |
 | sensors/hmc5883l                  | build |
 | sensors/mpu9250                   | build |
-| sensors/ms4252do                  | build |
+| sensors/ms4252do                  | build + unit tests |
 | sensors/rangefinder_garmin_lite   | build |
 | sensors/rangefinder_srf_05        | build |
 | sensors/rangesensor_sf1xx         | build |

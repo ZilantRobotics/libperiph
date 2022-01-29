@@ -13,13 +13,11 @@
 
 #include <stdint.h>
 
-#define MS4525DO_ID 0x28<<1 + 1
+void ms4525doParse(float* raw_temperature, float* raw_diff_press);
 
-typedef struct
-{
-	uint8_t rx[4];
-	float temperature;
-	float diff_press_pa_raw;
-} ms4525do_t;
+/**
+  * @brief  Only for test usage
+  */
+void ms4525doFillBuffer(const uint8_t new_buffer[]);
 
 #endif  // MS4525DO_H_
