@@ -6,7 +6,7 @@
  */
 
 /**
- * @file rangefinder.c
+ * @file rangefinder_srf_05.c
  * @author d.ponomarev
  * @brief Implementation of rangefinder
  * @date Nov 17, 2018
@@ -25,7 +25,7 @@
  * пропорциональна расстоянию до препятствия.
  */
 
-#include "rangefinder.h"
+#include "rangefinder_srf_05.h"
 #include "stdbool.h"
 
 

@@ -8,23 +8,23 @@ It was tested on:
 - stm32f767 nucleo board,
 - stm32f103.
 
-| Periphery                 | tests |
-| ------------------------- | ----- |
-| acs712                    |       |
-| bmp280                    |       |
-| encoder                   |       |
-| esc_flame                 | +     |
-| esp8266                   |       |
-| hmc5883l                  |       |
-| mpu9250                   |       |
-| ms4252do                  |       |
-| motors                    |       |
-| rangefinder_garmin_lite   |       |
-| rangefinder_srf_05        |       |
-| rangesensor_sf1xx         |       |
-| rangesensor_tf_luna       |       |
-| rm3100                    |       |
-| seven_segments_indicators |       |
-| temperature_sensor        |       |
-| ublox                     |       |
-| ws2812                    |       |
+| Periphery                         | tests |
+| --------------------------------- | ----- |
+| devices/esp8266                   | build |
+| devices/motors                    | -     |
+| devices/seven_segments_indicators | build |
+| devices/ws2812                    | -     |
+| sensors/acs712                    | build |
+| sensors/bmp280                    | build |
+| sensors/encoder                   | build |
+| sensors/esc_flame                 | build + unit tests |
+| sensors/hmc5883l                  | build |
+| sensors/mpu9250                   | build |
+| sensors/ms4252do                  | build |
+| sensors/rangefinder_garmin_lite   | build |
+| sensors/rangefinder_srf_05        | build |
+| sensors/rangesensor_sf1xx         | build |
+| sensors/rangesensor_tf_luna       | build |
+| sensors/rm3100                    | build |
+| sensors/temperature_sensor        | build |
+| sensors/ublox                     | build + unit tests |
