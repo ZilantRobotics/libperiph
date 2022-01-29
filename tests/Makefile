@@ -8,11 +8,12 @@ COMMON_LIBS=-lpthread -pthread -lgtest
 FLAGS=-Wall -std=c++11
 GXX_COMPILE=g++ $(COMMON_INCLUDES) $(FLAGS)  -o shell 
 
-SRC_UBLOX_TEST=test_ublox.cpp                   ../sensors/ublox.c
-SRC_ESC_FLAME_TEST=test_esc_flame.cpp           ../sensors/esc_flame.c
-SRC_MS4525DO_TEST=test_ms4525do.cpp             ../sensors/ms4525do.c
+SRC_UBLOX_TEST=test_ublox.cpp                   		../sensors/ublox.c
+SRC_ESC_FLAME_TEST=test_esc_flame.cpp           		../sensors/esc_flame.c
+SRC_MS4525DO_TEST=test_ms4525do.cpp             		../sensors/ms4525do.c
+SRC_STM32_TEMPERATURE_TEST=test_stm32_temperature.cpp 	../sensors/temperature_sensor.c
 
-all: esc_flame_test ublox_test ms4525do_test
+all: esc_flame_test ublox_test ms4525do_test stm32_temperature_test
 
 esc_flame_test:
 	$(GXX_COMPILE) $(SRC_ESC_FLAME_TEST) $(COMMON_LIBS)
@@ -24,4 +25,8 @@ ublox_test:
 
 ms4525do_test:
 	$(GXX_COMPILE) $(SRC_MS4525DO_TEST) $(COMMON_LIBS)
+	./shell
+
+stm32_temperature_test:
+	$(GXX_COMPILE) $(SRC_STM32_TEMPERATURE_TEST) $(COMMON_LIBS)
 	./shell

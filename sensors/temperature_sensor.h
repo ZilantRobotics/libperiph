@@ -20,6 +20,6 @@
 * @brief Get temperature value
 * @return temperature value in degree celsius
 */
-uint32_t temperature_sensor_parse(int32_t raw_adc_value);
+uint16_t temperature_sensor_parse(uint16_t raw_adc_value);
 
 #endif //TEMPERATURE_SENSOR_H_
