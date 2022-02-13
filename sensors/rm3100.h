@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Dmitry Ponomarev <ponomarevda96@gmail.com>
+ * Copyright (C) 2020-2022 Dmitry Ponomarev <ponomarevda96@gmail.com>
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -13,6 +13,10 @@
 
 #include <stdint.h>
 
-float sf1xxParseFromI2C(uint8_t i2c_response_buf[2]);
+#define RM3100_MEASUREMENT_FREQUENCY    75
+
+int8_t rm3100InitCommunication();
+int8_t rm3100Measure();
+void rm310GetMeasurement(float* x, float* y, float* z);
 
 #endif  // RM3100_H_
