@@ -11,7 +11,7 @@
  * @note https://www.terraelectronica.ru/pdf/show?pdf_file=%252Fds%252Fpdf%252FR%252FRM3100.pdf
  */
 
-#include "rm3100.h"
+#include "mag_rm3100.h"
 #include <string.h>
 #include <stdbool.h>
 #include <stdio.h> 
@@ -59,8 +59,6 @@
 #define UTESLA_TO_GAUSS                     100.0f
 #define RM3100_GAIN_OF_CYCLE_COUNTS_200     75.0f
 #define SCALE                               1.0 / UTESLA_TO_GAUSS / RM3100_GAIN_OF_CYCLE_COUNTS_200
-
-#define MEASUREMENT_DELAY                   10
 
 #define READ_MASK                           0x80    // REG | MASK
 

@@ -11,7 +11,7 @@
  * @date Nov 18, 2018
  */
 
-#include "hmc5883l.h"
+#include "mag_hmc5883l.h"
 #include <string.h>
 
 #ifndef STATUS_OK

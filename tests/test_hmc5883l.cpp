@@ -12,7 +12,7 @@
 
 #include <iostream>
 #include <gtest/gtest.h>
-#include "hmc5883l.h"
+#include "mag_hmc5883l.h"
 
 TEST(hmc5883l, hmc5883lParseNormal) {
     uint8_t raw[6] = {

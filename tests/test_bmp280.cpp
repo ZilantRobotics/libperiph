@@ -12,7 +12,7 @@
 
 #include <iostream>
 #include <gtest/gtest.h>
-#include "bmp280.h"
+#include "baro_bmp280.h"
 
 
 // TEST(BMP280, bmp280ParseData) {

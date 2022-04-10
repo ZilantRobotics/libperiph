@@ -15,16 +15,16 @@ It was tested on:
 | devices/seven_segments_indicators | build |
 | devices/ws2812                    | -     |
 | sensors/acs712                    | build |
-| sensors/bmp280                    | build |
+| sensors/baro_bmp280               | build |
 | sensors/encoder                   | build |
 | sensors/esc_flame                 | build + unit tests |
-| sensors/hmc5883l                  | build |
+| sensors/mag_hmc5883l              | build |
+| sensors/mag_rm3100                | build |
 | sensors/mpu9250                   | build |
 | sensors/ms4252do                  | build + unit tests |
 | sensors/rangefinder_garmin_lite   | build |
 | sensors/rangefinder_srf_05        | build |
 | sensors/rangesensor_sf1xx         | build |
 | sensors/rangesensor_tf_luna       | build |
-| sensors/rm3100                    | build |
 | sensors/temperature_sensor        | build + unit tests |
 | sensors/ublox                     | build + unit tests |

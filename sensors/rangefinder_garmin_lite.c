@@ -37,25 +37,9 @@ static void garminLiteMeasureCallback();
 int8_t i2cManagerPerformRequest(int8_t device_id, void (*function)());
 int8_t i2cManagerTransmit(uint8_t id, const uint8_t tx[], uint8_t len);
 int8_t i2cManagerReceive(uint8_t id, uint8_t* rx, uint8_t len);
+int8_t i2cWriteRegisterOneByte(uint8_t reg_addr, uint8_t new_reg_value);
+int8_t i2cReadRegister(uint8_t reg_addr, uint8_t* out, uint8_t out_length);
 // functions above should be implemented outside
-
-int8_t i2cWriteRegisterOneByte(uint8_t reg_addr, uint8_t new_reg_value) {
-    uint8_t tx_buffer[2] = {reg_addr, new_reg_value};
-    if (i2cManagerTransmit(I2C_ID, (const uint8_t*)&tx_buffer, 2) == STATUS_ERROR) {
-        return STATUS_ERROR;
-    }
-    return STATUS_OK;
-}
-
-int8_t i2cReadRegister(uint8_t reg_addr, uint8_t* out, uint8_t out_length) {
-    if (i2cManagerTransmit(I2C_ID, &reg_addr, 1) == STATUS_ERROR) {
-        return STATUS_ERROR;
-    }
-    if (i2cManagerReceive(I2C_ID, out, out_length) == STATUS_ERROR) {
-        return STATUS_ERROR;
-    }
-    return STATUS_OK;
-}
 
 void garminLiteInit(int8_t new_i2c_manager_id) {
     i2c_manager_id = new_i2c_manager_id;
