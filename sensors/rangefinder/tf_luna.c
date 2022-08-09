@@ -6,12 +6,12 @@
  */
 
 /**
- * @file rangesensor_tf_luna.c
+ * @file rangesensor/tf_luna.c
  * @author d.ponomarev
  * @note https://files.seeedstudio.com/wiki/Grove-TF_Mini_LiDAR/res/SJ-PM-TF-Luna-A03-Product-Manual.pdf
  */
 
-#include "rangesensor_tf_luna.h"
+#include "rangefinder/tf_luna.h"
 #include <string.h>
 
 #define HEADER_BYTE 0x59

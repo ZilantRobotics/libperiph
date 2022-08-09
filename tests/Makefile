@@ -8,13 +8,13 @@ COMMON_LIBS=-lpthread -pthread -lgtest
 FLAGS=-Wall -std=c++11
 GXX_COMPILE=g++ $(COMMON_INCLUDES) $(FLAGS)  -o shell 
 
-SRC_UBLOX_TEST=test_ublox.cpp                   		../sensors/ublox.c
-SRC_ESC_FLAME_TEST=test_esc_flame.cpp           		../sensors/esc_flame.c
-SRC_MS4525DO_TEST=test_ms4525do.cpp             		../sensors/ms4525do.c
-SRC_STM32_TEMPERATURE_TEST=test_stm32_temperature.cpp 	../sensors/temperature_sensor.c
-SRC_BMP280_TEST=test_bmp280.cpp             			../sensors/baro_bmp280.c hal_i2c_mock.cpp
-SRC_HMC5883_TEST=test_hmc5883l.cpp             			../sensors/mag_hmc5883l.c hal_i2c_mock.cpp
-SRC_RM3100_TEST=test_rm3100.cpp             			../sensors/mag_rm3100.c hal_spi_mock.cpp
+SRC_UBLOX_TEST=test_ublox.cpp                   		../sensors/gps/ublox.c
+SRC_ESC_FLAME_TEST=test_esc_flame.cpp           		../sensors/esc/flame.c
+SRC_MS4525DO_TEST=test_ms4525do.cpp             		../sensors/differential_pressure/ms4525do.c
+SRC_STM32_TEMPERATURE_TEST=test_stm32_temperature.cpp 	../sensors/temperature_sensor/temperature_sensor.c
+SRC_BMP280_TEST=test_bmp280.cpp             			../sensors/barometer/bmp280.c hal_i2c_mock.cpp
+SRC_HMC5883_TEST=test_hmc5883l.cpp             			../sensors/magnetometer/hmc5883l.c hal_i2c_mock.cpp
+SRC_RM3100_TEST=test_rm3100.cpp             			../sensors/magnetometer/rm3100.c hal_spi_mock.cpp
 
 all: esc_flame_test ublox_test ms4525do_test stm32_temperature_test bmp280_test hmc5883l_test rm3100_test
 

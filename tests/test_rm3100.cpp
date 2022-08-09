@@ -12,7 +12,7 @@
 
 #include <iostream>
 #include <gtest/gtest.h>
-#include "mag_rm3100.h"
+#include "magnetometer/rm3100.h"
 
 
 int main (int argc, char *argv[]) {

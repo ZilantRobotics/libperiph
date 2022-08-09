@@ -10,7 +10,7 @@
  * @author d.ponomarev
  */
 
-#include "ms4525do.h"
+#include "differential_pressure/ms4525do.h"
 #include <stdint.h>
 #include <string.h>
 

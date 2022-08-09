@@ -6,7 +6,7 @@
  */
 
 /**
- * @file rangefinder_srf_05.h
+ * @file rangefinder/srf_05.h
  * @author d.ponomarev
  * @brief Implementation of rangefinder
  * @date Nov 17, 2018

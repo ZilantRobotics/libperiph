@@ -11,7 +11,7 @@
  * @note https://www.terraelectronica.ru/pdf/show?pdf_file=%252Fds%252Fpdf%252FR%252FRM3100.pdf
  */
 
-#include "mag_rm3100.h"
+#include "magnetometer/rm3100.h"
 #include <string.h>
 #include <stdbool.h>
 #include <stdio.h> 

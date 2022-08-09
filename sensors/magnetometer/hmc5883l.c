@@ -11,7 +11,7 @@
  * @date Nov 18, 2018
  */
 
-#include "mag_hmc5883l.h"
+#include "magnetometer/hmc5883l.h"
 #include <string.h>
 
 #ifndef STATUS_OK

@@ -12,7 +12,7 @@
 
 #include <gtest/gtest.h>
 #include <iostream>
-#include "ublox.h"
+#include "gps/ublox.h"
 
 void create_correct_ubx_nav_pvt_package(UbxNavPvtRaw_t& out_pkg) {
     UbxNavPvtRaw_t ubx_nav_pvt = {

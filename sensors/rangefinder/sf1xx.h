@@ -5,7 +5,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 /**
- * @file rangesensor_sf1xx.h
+ * @file rangesensor/sf1xx.h
  * @author d.ponomarev
  */
 #ifndef RANGESENSOR_SF1XX_H_

@@ -6,12 +6,12 @@
  */
 
 /**
- * @file rangesensor_sf1xx.c
+ * @file rangesensor/sf1xx.c
  * @author d.ponomarev
  * @note https://www.mouser.com/datasheet/2/321/28055-LW20-SF20-LiDAR-Manual-Rev-7-1371848.pdf
  */
 
-#include "rangesensor_sf1xx.h"
+#include "rangefinder/sf1xx.h"
 #include <stdint.h>
 
 

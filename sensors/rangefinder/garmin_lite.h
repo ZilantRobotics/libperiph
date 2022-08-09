@@ -5,7 +5,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 /**
- * @file rangefinder_garmin_lite.h
+ * @file rangefinder/garmin_lite.h
  * @author d.ponomarev
  */
 #ifndef RANGESENSOR_GARMIN_LIGHT_H_
@@ -24,7 +24,7 @@ void garminLiteInit(int8_t i2c_manager_id);
   * @brief  Process measurement
   * @note   Blocking operation. It should be performed as fast as possible.
   */
-bool garminLiteCollectData();
+bool garminLiteCollectData(uint32_t crnt_time, uint32_t measurement_period);
 
 
 /**

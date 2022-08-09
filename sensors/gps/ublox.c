@@ -6,12 +6,12 @@
  */
 
 /**
- * @file gps_ublox.c
+ * @file gps/ublox.c
  * @author d.ponomarev
  */
 
 
-#include "ublox.h"
+#include "gps/ublox.h"
 #include <stddef.h>
 #include <stdbool.h>
 #include <string.h>

@@ -13,7 +13,7 @@
 
 #include <iostream>
 #include <gtest/gtest.h>
-#include "esc_flame.h"
+#include "esc/flame.h"
 
 TEST(EscFlame, EscFlameCheckWrongPackageFirst) {
     uint8_t package_buffer[24] = {154,  22,     4,      2,      98,     147,

@@ -6,11 +6,11 @@
  */
 
 /**
- * @file rangefinder_garmin_lite.c
+ * @file rangefinder/garmin_lite.c
  * @author d.ponomarev
  */
 
-#include "rangefinder_garmin_lite.h"
+#include "rangefinder/garmin_lite.h"
 #include <string.h>
 
 #define STATUS_ERROR    -1

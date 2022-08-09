@@ -6,7 +6,7 @@
  */
 
 /**
- * @file acs712.c
+ * @file current_sensor/acs712.c
  * @author d.ponomarev
  */
 

@@ -10,7 +10,7 @@
  * @author d.ponomarev
  */
 
-#include "baro_bmp280.h"
+#include "barometer/bmp280.h"
 #include <stdint.h>
 #include <stdbool.h>
 #include <math.h>

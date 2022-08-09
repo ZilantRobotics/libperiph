@@ -14,7 +14,7 @@
 #include <gtest/gtest.h>
 #include <iostream>
 #include <math.h>
-#include "ms4525do.h"
+#include "differential_pressure/ms4525do.h"
 
 
 #define I2C_RESPONSE_SIZE   4

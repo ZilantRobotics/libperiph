@@ -10,7 +10,7 @@
  * @author d.ponomarev
  */
 
-#include "mpu9250.h"
+#include "imu/mpu9250.h"
 #include <string.h>
 #include <stdint.h>
 

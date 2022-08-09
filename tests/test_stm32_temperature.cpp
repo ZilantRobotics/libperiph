@@ -12,7 +12,7 @@
 
 #include <iostream>
 #include <gtest/gtest.h>
-#include "temperature_sensor.h"
+#include "temperature_sensor/temperature_sensor.h"
 
 TEST(TemperatureSensor, TemperatureSensor_25_celsius) {
     ASSERT_EQ(temperature_sensor_parse(1750), 273+25);
