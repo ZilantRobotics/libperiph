@@ -12,18 +12,18 @@
 
 #include <iostream>
 #include <gtest/gtest.h>
-#include "temperature_sensor/temperature_sensor.h"
+#include "temperature_sensor/stm32_temperature.h"
 
 TEST(TemperatureSensor, TemperatureSensor_25_celsius) {
-    ASSERT_EQ(temperature_sensor_parse(1750), 273+25);
+    ASSERT_EQ(stm32TemperatureParse(1750), 273+25);
 }
 
 TEST(TemperatureSensor, TemperatureSensor_125_celsius) {
-    ASSERT_EQ(temperature_sensor_parse(1250), 273+125);
+    ASSERT_EQ(stm32TemperatureParse(1250), 273+125);
 }
 
 TEST(TemperatureSensor, TemperatureSensor_minus_40_celsius) {
-    ASSERT_EQ(temperature_sensor_parse(2075), 273-40);
+    ASSERT_EQ(stm32TemperatureParse(2075), 273-40);
 }
 
 

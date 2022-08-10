@@ -23,4 +23,4 @@ $CC $FLAGS sensors/rangefinder/garmin_lite.c        $INC -o build/uarmin_lite.o
 $CC $FLAGS sensors/rangefinder/srf_05.c             $INC -o build/srf_05.o
 $CC $FLAGS sensors/rangefinder/sf1xx.c              $INC -o build/sf1xx.o
 $CC $FLAGS sensors/rangefinder/tf_luna.c            $INC -o build/tf_luna.o
-$CC $FLAGS sensors/temperature_sensor/temperature_sensor.c $INC -o build/temperature_sensor.o
+$CC $FLAGS sensors/temperature_sensor/stm32_temperature.c $INC -o build/stm32_temperature.o

@@ -6,13 +6,13 @@
  */
 
 /**
- * @file temperature_sensor.h
+ * @file stm32_temperature.h
  * @author d.ponomarev
  * @date Nov 18, 2018
  */
 
-#ifndef TEMPERATURE_SENSOR_H_
-#define TEMPERATURE_SENSOR_H_
+#ifndef STM32_TEMPERATURE_H_
+#define STM32_TEMPERATURE_H_
 
 #include "stdint.h"
 
@@ -20,6 +20,6 @@
 * @brief Get temperature value
 * @return temperature value in degree celsius
 */
-uint16_t temperature_sensor_parse(uint16_t raw_adc_value);
+uint16_t stm32TemperatureParse(uint16_t raw_adc_value);
 
-#endif //TEMPERATURE_SENSOR_H_
+#endif  // STM32_TEMPERATURE_H_
