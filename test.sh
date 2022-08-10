@@ -5,6 +5,7 @@ FLAGS="-c --specs=nosys.specs"
 INC="-Idevices/ -Isensors/ -Icommon/"
 
 $CXX $FLAGS common/soft_timer.cpp                   $INC -o build/soft_timer.o
+$CC $FLAGS common/ttl.c                             $INC -o build/ttl.o
 $CXX $FLAGS devices/esp8266.cpp                     $INC -o build/esp8266.o
 # $CC -c devices/motors.cpp                       $INC -o build/motors.o
 $CXX $FLAGS devices/seven_segments_indicators.cpp   $INC -o build/seven_segments_indicators.o

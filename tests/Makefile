@@ -3,7 +3,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-COMMON_INCLUDES=-I ../sensors/
+COMMON_INCLUDES=-I ../common/ -I ../sensors/
 COMMON_LIBS=-lpthread -pthread -lgtest
 FLAGS=-Wall -std=c++11
 GXX_COMPILE=g++ $(COMMON_INCLUDES) $(FLAGS)  -o shell 
@@ -15,6 +15,7 @@ SRC_STM32_TEMPERATURE_TEST=test_stm32_temperature.cpp 	../sensors/temperature_se
 SRC_BMP280_TEST=test_bmp280.cpp             			../sensors/barometer/bmp280.c hal_i2c_mock.cpp
 SRC_HMC5883_TEST=test_hmc5883l.cpp             			../sensors/magnetometer/hmc5883l.c hal_i2c_mock.cpp
 SRC_RM3100_TEST=test_rm3100.cpp             			../sensors/magnetometer/rm3100.c hal_spi_mock.cpp
+SRC_TTL_TEST=test_ttl.cpp             					../common/ttl.c
 
 all: esc_flame_test ublox_test ms4525do_test stm32_temperature_test bmp280_test hmc5883l_test rm3100_test
 
@@ -44,4 +45,8 @@ hmc5883l_test:
 
 rm3100_test:
 	$(GXX_COMPILE) $(SRC_RM3100_TEST) $(COMMON_LIBS)
+	./shell
+
+ttl_test:
+	$(GXX_COMPILE) $(SRC_TTL_TEST) $(COMMON_LIBS)
 	./shell
