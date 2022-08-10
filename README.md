@@ -12,6 +12,7 @@ It was tested on:
 | --------------------------------- | ----- |
 | devices/esp8266                   | build |
 | devices/motors                    | -     |
+| devices/servos                    | build + unit tests |
 | devices/seven_segments_indicators | build |
 | devices/ws2812                    | -     |
 | sensors/acs712                    | build |

@@ -1,0 +1,179 @@
+/*
+ * Copyright (C) 2022 Dmitry Ponomarev <ponomarevda96@gmail.com>
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
+/**
+ * @file servos.c
+ * @author d.ponomarev
+ * @date Aug 11, 2022
+ */
+
+#include "servos.h"
+#include "ttl.h"
+
+#ifndef STATUS_OK
+    #define STATUS_OK       0
+#endif
+#ifndef STATUS_ERROR
+    #define STATUS_ERROR    -1
+#endif
+
+ServoParameters_t params[SERVO_TIM_CHANNELS_AMOUNT];
+static bool inited_channels[SERVO_TIM_CHANNELS_AMOUNT] = {};
+static int16_t setpoints[SETPOINTS_AMOUNT] = {};  ///< the same as RawCommand
+
+static int8_t uavcanServosInitPwmChannel(Channel_t tim_channel_idx);
+static void uavcanServosSetDefaultValueForChannel(Channel_t tim_channel);
+
+
+int8_t uavcanServosInitChannel(Channel_t tim_channel, const ServoParameters_t* servo_params) {
+    if (!servo_params || (uint32_t)tim_channel >= SERVO_TIM_CHANNELS_AMOUNT) {
+        return STATUS_ERROR;
+    }
+
+    uavcanServosUpdateParams(tim_channel, servo_params);
+    if (uavcanServosInitPwmChannel(tim_channel) == STATUS_ERROR) {
+        return STATUS_ERROR;
+    }
+    inited_channels[tim_channel] = true;
+    return STATUS_OK;
+}
+
+void uavcanServosUpdateParams(Channel_t tim_ch_idx, const ServoParameters_t* new_params) {
+    if (!new_params || tim_ch_idx >= SERVO_TIM_CHANNELS_AMOUNT) {
+        return;
+    }
+    params[tim_ch_idx].ch = new_params->ch;
+    params[tim_ch_idx].min = new_params->min;
+    params[tim_ch_idx].max = new_params->max;
+    params[tim_ch_idx].def = new_params->def;
+}
+
+void uavcanServosProcessTimeToLiveChecks(uint32_t crnt_ts_ms) {
+    for (uint_fast8_t tim_idx = 0; tim_idx < SERVO_TIM_CHANNELS_AMOUNT; tim_idx++) {
+        Channel_t tim_ch = (Channel_t)tim_idx;
+        if (!uavcanServosIsChannelInited(tim_ch)) {
+            continue;
+        }
+
+        uint8_t sp_idx = params[tim_ch].ch;
+        if (!ttlIsSetpointAlive(sp_idx, crnt_ts_ms)) {
+            uavcanServosSetSetpoint(sp_idx, 0, crnt_ts_ms);
+            uavcanServosSetDefaultValueForChannel(tim_ch);
+        }
+    }
+}
+
+void uavcanServosSetSetpoint(uint8_t sp_idx, int16_t value, uint32_t crnt_time_ms) {
+    if (sp_idx < SETPOINTS_AMOUNT) {
+        setpoints[sp_idx] = value;
+        ttlSetSetpointTimestamp(sp_idx, crnt_time_ms);
+    }
+}
+
+void uavcanServosUpdateAllChannelsPwm() {
+    for (uint_fast8_t tim_idx = 0; tim_idx < SERVO_TIM_CHANNELS_AMOUNT; tim_idx++) {
+        Channel_t tim = (Channel_t)tim_idx;
+        if (!uavcanServosIsChannelInited(tim)) {
+            continue;
+        }
+        uint8_t sp_idx = uavcanServosGetTimerSetpoint(tim);
+        int32_t val = uavcanServosGetSetpoint(sp_idx);
+
+        int32_t pwm = mapRawCommandToPwm(val, params[tim].min, params[tim].max, params[tim].def);
+        if (pwm >= 0) {
+            timerSetPwmDuration(tim, pwm);
+        }
+    }
+}
+
+bool uavcanServosIsChannelInited(Channel_t tim_ch) {
+    bool is_tim_idx_ok = tim_ch < SERVO_TIM_CHANNELS_AMOUNT;
+    bool is_sp_idx_ok = params[tim_ch].ch < SETPOINTS_AMOUNT;
+    bool is_mode_ok = timerGetMode(tim_ch) == TIMER_MODE_PWM;
+    return is_tim_idx_ok && is_sp_idx_ok && inited_channels[tim_ch] && is_mode_ok;
+}
+
+int8_t uavcanServosGetPwmPercent(Channel_t tim_ch) {
+    int32_t percent;
+    if (tim_ch < SERVO_TIM_CHANNELS_AMOUNT && timerGetMode(tim_ch) == TIMER_MODE_PWM) {
+        uint32_t pwm_duration = (uint32_t)timerGetPwmDuration(tim_ch);
+        percent = mapU32(pwm_duration, params[tim_ch].min, params[tim_ch].max, 0, 100);
+    } else {
+        percent = STATUS_ERROR;
+    }
+    return percent;
+}
+
+uint32_t uavcanServosGetTimerSetpoint(Channel_t tim_ch) {
+    return params[tim_ch].ch;
+}
+
+Channel_t uavcanServosGetTimerChannelBySetpointChannel(uint32_t sp_ch) {
+    for (uint_fast8_t tim_idx = 0; tim_idx < SERVO_TIM_CHANNELS_AMOUNT; tim_idx++) {
+        Channel_t tim_ch = (Channel_t)tim_idx;
+        if (params[tim_ch].ch == sp_ch) {
+            return tim_ch;
+        }
+    }
+    return TIM_CH_AMOUNT;
+}
+
+int16_t uavcanServosGetSetpoint(uint8_t sp_idx) {
+    return (sp_idx < SETPOINTS_AMOUNT) ? setpoints[sp_idx] : 0;
+}
+
+
+bool uavcanServosGetEstimatedArmStatus(uint32_t crnt_time_ms) {
+    uint32_t ttl_ms = ttlGetTimeout();
+    if (ttlGetBestTimestamp() + ttl_ms < crnt_time_ms) {
+        return false;
+    }
+    for (uint_fast8_t sp_idx = 0; sp_idx < SETPOINTS_AMOUNT; sp_idx++) {
+        if (uavcanServosGetSetpoint(sp_idx) > 0) {
+            return true;
+        }
+    }
+    return false;
+}
+
+///< *************************** PRIVATE FUNCTIONS ***************************
+/**
+ * @note All args checks must be done out of here scope
+ */
+int8_t uavcanServosInitPwmChannel(Channel_t tim_channel_idx) {
+    int8_t status;
+    if (timerInit(tim_channel_idx, TIMER_MODE_PWM) == STATUS_ERROR) {
+        status = STATUS_ERROR;
+    } else {
+        uavcanServosSetDefaultValueForChannel(tim_channel_idx);
+        status = STATUS_OK;
+    }
+    return status;
+}
+
+void uavcanServosSetDefaultValueForChannel(Channel_t tim_ch) {
+    timerSetPwmDuration(tim_ch, params[tim_ch].def);
+}
+
+int32_t mapRawCommandToPwm(int32_t value, int32_t min_pwm, int32_t max_pwm, int32_t def_pwm) {
+    const int32_t RC_MIN = 1;
+    const int32_t RC_MAX = 8191;
+    int32_t pwm;
+    if (value < RC_MIN || value > RC_MAX) {
+        pwm = def_pwm;
+    } else {
+        pwm = mapU32(value, RC_MIN, RC_MAX, min_pwm, max_pwm);
+    }
+    return pwm;
+}
+
+uint32_t mapU32(uint32_t x, uint32_t in_min, uint32_t in_max, uint32_t out_min, uint32_t out_max){
+    if (in_min == in_max) {
+        return out_min;
+    }
+    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}

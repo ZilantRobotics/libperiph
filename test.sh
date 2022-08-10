@@ -2,11 +2,12 @@
 CC=arm-none-eabi-gcc
 CXX=arm-none-eabi-g++
 FLAGS="-c --specs=nosys.specs"
-INC="-Idevices/ -Isensors/ -Icommon/"
+INC="-Icommon/ -Idevices/ -Isensors/ -Itests/"
 
 $CXX $FLAGS common/soft_timer.cpp                   $INC -o build/soft_timer.o
 $CC $FLAGS common/ttl.c                             $INC -o build/ttl.o
 $CXX $FLAGS devices/esp8266.cpp                     $INC -o build/esp8266.o
+$CC $FLAGS devices/servos.c                         $INC -o build/servo.o
 # $CC -c devices/motors.cpp                       $INC -o build/motors.o
 $CXX $FLAGS devices/seven_segments_indicators.cpp   $INC -o build/seven_segments_indicators.o
 # $CC $FLAGS devices/ws2812.c                         $INC -o build/ws2812.o
