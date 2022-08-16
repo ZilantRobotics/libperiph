@@ -21,6 +21,8 @@
     #define STATUS_ERROR    -1
 #endif
 
+#define DEFAULT_SETPOINT_VALUE -1
+
 ServoParameters_t params[SERVO_TIM_CHANNELS_AMOUNT];
 static bool inited_channels[SERVO_TIM_CHANNELS_AMOUNT] = {};
 static int16_t setpoints[SETPOINTS_AMOUNT] = {};  ///< the same as RawCommand
@@ -35,6 +37,7 @@ int8_t uavcanServosInitChannel(Channel_t tim_channel, const ServoParameters_t* s
     }
 
     uavcanServosUpdateParams(tim_channel, servo_params);
+    setpoints[servo_params->ch] = DEFAULT_SETPOINT_VALUE;
     if (uavcanServosInitPwmChannel(tim_channel) == STATUS_ERROR) {
         return STATUS_ERROR;
     }
@@ -61,7 +64,7 @@ void uavcanServosProcessTimeToLiveChecks(uint32_t crnt_ts_ms) {
 
         uint8_t sp_idx = params[tim_ch].ch;
         if (!ttlIsSetpointAlive(sp_idx, crnt_ts_ms)) {
-            uavcanServosSetSetpoint(sp_idx, 0, crnt_ts_ms);
+            setpoints[sp_idx] = DEFAULT_SETPOINT_VALUE;
             uavcanServosSetDefaultValueForChannel(tim_ch);
         }
     }
@@ -160,7 +163,7 @@ void uavcanServosSetDefaultValueForChannel(Channel_t tim_ch) {
 }
 
 int32_t mapRawCommandToPwm(int32_t value, int32_t min_pwm, int32_t max_pwm, int32_t def_pwm) {
-    const int32_t RC_MIN = 1;
+    const int32_t RC_MIN = 0;
     const int32_t RC_MAX = 8191;
     int32_t pwm;
     if (value < RC_MIN || value > RC_MAX) {
