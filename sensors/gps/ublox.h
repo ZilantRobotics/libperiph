@@ -6,7 +6,7 @@
  */
 
 /**
- * @file gps_ublox.h
+ * @file ublox.h
  * @author d.ponomarev
  */
 
@@ -18,44 +18,19 @@
 #include <stddef.h>
 
 
-#define SYNC_CHAR_1_CODE        0xB5    // 181
-#define SYNC_CHAR_2_CODE        0x62    // 98
-
-
-/**
- * @brief uavcan.equipment.gnss.Fix
- * @note GNSS navigation solution with uncertainty.
- * This message is deprecated. Use the newer 1063.Fix2.uavcan message.
- */
-typedef struct {
-    uint64_t timestamp;
-    uint64_t gnss_timestamp;
-    uint8_t gnss_time_standard;     // void3
-    // uint8_t reserved1;           // void5
-    uint8_t num_leap_seconds;
-    int64_t longitude_deg_1e8;      // int37
-    int64_t latitude_deg_1e8;       // int37
-    int32_t height_ellipsoid_mm;    // int27
-    int32_t height_msl_mm;          // int27
-    float ned_velocity[3];          // float16[3]
-    uint8_t sats_used;              // uint6
-    float pdop;                     // float16
-    // uint8_t reserved2;           // void4
-    // float16[<=9]
-    // float16[<=9]
-} GnssFix_t;
-
+#define GPS_UBLOX_SYNC_CHAR_1_CODE        0xB5    // 181
+#define GPS_UBLOX_SYNC_CHAR_2_CODE        0x62    // 98
 
 /**
  * @brief uavcan.equipment.gnss.Fix2
  * @note GNSS ECEF and LLA navigation solution with uncertainty.
  */
 typedef enum {
-    STATUS_NO_FIX = 0,
-    STATUS_TIME_ONLY = 1,
-    STATUS_2D_FIX = 2,
-    STATUS_3D_FIX = 3,
-} Fix2_status_t;
+    GPS_UBLOX_STATUS_NO_FIX = 0,
+    GPS_UBLOX_STATUS_TIME_ONLY = 1,
+    GPS_UBLOX_STATUS_2D_FIX = 2,
+    GPS_UBLOX_STATUS_3D_FIX = 3,
+} GnssUbloxStatus_t;
 
 typedef struct {
     uint64_t timestamp;
@@ -68,14 +43,14 @@ typedef struct {
     int32_t height_msl_mm;
     float ned_velocity[3];
     uint8_t sats_used;
-    Fix2_status_t status;
+    GnssUbloxStatus_t status;
 
     uint8_t mode;
     uint8_t sub_mode;
     uint16_t covariance[36];
 
     float pdop;
-} GnssFix2_t;
+} GnssUblox_t;
 
 typedef struct {
     uint32_t time_ms;
@@ -146,6 +121,11 @@ typedef struct {
     uint8_t crc_b;
 } UbloxCrcChecker_t;
 
+typedef union {
+    UbloxCrcChecker_t bytes;
+    uint16_t u16;
+} UbloxCrcCheckerUnion_t;
+
 #pragma pack(push, 1)
 typedef struct {
     UbloxState_t state;
@@ -155,7 +135,7 @@ typedef struct {
     uint8_t payload[128];
     uint16_t crc;
     uint8_t payload_counter;
-    UbloxCrcChecker_t crc_checker;
+    UbloxCrcCheckerUnion_t crc_checker;
 } UbloxPackage_t;
 #pragma pack(pop)
 
@@ -171,6 +151,7 @@ typedef struct {
 } UbxNavPvtRaw_t;
 #pragma pack(pop)
 
+
 /**
  * @brief Parse raw ublox buffer and save data to uavcan fix2 buffer in success.
  * @param gns_buffer is an input raw buffer (or his part)
@@ -179,10 +160,13 @@ typedef struct {
  * @return true, if package successfully has been parsed
  * @note parser is statefull
  */
-bool ubloxParseFix2(const uint8_t gns_buffer[], size_t gns_buffer_size, GnssFix2_t* uavcan_fix2);
+bool ubloxParseFix2(const uint8_t gns_buffer[], size_t gns_buffer_size, GnssUblox_t* uavcan_fix2);
 
+
+/**
+ * @brief Private functions. For tests only
+ */
 uint16_t ubloxCrc16(const uint8_t* buf, size_t size);
-
-void ubloxConvertFix2ToNavPvt(UbxNavPvtRaw_t* buffer, const GnssFix2_t* uavcan_fix2);
+void ubloxConvertFix2ToNavPvt(UbxNavPvtRaw_t* buffer, const GnssUblox_t* uavcan_fix2);
 
 #endif  // __UBLOX_H_

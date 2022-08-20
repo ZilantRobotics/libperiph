@@ -6,12 +6,12 @@
  */
 
 /**
- * @file gps/ublox.c
+ * @file ublox.c
  * @author d.ponomarev
  */
 
 
-#include "gps/ublox.h"
+#include "ublox.h"
 #include <stddef.h>
 #include <stdbool.h>
 #include <string.h>
@@ -20,11 +20,11 @@
 
 static UbloxPackage_t package = {};
 
-static void crc_add_byte(uint8_t byte);
+static void ubloxCrcAddByte(uint8_t byte);
 static bool ubloxCheckCrc();
 static void ubloxClearCrc();
 static bool ubloxNextByte(uint8_t byte);
-static void ubloxDeserializeFix2(GnssFix2_t* uavcan_fix2);
+static void ubloxDeserializeFix2(GnssUblox_t* uavcan_fix2);
 
 uint64_t dayToUnixTimestamp(uint16_t y, uint8_t mo, uint8_t d, uint8_t h, uint8_t mi, uint8_t s) {
     struct tm time;
@@ -38,7 +38,7 @@ uint64_t dayToUnixTimestamp(uint16_t y, uint8_t mo, uint8_t d, uint8_t h, uint8_
     return (uint64_t)utc_time;
 }
 
-bool ubloxParseFix2(const uint8_t gns_buffer[], size_t gns_buffer_size, GnssFix2_t* uavcan_fix2) {
+bool ubloxParseFix2(const uint8_t gns_buffer[], size_t gns_buffer_size, GnssUblox_t* uavcan_fix2) {
     if (gns_buffer == NULL || gns_buffer_size > 256 || uavcan_fix2 == NULL) {
         return false;
     }
@@ -60,12 +60,12 @@ bool ubloxParseFix2(const uint8_t gns_buffer[], size_t gns_buffer_size, GnssFix2
 bool ubloxNextByte(uint8_t byte) {
     switch (package.state) {
         case STATE_SYNC_CHAR_1:
-            if (byte == SYNC_CHAR_1_CODE) {
+            if (byte == GPS_UBLOX_SYNC_CHAR_1_CODE) {
                 package.state = STATE_SYNC_CHAR_2;
             }
             break;
         case STATE_SYNC_CHAR_2:
-            package.state = (byte == SYNC_CHAR_2_CODE) ? STATE_CLASS : STATE_SYNC_CHAR_1;
+            package.state = (byte == GPS_UBLOX_SYNC_CHAR_2_CODE) ? STATE_CLASS : STATE_SYNC_CHAR_1;
             break;
         case STATE_CLASS:
             package.ubx_class = (UbloxClass_t)byte;
@@ -113,7 +113,7 @@ bool ubloxNextByte(uint8_t byte) {
 }
 
 
-void ubloxDeserializeFix2(GnssFix2_t* uavcan_fix2) {
+void ubloxDeserializeFix2(GnssUblox_t* uavcan_fix2) {
     if (sizeof(UbxNavPvt_t) != package.length) {
         return;
     }
@@ -135,13 +135,13 @@ void ubloxDeserializeFix2(GnssFix2_t* uavcan_fix2) {
     uavcan_fix2->ned_velocity[1] = ubx_nav_pvt->velE / 1e3F;
     uavcan_fix2->ned_velocity[2] = ubx_nav_pvt->velD / 1e3F;
     uavcan_fix2->sats_used = ubx_nav_pvt->numSV;
-    uavcan_fix2->status = (Fix2_status_t)ubx_nav_pvt->fixType;
+    uavcan_fix2->status = (GnssUbloxStatus_t)ubx_nav_pvt->fixType;
     uavcan_fix2->pdop = ubx_nav_pvt->pDOP / 100;
 }
 
-void ubloxConvertFix2ToNavPvt(UbxNavPvtRaw_t* buffer, const GnssFix2_t* uavcan_fix2) {
-    buffer->sync_char_1 = SYNC_CHAR_1_CODE;
-    buffer->sync_char_2 = SYNC_CHAR_2_CODE;
+void ubloxConvertFix2ToNavPvt(UbxNavPvtRaw_t* buffer, const GnssUblox_t* uavcan_fix2) {
+    buffer->sync_char_1 = GPS_UBLOX_SYNC_CHAR_1_CODE;
+    buffer->sync_char_2 = GPS_UBLOX_SYNC_CHAR_2_CODE;
     buffer->class_nav = CLASS_NAV;
     buffer->id_nav_pvt = ID_NAV_PVT;
     buffer->payload_length = sizeof(UbxNavPvt_t);
@@ -180,18 +180,16 @@ uint16_t ubloxCrc16(const uint8_t* buf, size_t size) {
     ubloxClearCrc();
 
     while (size-- != 0) {
-        crc_add_byte(*buf++);
+        ubloxCrcAddByte(*buf++);
     }
-    uint16_t calculated_crc = package.crc_checker.crc_a + (package.crc_checker.crc_b << 8);
-    return calculated_crc;
+    return package.crc_checker.u16;
 }
 
 void ubloxClearCrc() {
-    package.crc_checker.crc_a = 0;
-    package.crc_checker.crc_b = 0;
+    package.crc_checker.u16 = 0;
 }
 
-void crc_add_byte(uint8_t byte) {
-    package.crc_checker.crc_a += byte;
-    package.crc_checker.crc_b += package.crc_checker.crc_a;
+void ubloxCrcAddByte(uint8_t byte) {
+    package.crc_checker.bytes.crc_a += byte;
+    package.crc_checker.bytes.crc_b += package.crc_checker.bytes.crc_a;
 }

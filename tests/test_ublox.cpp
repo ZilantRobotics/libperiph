@@ -16,8 +16,8 @@
 
 void create_correct_ubx_nav_pvt_package(UbxNavPvtRaw_t& out_pkg) {
     UbxNavPvtRaw_t ubx_nav_pvt = {
-        .sync_char_1 = SYNC_CHAR_1_CODE,
-        .sync_char_2 = SYNC_CHAR_2_CODE,
+        .sync_char_1 = GPS_UBLOX_SYNC_CHAR_1_CODE,
+        .sync_char_2 = GPS_UBLOX_SYNC_CHAR_2_CODE,
         .class_nav = CLASS_NAV,
         .id_nav_pvt = ID_NAV_PVT,
         .payload_length = sizeof(UbxNavPvt_t),
@@ -28,8 +28,8 @@ void create_correct_ubx_nav_pvt_package(UbxNavPvtRaw_t& out_pkg) {
 
 void create_ubx_nav_pvt_package_with_wrong_crc(UbxNavPvtRaw_t& out_pkg) {
     UbxNavPvtRaw_t ubx_nav_pvt = {
-        .sync_char_1 = SYNC_CHAR_1_CODE,
-        .sync_char_2 = SYNC_CHAR_2_CODE,
+        .sync_char_1 = GPS_UBLOX_SYNC_CHAR_1_CODE,
+        .sync_char_2 = GPS_UBLOX_SYNC_CHAR_2_CODE,
         .class_nav = CLASS_NAV,
         .id_nav_pvt = ID_NAV_PVT,
         .payload_length = sizeof(UbxNavPvt_t),
@@ -41,7 +41,7 @@ void create_ubx_nav_pvt_package_with_wrong_crc(UbxNavPvtRaw_t& out_pkg) {
 
 
 TEST(Ublox, test_serialization_01_correct_package) {
-    GnssFix2_t uavcan_fix2;
+    GnssUblox_t uavcan_fix2;
     UbxNavPvtRaw_t ubx_nav_pvt_raw;
     create_correct_ubx_nav_pvt_package(ubx_nav_pvt_raw);
 
@@ -51,7 +51,7 @@ TEST(Ublox, test_serialization_01_correct_package) {
 }
 
 TEST(Ublox, test_serialization_02_correct_package) {
-    GnssFix2_t uavcan_fix2;
+    GnssUblox_t uavcan_fix2;
     UbxNavPvtRaw_t ubx_nav_pvt_raw;
     create_ubx_nav_pvt_package_with_wrong_crc(ubx_nav_pvt_raw);
 
@@ -61,7 +61,7 @@ TEST(Ublox, test_serialization_02_correct_package) {
 }
 
 TEST(Ublox, test_serialization_03_two_packages) {
-    GnssFix2_t uavcan_fix2;
+    GnssUblox_t uavcan_fix2;
     UbxNavPvtRaw_t ubx_nav_pvt_raw;
     create_correct_ubx_nav_pvt_package(ubx_nav_pvt_raw);
 
@@ -74,7 +74,7 @@ TEST(Ublox, test_serialization_03_two_packages) {
 }
 
 TEST(Ublox, test_serialization_04_two_packages) {
-    GnssFix2_t uavcan_fix2;
+    GnssUblox_t uavcan_fix2;
     UbxNavPvtRaw_t ubx_nav_pvt_raw;
     create_correct_ubx_nav_pvt_package(ubx_nav_pvt_raw);
 
@@ -89,7 +89,7 @@ TEST(Ublox, test_serialization_04_two_packages) {
 }
 
 TEST(Ublox, test_serialization_05_two_packages) {
-    GnssFix2_t uavcan_fix2;
+    GnssUblox_t uavcan_fix2;
     UbxNavPvtRaw_t ubx_nav_pvt_raw;
     create_correct_ubx_nav_pvt_package(ubx_nav_pvt_raw);
 
@@ -106,7 +106,7 @@ TEST(Ublox, test_deserialization_01_correct) {
     UbxNavPvtRaw_t ubx_nav_pvt_raw_expected;
     create_correct_ubx_nav_pvt_package(ubx_nav_pvt_raw_expected);
 
-    GnssFix2_t uavcan_fix2 = {};
+    GnssUblox_t uavcan_fix2 = {};
     UbxNavPvtRaw_t ubx_nav_pvt_raw_actual = {};
     ubloxConvertFix2ToNavPvt(&ubx_nav_pvt_raw_actual, &uavcan_fix2);
 
