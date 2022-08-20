@@ -22,7 +22,7 @@ TEST(hmc5883l, hmc5883lParseNormal) {
     };
     float x, y, z;
 
-    hmc5883lParse((uint8_t*)raw);
+    hmc5883lFillRxBuffer(raw);
     hmc5883GetMeasurement(&x, &y, &z);
     ASSERT_EQ(x, 1.0);
     ASSERT_EQ(y, 1.0);

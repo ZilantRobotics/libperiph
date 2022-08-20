@@ -19,9 +19,13 @@
 #define HMC5883L_MEASUREMENT_FREQUENCY    30
 
 
-int8_t hmc5883Configurate();
-int8_t hmc5883lCollect(int8_t i2c_manager_id);
-void hmc5883lParse(uint8_t rx_buf[6]);
+int8_t hmc5883Init();
+
+void hmc5883lMeasure();
 void hmc5883GetMeasurement(float* x, float* y, float* z);
+
+
+// For tests only:
+void hmc5883lFillRxBuffer(uint8_t new_buf[6]);
 
 #endif  // HMC5883L_H_

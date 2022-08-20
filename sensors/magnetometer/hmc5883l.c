@@ -59,10 +59,9 @@ typedef struct {
     float mag[3];
 } HMC5883_t;
 
-static void hmc5883lMeasure();
+static void hmc5883lParse();
 
 // functions below should be implemented outside
-int8_t i2cManagerPerformRequest(int8_t device_id, void (*function)());
 int8_t i2cTransmit(uint8_t id, const uint8_t tx[], uint8_t len);
 int8_t i2cReceive(uint8_t id, uint8_t* rx, uint8_t len);
 // functions above should be implemented outside
@@ -71,7 +70,7 @@ static uint8_t rx_buf[6] = {0};
 static HMC5883_t hmc5883;
 
 
-int8_t hmc5883Configurate() {
+int8_t hmc5883Init() {
     const uint8_t TX_BUF_1[2] = {REG_CONF_A, REG_CONF_A_DEF_30_HZ_8_SAMP};
     const uint8_t TX_BUF_2[2] = {REG_CONF_B, REG_CONF_B_GAIN_LSB_1090};
     const uint8_t TX_BUF_3[2] = {REG_MODE, REG_MODE_CONTINUOUS_MODE};
@@ -86,30 +85,11 @@ int8_t hmc5883Configurate() {
     return STATUS_OK;
 }
 
-int8_t hmc5883lCollect(int8_t i2c_manager_id) {
-    if (i2c_manager_id == STATUS_ERROR) {
-        return STATUS_ERROR;
-    }
-    int8_t request_result = i2cManagerPerformRequest(i2c_manager_id, &hmc5883lMeasure);
-    hmc5883lParse(rx_buf);
-    return request_result;
-}
-
 void hmc5883GetMeasurement(float* x, float* y, float* z) {
+    hmc5883lParse();
     *x = hmc5883.mag[0];
     *y = hmc5883.mag[1];
     *z = hmc5883.mag[2];
-}
-
-
-void hmc5883lParse(uint8_t rx_buf[6]) {
-    hmc5883.raw[0] = (rx_buf[0] << 8) + rx_buf[1];
-    hmc5883.raw[1] = (rx_buf[2] << 8) + rx_buf[3];
-    hmc5883.raw[2] = (rx_buf[4] << 8) + rx_buf[5];
-
-    hmc5883.mag[0] = hmc5883.raw[0] / 1090.0;
-    hmc5883.mag[1] = hmc5883.raw[1] / 1090.0;
-    hmc5883.mag[2] = hmc5883.raw[2] / 1090.0;
 }
 
 void hmc5883lMeasure() {
@@ -119,4 +99,18 @@ void hmc5883lMeasure() {
             i2cTransmit(I2C_ID_READ, TX_BUF_1, 1) == STATUS_ERROR) {
         asm("NOP");
     }
+}
+
+void hmc5883lFillRxBuffer(uint8_t new_buf[6]) {
+    memcpy(rx_buf, new_buf, 6);
+}
+
+void hmc5883lParse() {
+    hmc5883.raw[0] = (rx_buf[0] << 8) + rx_buf[1];
+    hmc5883.raw[1] = (rx_buf[2] << 8) + rx_buf[3];
+    hmc5883.raw[2] = (rx_buf[4] << 8) + rx_buf[5];
+
+    hmc5883.mag[0] = hmc5883.raw[0] / 1090.0;
+    hmc5883.mag[1] = hmc5883.raw[1] / 1090.0;
+    hmc5883.mag[2] = hmc5883.raw[2] / 1090.0;
 }
