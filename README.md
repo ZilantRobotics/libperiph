@@ -28,4 +28,4 @@ It was tested on:
 | sensors/rangesensor_sf1xx         |              | build |
 | sensors/rangesensor_tf_luna       |              | build |
 | sensors/temperature_sensor        |              | build + unit tests |
-| sensors/ublox                     |              | build + unit tests |
+| sensors/ublox                     | -            | build + unit tests |

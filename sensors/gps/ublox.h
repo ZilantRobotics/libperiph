@@ -18,9 +18,6 @@
 #include <stddef.h>
 
 
-#define GPS_UBLOX_SYNC_CHAR_1_CODE        0xB5    // 181
-#define GPS_UBLOX_SYNC_CHAR_2_CODE        0x62    // 98
-
 /**
  * @brief uavcan.equipment.gnss.Fix2
  * @note GNSS ECEF and LLA navigation solution with uncertainty.
@@ -51,6 +48,22 @@ typedef struct {
 
     float pdop;
 } GnssUblox_t;
+
+
+/**
+ * @brief Parse raw ublox buffer and save data to uavcan fix2 buffer in success.
+ * @param gns_buffer is an input raw buffer (or his part)
+ * @param gns_buffer_size is a size of this buffer
+ * @param uavcan_fix2 is an output buffer
+ * @return true, if package successfully has been parsed
+ * @note parser is statefull
+ */
+bool ubloxParse(const uint8_t gns_buffer[], size_t gns_buffer_size, GnssUblox_t* uavcan_fix2);
+
+
+#define GPS_UBLOX_SYNC_CHAR_1_CODE        0xB5    // 181
+#define GPS_UBLOX_SYNC_CHAR_2_CODE        0x62    // 98
+
 
 typedef struct {
     uint32_t time_ms;
@@ -150,17 +163,6 @@ typedef struct {
     uint16_t crc;
 } UbxNavPvtRaw_t;
 #pragma pack(pop)
-
-
-/**
- * @brief Parse raw ublox buffer and save data to uavcan fix2 buffer in success.
- * @param gns_buffer is an input raw buffer (or his part)
- * @param gns_buffer_size is a size of this buffer
- * @param uavcan_fix2 is an output buffer
- * @return true, if package successfully has been parsed
- * @note parser is statefull
- */
-bool ubloxParseFix2(const uint8_t gns_buffer[], size_t gns_buffer_size, GnssUblox_t* uavcan_fix2);
 
 
 /**

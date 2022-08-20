@@ -38,7 +38,7 @@ uint64_t dayToUnixTimestamp(uint16_t y, uint8_t mo, uint8_t d, uint8_t h, uint8_
     return (uint64_t)utc_time;
 }
 
-bool ubloxParseFix2(const uint8_t gns_buffer[], size_t gns_buffer_size, GnssUblox_t* uavcan_fix2) {
+bool ubloxParse(const uint8_t gns_buffer[], size_t gns_buffer_size, GnssUblox_t* uavcan_fix2) {
     if (gns_buffer == NULL || gns_buffer_size > 256 || uavcan_fix2 == NULL) {
         return false;
     }
