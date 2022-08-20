@@ -13,6 +13,7 @@
 #include <gtest/gtest.h>
 #include <iostream>
 #include "gps/ublox.h"
+#include "gps/ublox_emulation.h"
 
 void create_correct_ubx_nav_pvt_package(UbxNavPvtRaw_t& out_pkg) {
     UbxNavPvtRaw_t ubx_nav_pvt = {
@@ -108,7 +109,7 @@ TEST(Ublox, test_deserialization_01_correct) {
 
     GnssUblox_t uavcan_fix2 = {};
     UbxNavPvtRaw_t ubx_nav_pvt_raw_actual = {};
-    ubloxConvertFix2ToNavPvt(&ubx_nav_pvt_raw_actual, &uavcan_fix2);
+    ubloxCreateRawDataFromPackage(&ubx_nav_pvt_raw_actual, &uavcan_fix2);
 
     ASSERT_EQ(ubx_nav_pvt_raw_expected.sync_char_1, ubx_nav_pvt_raw_actual.sync_char_1);
     ASSERT_EQ(ubx_nav_pvt_raw_expected.sync_char_2, ubx_nav_pvt_raw_actual.sync_char_2);

@@ -16,6 +16,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <time.h>
+#include "ublox_internal.h"
 
 
 static UbloxPackage_t package = {};
@@ -137,37 +138,6 @@ void ubloxDeserializeFix2(GnssUblox_t* uavcan_fix2) {
     uavcan_fix2->sats_used = ubx_nav_pvt->numSV;
     uavcan_fix2->status = (GnssUbloxStatus_t)ubx_nav_pvt->fixType;
     uavcan_fix2->pdop = ubx_nav_pvt->pDOP / 100;
-}
-
-void ubloxConvertFix2ToNavPvt(UbxNavPvtRaw_t* buffer, const GnssUblox_t* uavcan_fix2) {
-    buffer->sync_char_1 = GPS_UBLOX_SYNC_CHAR_1_CODE;
-    buffer->sync_char_2 = GPS_UBLOX_SYNC_CHAR_2_CODE;
-    buffer->class_nav = CLASS_NAV;
-    buffer->id_nav_pvt = ID_NAV_PVT;
-    buffer->payload_length = sizeof(UbxNavPvt_t);
-
-    buffer->payload.time_ms = uavcan_fix2->timestamp / 1000;
-
-    ///< @todo reverse dayToUnixTimestamp() should be here
-    buffer->payload.year = 0;
-    buffer->payload.month = 0;
-    buffer->payload.day = 0;
-    buffer->payload.hour = 0;
-    buffer->payload.min = 0;
-    buffer->payload.sec = 0;
-
-    buffer->payload.lon = uavcan_fix2->longitude_deg_1e8 / 10;
-    buffer->payload.lat = uavcan_fix2->latitude_deg_1e8 / 10;
-    buffer->payload.height = uavcan_fix2->height_ellipsoid_mm;
-    buffer->payload.hMSL = uavcan_fix2->height_msl_mm;
-    buffer->payload.velN = uavcan_fix2->ned_velocity[0] * 1e3F;
-    buffer->payload.velE = uavcan_fix2->ned_velocity[1] * 1e3F;
-    buffer->payload.velD = uavcan_fix2->ned_velocity[2] * 1e3F;
-    buffer->payload.numSV = uavcan_fix2->sats_used;
-    buffer->payload.fixType = uavcan_fix2->status;
-    buffer->payload.pDOP = uavcan_fix2->pdop * 100;
-
-    buffer->crc = ubloxCrc16((uint8_t*)(&buffer->class_nav), buffer->payload_length + 4);
 }
 
 bool ubloxCheckCrc() {

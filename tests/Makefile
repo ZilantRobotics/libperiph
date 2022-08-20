@@ -8,7 +8,7 @@ COMMON_LIBS=-lpthread -pthread -lgtest
 FLAGS=-Wall -std=c++11
 GXX_COMPILE=g++ $(COMMON_INCLUDES) $(FLAGS)  -o shell 
 
-SRC_UBLOX_TEST=test_ublox.cpp                   		../sensors/gps/ublox.c
+SRC_UBLOX_TEST=test_ublox.cpp                   		../sensors/gps/ublox.c ../sensors/gps/ublox_emulation.c
 SRC_ESC_FLAME_TEST=test_esc_flame.cpp           		../sensors/esc/flame.c
 SRC_MS4525DO_TEST=test_ms4525do.cpp             		../sensors/differential_pressure/ms4525do.c
 SRC_STM32_TEMPERATURE_TEST=test_stm32_temperature.cpp 	../sensors/temperature_sensor/stm32_temperature.c
