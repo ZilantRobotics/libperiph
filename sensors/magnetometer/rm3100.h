@@ -15,7 +15,7 @@
 
 #define RM3100_MEASUREMENT_FREQUENCY    75
 
-int8_t rm3100InitCommunication();
+int8_t rm3100Init();
 int8_t rm3100Measure();
 void rm310GetMeasurement(float* x, float* y, float* z);
 

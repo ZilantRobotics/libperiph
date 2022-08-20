@@ -74,7 +74,7 @@ typedef struct {
 static RM3100_t rm3100;
 
 
-int8_t rm3100InitCommunication() {
+int8_t rm3100Init() {
     uint8_t tx_buf[8];
     uint8_t rx_buf[8];
     int8_t result = STATUS_OK;
