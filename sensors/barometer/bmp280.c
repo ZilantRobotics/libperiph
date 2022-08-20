@@ -42,6 +42,10 @@
 #define DEVICE_ID               0x58
 #define RESET_CMD               0xB6
 
+typedef struct {
+    float static_pressure;
+    float static_temperature;
+} BMP280_t;
 
 typedef struct {
     uint16_t t1;
@@ -86,78 +90,40 @@ typedef struct {
 
 
 // functions below should be implemented outside
-int8_t i2cManagerPerformRequest(int8_t device_id, void (*function)());
-int8_t i2cManagerTransmit(uint8_t id, const uint8_t tx[], uint8_t len);
-int8_t i2cManagerReceive(uint8_t id, uint8_t* rx, uint8_t len);
+int8_t i2cTransmit(uint8_t id, const uint8_t tx[], uint8_t len);
+int8_t i2cReceive(uint8_t id, uint8_t* rx, uint8_t len);
 // functions above should be implemented outside
 
 
 static void bmp280CheckDeviceId();
 static void bmp280SetCtrlMeas();
 static void bmp280GetCalibration();
-static void bmp280ProcessCalibration();
 
 
 static bool dev_id_confirmed = false;
 static bool error_during_initialization_flag = false;
 static BMP280_stored_calib_param_t stored_calib;
 static BMP280_processed_calib_param_t processed_calib;
-BMP280_t bmp280;
+static BMP280_t bmp280;
 
 
-int8_t bmp280Init(int8_t i2c_manager_id) {
+void bmp280Init() {
     error_during_initialization_flag = false;
-    if (i2c_manager_id == STATUS_ERROR ||
-            i2cManagerPerformRequest(i2c_manager_id, &bmp280CheckDeviceId) ||
-            i2cManagerPerformRequest(i2c_manager_id, &bmp280SetCtrlMeas) ||
-            i2cManagerPerformRequest(i2c_manager_id, &bmp280GetCalibration)) {
-        return STATUS_ERROR;
-    }
-    if (!dev_id_confirmed) {
-        return STATUS_ERROR;
-    }
-    bmp280ProcessCalibration();
 
-    return STATUS_OK;
+    bmp280CheckDeviceId();
+    bmp280SetCtrlMeas();
+    bmp280GetCalibration();
 }
 
-
-void bmp280CheckDeviceId() {
-    uint8_t tx[1] = {ID_REG};
-    uint8_t rx[1] = {0};
-    if (i2cManagerTransmit(I2C_ID, tx, 1) == STATUS_ERROR ||
-            i2cManagerReceive(I2C_ID, rx, 1) == STATUS_ERROR) {
-        error_during_initialization_flag = true;
-    }
-    dev_id_confirmed = (rx[0] == DEVICE_ID) ? true : false;
+float bmp280GetStaticPressure() {
+    return bmp280.static_pressure;
 }
 
-
-void bmp280SetCtrlMeas() {
-    uint8_t tx[2] = {CTRL_MEAS_REG, CTRL_MEAS_SETTINGS};
-    uint8_t rx[1] = {0};
-    if (i2cManagerTransmit(I2C_ID, tx, 2) == STATUS_ERROR) {
-        error_during_initialization_flag = true;
-    }
-    if (i2cManagerReceive(I2C_ID, rx, 1) == STATUS_ERROR) {
-        error_during_initialization_flag = true;
-    }
-    if (rx[0] != tx[1]) {
-        error_during_initialization_flag = true;
-    }
+float bmp280GetStaticTemperature() {
+    return bmp280.static_temperature;
 }
 
-void bmp280GetCalibration() {
-    uint8_t tx[1] = {0x88};
-    if (i2cManagerTransmit(I2C_ID, tx, 1) == STATUS_ERROR) {
-        error_during_initialization_flag = true;
-    }
-    if (i2cManagerReceive(I2C_ID, (uint8_t*)(&stored_calib), 24) == STATUS_ERROR) {
-        error_during_initialization_flag = true;
-    }
-}
-
-void bmp280ProcessCalibration() {
+void bmp280Calibrate() {
     processed_calib.t1 = stored_calib.t1 * powf(2,  4);
     processed_calib.t2 = stored_calib.t2 * powf(2, -14);
     processed_calib.t3 = stored_calib.t3 * powf(2, -34);
@@ -178,8 +144,8 @@ void bmp280ProcessCalibration() {
 void bmp280CollectData() {
     uint8_t tx[1] = {PRESS_REG};
     BMP280_measurement_registers_t data;
-    i2cManagerTransmit(I2C_ID, tx, 1);
-    i2cManagerReceive(I2C_ID + 1, (uint8_t*)&data, 6);
+    i2cTransmit(I2C_ID, tx, 1);
+    i2cReceive(I2C_ID + 1, (uint8_t*)&data, 6);
 
     bmp280.static_pressure = data.p_msb << 12 | data.p_lsb << 4 | data.p_xlsb >> 4;
     bmp280.static_temperature = data.t_msb << 12 | data.t_lsb << 4 | data.t_xlsb >> 4;
@@ -206,4 +172,39 @@ void bmp280ParseData() {
 
     bmp280.static_temperature = static_temperature;
     bmp280.static_pressure = static_pressure;
+}
+
+void bmp280CheckDeviceId() {
+    uint8_t tx[1] = {ID_REG};
+    uint8_t rx[1] = {0};
+    if (i2cTransmit(I2C_ID, tx, 1) == STATUS_ERROR ||
+            i2cReceive(I2C_ID, rx, 1) == STATUS_ERROR) {
+        error_during_initialization_flag = true;
+    }
+    dev_id_confirmed = (rx[0] == DEVICE_ID) ? true : false;
+}
+
+
+void bmp280SetCtrlMeas() {
+    uint8_t tx[2] = {CTRL_MEAS_REG, CTRL_MEAS_SETTINGS};
+    uint8_t rx[1] = {0};
+    if (i2cTransmit(I2C_ID, tx, 2) == STATUS_ERROR) {
+        error_during_initialization_flag = true;
+    }
+    if (i2cReceive(I2C_ID, rx, 1) == STATUS_ERROR) {
+        error_during_initialization_flag = true;
+    }
+    if (rx[0] != tx[1]) {
+        error_during_initialization_flag = true;
+    }
+}
+
+void bmp280GetCalibration() {
+    uint8_t tx[1] = {0x88};
+    if (i2cTransmit(I2C_ID, tx, 1) == STATUS_ERROR) {
+        error_during_initialization_flag = true;
+    }
+    if (i2cReceive(I2C_ID, (uint8_t*)(&stored_calib), 24) == STATUS_ERROR) {
+        error_during_initialization_flag = true;
+    }
 }

@@ -13,21 +13,14 @@
 #ifndef BMP280_H_
 #define BMP280_H_
 
-#include <stdint.h>
-
-typedef struct {
-    float static_pressure;
-    float static_temperature;
-} BMP280_t;
-
-extern BMP280_t bmp280;
-
 #define BMP280_MAX_MEASUREMENT_FREQUENCY 50
 
-
-int8_t bmp280Init(int8_t i2c_manager_id);
+void bmp280Init();
+void bmp280Calibrate();
 void bmp280CollectData();
 void bmp280ParseData();
 
+float bmp280GetStaticPressure();
+float bmp280GetStaticTemperature();
 
 #endif  // BMP280_H_

@@ -63,8 +63,8 @@ static void hmc5883lMeasure();
 
 // functions below should be implemented outside
 int8_t i2cManagerPerformRequest(int8_t device_id, void (*function)());
-int8_t i2cManagerTransmit(uint8_t id, const uint8_t tx[], uint8_t len);
-int8_t i2cManagerReceive(uint8_t id, uint8_t* rx, uint8_t len);
+int8_t i2cTransmit(uint8_t id, const uint8_t tx[], uint8_t len);
+int8_t i2cReceive(uint8_t id, uint8_t* rx, uint8_t len);
 // functions above should be implemented outside
 
 static uint8_t rx_buf[6] = {0};
@@ -76,10 +76,10 @@ int8_t hmc5883Configurate() {
     const uint8_t TX_BUF_2[2] = {REG_CONF_B, REG_CONF_B_GAIN_LSB_1090};
     const uint8_t TX_BUF_3[2] = {REG_MODE, REG_MODE_CONTINUOUS_MODE};
 
-    if (i2cManagerTransmit(I2C_ID_READ, TX_BUF_1, 2) == STATUS_ERROR ||
-            i2cManagerTransmit(I2C_ID_READ, TX_BUF_2, 2) == STATUS_ERROR ||
-            i2cManagerTransmit(I2C_ID_READ, TX_BUF_3, 2) == STATUS_ERROR ||
-            i2cManagerReceive(I2C_ID_READ, rx_buf, 6) == STATUS_ERROR ) {
+    if (i2cTransmit(I2C_ID_READ, TX_BUF_1, 2) == STATUS_ERROR ||
+            i2cTransmit(I2C_ID_READ, TX_BUF_2, 2) == STATUS_ERROR ||
+            i2cTransmit(I2C_ID_READ, TX_BUF_3, 2) == STATUS_ERROR ||
+            i2cReceive(I2C_ID_READ, rx_buf, 6) == STATUS_ERROR ) {
         return STATUS_ERROR;
     }
 
@@ -115,8 +115,8 @@ void hmc5883lParse(uint8_t rx_buf[6]) {
 void hmc5883lMeasure() {
     memset(rx_buf, 0x00, 6);
     const uint8_t TX_BUF_1[1] = {REG_DATA_OUT_X_MSB};
-    if (i2cManagerReceive(I2C_ID_READ, rx_buf, 6) == STATUS_ERROR ||
-            i2cManagerTransmit(I2C_ID_READ, TX_BUF_1, 1) == STATUS_ERROR) {
+    if (i2cReceive(I2C_ID_READ, rx_buf, 6) == STATUS_ERROR ||
+            i2cTransmit(I2C_ID_READ, TX_BUF_1, 1) == STATUS_ERROR) {
         asm("NOP");
     }
 }

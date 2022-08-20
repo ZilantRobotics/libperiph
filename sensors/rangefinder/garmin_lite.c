@@ -35,8 +35,8 @@ static void garminLiteMeasureCallback();
 
 // functions below should be implemented outside
 int8_t i2cManagerPerformRequest(int8_t device_id, void (*function)());
-int8_t i2cManagerTransmit(uint8_t id, const uint8_t tx[], uint8_t len);
-int8_t i2cManagerReceive(uint8_t id, uint8_t* rx, uint8_t len);
+int8_t i2cTransmit(uint8_t id, const uint8_t tx[], uint8_t len);
+int8_t i2cReceive(uint8_t id, uint8_t* rx, uint8_t len);
 int8_t i2cWriteRegisterOneByte(uint8_t reg_addr, uint8_t new_reg_value);
 int8_t i2cReadRegister(uint8_t reg_addr, uint8_t* out, uint8_t out_length);
 // functions above should be implemented outside
