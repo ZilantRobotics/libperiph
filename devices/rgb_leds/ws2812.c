@@ -13,38 +13,44 @@
  * Required config for timer:
  * - timer freq = 72 000 000
  * - timer prescaller = 0
- * - pwm period = 90 ticks = 1.25 us:
- * - 25 ticks = 0.347 us
- * - 65 ticks = 0.903 us
- * - 1 sequence = 100 frames = 0.125 ms
+ * - pwm period or 1 bit = 90 timer ticks = 1.25 us:
+ * -    transfer bit=1 => T1H = 0.8 us => 57.6 ticks
+ * -    transfer bit=0 => T0H = 0.4 us => 28.8 ticks
+ * - 1 led      = 24 bits   = 30 us
+ * - 3 leds     = 72 bits   = 90 us
+ * - 10 leds    = 230 bits  = 0.3 ms
+ * - 15 leds    = 345 bits  = 0.45 ms
  */
 
-#include <stdbool.h>
 #include "ws2812.h"
+#include <stdbool.h>
+#include "config.h"
+
 
 #define BUF_OFFSET          4
 #define BITS_PER_SHADE      8
-#define PWM_PERIOD_LOW      25
-#define PWM_PERIOD_HIGH     65
+#define PWM_PERIOD_LOW      29
+#define PWM_PERIOD_HIGH     58
 #define MAX_BUF_SIZE        2 * BUF_OFFSET + MAX_NUM_OF_LEDS * SHADES_PER_LED * BITS_PER_SHADE
 
+
+static TIM_HandleTypeDef* timer = NULL;
+static uint32_t timer_channel = 0;
+static uint16_t crc_values[MAX_BUF_SIZE] = {0x00};
+static uint16_t BUF_SIZE = 0;
 static uint8_t LEDS_NUM = 0;
-static uint8_t BUF_SIZE = 0;
-static uint16_t crc_values[MAX_BUF_SIZE] = {};
-static TIM_HandleTypeDef* timer = NULL; 
-static uint32_t timerChannel = 0;
 
 
-int8_t rgbLedsInit(uint8_t numberOfLeds, TIM_HandleTypeDef* timerPtr, uint32_t channel){
-    if(numberOfLeds > 4 || timerPtr == NULL){
+int8_t ws2812bInit(uint8_t number_of_leds, TIM_HandleTypeDef* timer_ptr, uint32_t channel) {
+    if (number_of_leds > MAX_NUM_OF_LEDS || timer_ptr == NULL) {
         LEDS_NUM = 0;
         BUF_SIZE = 0;
         return STATUS_ERROR;
     }
-    LEDS_NUM = numberOfLeds;
-    BUF_SIZE = 2 * BUF_OFFSET + numberOfLeds * SHADES_PER_LED * BITS_PER_SHADE;
-    timer = timerPtr;
-    timerChannel = channel;
+    LEDS_NUM = number_of_leds;
+    BUF_SIZE = 2 * BUF_OFFSET + number_of_leds * SHADES_PER_LED * BITS_PER_SHADE;
+    timer = timer_ptr;
+    timer_channel = channel;
     return STATUS_OK;
 }
 
@@ -56,10 +62,10 @@ int8_t rgbLedsInit(uint8_t numberOfLeds, TIM_HandleTypeDef* timerPtr, uint32_t c
   * at the end of buffer filled by zeros.
   * This increases stability of leds.
   */
-void rgbLedsMapColorToPwm(const Leds_Color_t* ledsColor){
-    const uint8_t SHADES_AMOUNT = LEDS_NUM * SHADES_PER_LED;
-    for(size_t shade_num = 0; shade_num < SHADES_AMOUNT; shade_num++){
-        for(size_t bit_num = 0; bit_num < BITS_PER_SHADE; bit_num++){
+void ws2812bSetColors(const Leds_Color_t* ledsColor) {
+    const size_t SHADES_AMOUNT = LEDS_NUM * SHADES_PER_LED;
+    for (size_t shade_num = 0; shade_num < SHADES_AMOUNT; shade_num++) {
+        for (size_t bit_num = 0; bit_num < BITS_PER_SHADE; bit_num++) {
             bool is_bit_high = ledsColor->shades[shade_num] >> (7 - bit_num) & 0x01;
             uint16_t crc_value = (is_bit_high) ? PWM_PERIOD_HIGH : PWM_PERIOD_LOW;
             crc_values[BUF_OFFSET + shade_num * BITS_PER_SHADE + bit_num] =  crc_value;
@@ -67,14 +73,18 @@ void rgbLedsMapColorToPwm(const Leds_Color_t* ledsColor){
     }
 }
 
-void rgbLedsStart(){
-    if(timer != NULL){
-        HAL_TIM_PWM_Start_DMA(timer, timerChannel, (uint32_t*)crc_values, BUF_SIZE);
+int8_t ws2812bStartOnce() {
+    if (timer == NULL) {
+        return STATUS_ERROR;
     }
+    if (HAL_TIM_PWM_Start_DMA(timer, timer_channel, (uint32_t*)crc_values, BUF_SIZE) != HAL_OK) {
+        return STATUS_ERROR;
+    }
+    return STATUS_OK;
 }
 
-void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim){
-    if(htim != NULL && htim == timer){
-        HAL_TIM_PWM_Stop_DMA(timer, timerChannel);
+void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef* htim) {
+    if (htim != NULL && htim == timer) {
+        HAL_TIM_PWM_Stop_DMA(timer, timer_channel);
     }
 }

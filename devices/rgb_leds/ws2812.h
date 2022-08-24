@@ -13,28 +13,32 @@
 #ifndef WS2812_H_
 #define WS2812_H_
 
-#include <stdint.h>
 #include <stm32f1xx_hal.h>
+#include "rgb_color.h"
 
-#define MAX_NUM_OF_LEDS     4
-#define SHADES_PER_LED      3
 
-typedef union{
-    struct{
-        uint8_t green;
-        uint8_t red;
-        uint8_t blue;
-    }shades;
-    uint8_t raw[SHADES_PER_LED];
-}Color_t;
+/**
+ * @brief Initialize module
+ * @param number_of_leds - no more than MAX_NUM_OF_LEDS
+ * @param timer_ptr - any timer
+ * @param channel - any channel corresponded the timer
+ * @return STATUS_ERROR if periphery or params is not ok, otherwise return STATUS_OK
+ */
+int8_t ws2812bInit(uint8_t number_of_leds, TIM_HandleTypeDef* timer_ptr, uint32_t channel);
 
-typedef union{
-    Color_t colors[MAX_NUM_OF_LEDS];
-    uint8_t shades[MAX_NUM_OF_LEDS * SHADES_PER_LED];
-}Leds_Color_t;
+/**
+ * @brief   Fill DMA buffer by values corresponded desired colors
+ * @note    Do not actually start PWM.
+ *          This method may has an affect on resulting RGB leds color if it is called during
+ *          DMA work.
+ * @todo    May add condition if dma is in process now, return an error
+ */
+void ws2812bSetColors(const Leds_Color_t* leds_color);
 
-int8_t rgbLedsInit(uint8_t numberOfLeds, TIM_HandleTypeDef* timerPtr, uint32_t channel);
-void rgbLedsMapColorToPwm(const Leds_Color_t* ledsColor);
-void rgbLedsStart();
+/**
+ * @brief   Run single cycle of setting saved RGB color
+ * @return STATUS_ERROR if error occured, otherwise STATUS_OK
+ */
+int8_t ws2812bStartOnce();
 
 #endif  // INC_WS2812_H_
