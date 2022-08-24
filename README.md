@@ -21,7 +21,7 @@ It was tested on:
 | sensors/esc_flame                 | -            | build + unit tests |
 | sensors/mag_hmc5883l              | i2c          | build |
 | sensors/mag_rm3100                | spi          | build |
-| sensors/mpu9250                   | -            | build |
+| sensors/mpu9250                   | i2c          | build |
 | sensors/ms4252do                  | -            | build + unit tests |
 | sensors/rangefinder_garmin_lite   | i2c          | build |
 | sensors/rangefinder_srf_05        | refactor me  | build |
