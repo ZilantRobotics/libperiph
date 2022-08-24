@@ -30,7 +30,7 @@ typedef struct {
     int32_t rpm;                    // int18
     uint8_t power_rating_pct;       // uint7 (range 0% to 127%)
     uint8_t esc_index;              // uint5
-} EscStatus_t;
+} EscFlameStatus_t;
 
 /**
  * @note UART buffer size depends on the preferred strategy: memory or performance.
@@ -46,19 +46,19 @@ typedef struct {
 } UartDmaParser_t;
 
 
-void canPwmParseDma(uint8_t last_recv_idx, UartDmaParser_t* parser, EscStatus_t* esc_status);
+void escFlameParseDma(uint8_t last_recv_idx, UartDmaParser_t* parser, EscFlameStatus_t* esc_status);
 
 
 /**
   * @param[in] raw_package_buffer must be a buffer with size of a package
   * @return true if package is correct, otherwise false
   */
-bool EscFlameIsItPackageStart(const uint8_t* raw_package_buffer);
+bool escFlameIsItPackageStart(const uint8_t* raw_package_buffer);
 
 /**
   * @param[in] raw_package_buffer must be a correct package
   * @param[out] esc_status - struct with parsed package
   */
-void EscFlameParse(const uint8_t* raw_package_buffer, EscStatus_t* esc_status);
+void escFlameParse(const uint8_t* raw_package_buffer, EscFlameStatus_t* esc_status);
 
 #endif  // HMC5883L_H_

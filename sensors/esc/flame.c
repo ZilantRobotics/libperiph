@@ -38,18 +38,18 @@ typedef struct {
 static uint16_t swap_bytes_order_u16(uint16_t u16);
 
 
-bool EscFlameIsItPackageStart(const uint8_t* raw_package_buffer) {
+bool escFlameIsItPackageStart(const uint8_t* raw_package_buffer) {
     return raw_package_buffer[0] == FIRST_BYTE && raw_package_buffer[1] == SECOND_BYTE;
 }
 
-void EscFlameParse(const uint8_t* raw_package_buffer, EscStatus_t* esc_status) {
+void escFlameParse(const uint8_t* raw_package_buffer, EscFlameStatus_t* esc_status) {
     const EscFrame_t* esc_frame = (const EscFrame_t*)raw_package_buffer;
     esc_status->rpm = swap_bytes_order_u16(esc_frame->rpm) * 60.0 / 3.27;
     esc_status->voltage = swap_bytes_order_u16(esc_frame->voltage) / 59.0;
     esc_status->power_rating_pct = swap_bytes_order_u16(esc_frame->rx_pct) * 100.0 / 1024.0;
 }
 
-void canPwmParseDma(uint8_t last_recv_idx, UartDmaParser_t* parser, EscStatus_t* esc_status) {
+void escFlameParseDma(uint8_t last_recv_idx, UartDmaParser_t* parser, EscFlameStatus_t* esc_status) {
     static uint8_t auxiliary_buf[ESC_FLAME_PACKAGE_SIZE];
     parser->prev_idx = parser->crnt_idx;
     parser->crnt_idx = last_recv_idx;
@@ -66,8 +66,8 @@ void canPwmParseDma(uint8_t last_recv_idx, UartDmaParser_t* parser, EscStatus_t*
             uint16_t first_idx = last_recv_idx - ESC_FLAME_PACKAGE_SIZE + 1;
             package = &parser->buf[first_idx];
         }
-        if (EscFlameIsItPackageStart(package)) {
-            EscFlameParse(package, esc_status);
+        if (escFlameIsItPackageStart(package)) {
+            escFlameParse(package, esc_status);
         }
     }
 }
