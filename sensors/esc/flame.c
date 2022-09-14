@@ -49,8 +49,9 @@ void escFlameParse(const uint8_t* raw_package_buffer, EscFlameStatus_t* esc_stat
     esc_status->power_rating_pct = swap_bytes_order_u16(esc_frame->rx_pct) * 100.0 / 1024.0;
 }
 
-void escFlameParseDma(uint8_t last_recv_idx, UartDmaParser_t* parser, EscFlameStatus_t* esc_status) {
+bool escFlameParseDma(uint8_t last_recv_idx, UartDmaParser_t* parser, EscFlameStatus_t* esc_status) {
     static uint8_t auxiliary_buf[ESC_FLAME_PACKAGE_SIZE];
+    bool res = false;
     parser->prev_idx = parser->crnt_idx;
     parser->crnt_idx = last_recv_idx;
     if (parser->prev_idx == parser->crnt_idx && parser->prev_idx != parser->saved_idx) {
@@ -68,8 +69,10 @@ void escFlameParseDma(uint8_t last_recv_idx, UartDmaParser_t* parser, EscFlameSt
         }
         if (escFlameIsItPackageStart(package)) {
             escFlameParse(package, esc_status);
+            res = true;
         }
     }
+    return res;
 }
 
 uint16_t swap_bytes_order_u16(uint16_t u16) {

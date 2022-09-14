@@ -46,7 +46,7 @@ typedef struct {
 } UartDmaParser_t;
 
 
-void escFlameParseDma(uint8_t last_recv_idx, UartDmaParser_t* parser, EscFlameStatus_t* esc_status);
+bool escFlameParseDma(uint8_t last_recv_idx, UartDmaParser_t* parser, EscFlameStatus_t* esc_status);
 
 
 /**
