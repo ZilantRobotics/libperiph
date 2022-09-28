@@ -13,7 +13,7 @@
 #ifndef WS2812_H_
 #define WS2812_H_
 
-#include <stm32f1xx_hal.h>
+#include "main.h"
 #include "rgb_color.h"
 
 
