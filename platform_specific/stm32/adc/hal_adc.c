@@ -51,7 +51,7 @@ int8_t adcInitDma(uint8_t num_of_channels) {
     if (HAL_ADCEx_Calibration_Start(ADC_PTR) != HAL_OK) {
         return STATUS_ERROR;
     }
-    if (HAL_ADC_Start_DMA(ADC_PTR, (uint32_t*)&adc_raw, num_of_channels) != HAL_OK) {
+    if (HAL_ADC_Start_DMA(ADC_PTR, (uint32_t*)(void*)&adc_raw, num_of_channels) != HAL_OK) {
         return STATUS_ERROR;
     }
     is_adc_already_inited = true;
@@ -112,7 +112,7 @@ int8_t adcMeasureWithoutDma(uint16_t values[]) {
 #ifdef HAL_ADC_MODULE_ENABLED
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc) {
     if (hadc->Instance == ADC1) {
-        HAL_ADC_Start_DMA(ADC_PTR, (uint32_t*)&adc_raw, number_of_channels);
+        HAL_ADC_Start_DMA(ADC_PTR, (uint32_t*)(void*)&adc_raw, number_of_channels);
     }
 }
 #endif
