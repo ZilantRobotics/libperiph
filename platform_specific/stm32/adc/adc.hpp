@@ -13,17 +13,20 @@
 #ifndef PLATFORM_SPECIFIC_STM32_ADC_H_
 #define PLATFORM_SPECIFIC_STM32_ADC_H_
 
-#include "stm32f3xx.h"
+#include <stdint.h>
+
+/**
+ * @note use when your DMA is free
+ */
+int8_t adcInitDma(uint8_t num_of_channels);
+int8_t adcGetAll(uint16_t adc_measurements[]);
+uint16_t adcGet(uint8_t rank);
 
 
 /**
-* @brief Driver ADC1
-*/
-struct ADC
-{
-	void Init();				/// Init ADC1
-	uint16_t Do();				/// Start new process and return last value
-};
-
+ * @note use when your DMA is not free
+ */
+int8_t adcInitWithoutDma(uint8_t num_of_channels);
+int8_t adcMeasureWithoutDma(uint16_t values[]);
 
 #endif //PLATFORM_SPECIFIC_STM32_ADC_H_

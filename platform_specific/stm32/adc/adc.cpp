@@ -8,58 +8,106 @@
  * @file adc.cpp
  * @author d.ponomarev
  * @date Jun 25, 2018
+ * @note stm32f103:
+ * There are 2 adc (ADC1, ADC2) with 16 channels both.
+ * There are 2 types:
+ * 1. Injected (up to 4) - have separate cell for each channel
+ * 2. Regular (no limit) - only one cell, but you can use DMA
  */
 
-/*
-There are 4 12-bit successive approximation ADC.
-Each ADC has up to 19 multiplexed channels.
-There are 3 modes: single, continuous, scan and discontinuous.
-*/
+#include "hal_adc.h"
+#include "main.h"
+#include <string.h>
+#include <stdbool.h>
+#include "config.h"
 
-#include <adc.hpp>
-ADC Adc;
 
-/// ADC1_IN1  - A0
-/// ADC1_IN16 - temperature sensor
+#define MAX_CHANNELS_NUM    8
 
-/**
-* @brief Init ADC
-* @note Software procedure to enable the ADC
-*/
-void ADC::Init()	
-{
-	enum
-	{
-		CHANNEL_1  = 1,			///< A0
-		CHANNEL_16 = 16,		///< Temperature sensor
-	};
-	/// ADC1 Clocking enable
-	RCC->AHBENR |= RCC_AHBENR_ADC12EN;				/// Clocking enable
-	RCC->CFGR2 |= RCC_CFGR2_ADCPRE12_DIV1;			/// Prescaler divider
-	
-	/// ADC1 Configuration
-	ADC1_2_COMMON->CCR = 1 << ADC12_CCR_CKMODE_Pos;	/// Synchronous clock mode
-	ADC1->IER |= ADC_IER_ADRDYIE;					/// ADRDY (ADC ready) interrupt enable
-	ADC1->CFGR |= ADC_CFGR_DISCEN;					/// Discontinuous mode for regular channels enabled
-	ADC1->IER |= ADC_IER_EOCIE;						/// EOC (End of regular conversion) interrupt enable
-	ADC1->SQR1 |= (CHANNEL_16 << ADC_SQR1_SQ1_Pos);	/// 1st conversion in regular sequence
-	ADC1->SMPR2 = (7 << ADC_SMPR2_SMP16_Pos);
-	
-	/// Enable the ADC1 and wait until ADC is ready to start conversion
-	ADC1->CR = ADC_CR_ADEN;							/// Enable the ADC1
-	ADC1_2_COMMON->CCR |= ADC12_CCR_TSEN;
-	while( !(ADC1->ISR & ADC_ISR_ADRDY) );			/// Wait until ADC is ready to start conversion
+#ifdef HAL_ADC_MODULE_ENABLED
+extern ADC_HandleTypeDef hadc1;
+#define ADC_PTR &hadc1
+#endif
+
+
+static uint8_t number_of_channels = 0;
+static bool is_adc_already_inited = false;
+static uint16_t adc_raw[MAX_CHANNELS_NUM];
+
+
+int8_t adcInitDma(uint8_t num_of_channels) {
+#ifdef ADC_PTR
+    if (is_adc_already_inited == true) {
+        return STATUS_ERROR;
+    }
+    if (num_of_channels > MAX_CHANNELS_NUM) {
+        return STATUS_ERROR;
+    }
+    if (HAL_ADCEx_Calibration_Start(ADC_PTR) != HAL_OK) {
+        return STATUS_ERROR;
+    }
+    if (HAL_ADC_Start_DMA(ADC_PTR, (uint32_t*)&adc_raw, num_of_channels) != HAL_OK) {
+        return STATUS_ERROR;
+    }
+    is_adc_already_inited = true;
+    number_of_channels = num_of_channels;
+    return STATUS_OK;
+#endif
+    return STATUS_ERROR;
 }
 
-/**
-* @brief Convert the ADC and return the value
-* @return value of ADC
-*/
-uint16_t ADC::Do()
-{
-	ADC1->CR |= ADC_CR_ADSTART;
-	while( !(ADC1->ISR & ADC_ISR_EOC) );
-	//if( !(ADC1->ISR & ADC_ISR_EOC) )
-	//	ADC1->CR |= ADC_CR_ADSTART;
-	return ADC1->DR;
+int8_t adcGetAll(uint16_t* adc_measurements) {
+    if (is_adc_already_inited) {
+        memcpy((void*)adc_measurements, (void*)adc_raw, number_of_channels * sizeof(uint16_t));
+        return STATUS_OK;
+    }
+    return STATUS_ERROR;
 }
+
+uint16_t adcGet(uint8_t rank) {
+    if (is_adc_already_inited && rank < MAX_CHANNELS_NUM) {
+        return adc_raw[rank];
+    }
+    return 0;
+}
+
+
+int8_t adcInitWithoutDma(uint8_t num_of_channels) {
+#ifdef HAL_ADC_MODULE_ENABLED
+    if (is_adc_already_inited || num_of_channels == 0 || num_of_channels > MAX_CHANNELS_NUM) {
+        return STATUS_ERROR;
+    }
+    if (HAL_ADCEx_Calibration_Start(ADC_PTR) == HAL_OK) {
+        is_adc_already_inited = true;
+        number_of_channels = num_of_channels;
+        return STATUS_OK;
+    }
+#endif
+    return STATUS_ERROR;
+}
+
+int8_t adcMeasureWithoutDma(uint16_t values[]) {
+    if (!is_adc_already_inited) {
+        return STATUS_ERROR;
+    }
+
+    #ifdef HAL_ADC_MODULE_ENABLED
+    {
+        HAL_ADC_Start(ADC_PTR);
+        for (size_t ch_idx = 0; ch_idx < number_of_channels; ch_idx++) {
+            values[ch_idx] = (uint16_t)HAL_ADC_GetValue(ADC_PTR);
+        }
+        return STATUS_OK;
+    }
+    #endif
+
+    return STATUS_ERROR;
+}
+
+#ifdef HAL_ADC_MODULE_ENABLED
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc) {
+    if (hadc->Instance == ADC1) {
+        HAL_ADC_Start_DMA(ADC_PTR, (uint32_t*)&adc_raw, number_of_channels);
+    }
+}
+#endif
