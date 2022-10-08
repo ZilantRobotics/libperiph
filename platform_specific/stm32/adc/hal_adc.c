@@ -19,8 +19,13 @@
 #include "main.h"
 #include <string.h>
 #include <stdbool.h>
-#include "config.h"
 
+#ifndef STATUS_OK
+    #define STATUS_OK 0
+#endif
+#ifndef STATUS_ERROR
+    #define STATUS_ERROR -1
+#endif
 
 #define MAX_CHANNELS_NUM    8
 
