@@ -1,5 +1,11 @@
-#ifndef __ADC_HPP
-#define __ADC_HPP
+/**
+ * @file adc.hpp
+ * @author d.ponomarev
+ * @date Jun 25, 2018
+ */
+
+#ifndef PLATFORM_SPECIFIC_STM32_ADC_H_
+#define PLATFORM_SPECIFIC_STM32_ADC_H_
 
 #include "stm32f3xx.h"
 
@@ -14,4 +20,4 @@ struct ADC
 };
 
 
-#endif //__ADC_HPP
+#endif //PLATFORM_SPECIFIC_STM32_ADC_H_

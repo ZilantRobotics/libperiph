@@ -1,7 +1,8 @@
 /**
-* @file adc.cpp
-* @brief Implementation of ADC
-*/
+ * @file adc.cpp
+ * @author d.ponomarev
+ * @date Jun 25, 2018
+ */
 
 /*
 There are 4 12-bit successive approximation ADC.
@@ -43,28 +44,6 @@ void ADC::Init()
 	ADC1_2_COMMON->CCR |= ADC12_CCR_TSEN;
 	while( !(ADC1->ISR & ADC_ISR_ADRDY) );			/// Wait until ADC is ready to start conversion
 }
-//{
-//	enum
-//	{
-//		CHANNEL_1  = 1,
-//		CHANNEL_16 = 16,
-//	};
-//	/// ADC1 Clocking enable
-//	RCC->AHBENR |= RCC_AHBENR_ADC12EN;				/// Clocking enable
-//	RCC->CFGR2 |= RCC_CFGR2_ADCPRE12_DIV1;			/// Prescaler divider
-//	
-//	/// ADC1 Configuration
-//	ADC1_2_COMMON->CCR = 1 << ADC12_CCR_CKMODE_Pos;
-//	ADC1->IER |= ADC_IER_ADRDYIE;					/// ADRDY (ADC ready) interrupt enable
-//	ADC1->CFGR |= ADC_CFGR_DISCEN;					/// Discontinuous mode for regular channels enabled
-//	ADC1->IER |= ADC_IER_EOCIE;						/// EOC (End of regular conversion) interrupt enable
-//	ADC1->SQR1 |=  (CHANNEL_1 << ADC_SQR1_SQ1_Pos);	/// 1st conversion in regular sequence
-//	
-//	/// Enable the ADC1 and wait until ADC is ready to start conversion
-//	ADC1->CR = ADC_CR_ADEN;							/// Enable the ADC1
-//	while( !(ADC1->ISR & ADC_ISR_ADRDY) );			/// Wait until ADC is ready to start conversion
-//}
-
 
 /**
 * @brief Convert the ADC and return the value
