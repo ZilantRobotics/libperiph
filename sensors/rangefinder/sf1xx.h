@@ -5,14 +5,32 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 /**
- * @file rangesensor/sf1xx.h
+ * @file rangefinder/sf1xx.h
  * @author d.ponomarev
  */
+
 #ifndef RANGESENSOR_SF1XX_H_
 #define RANGESENSOR_SF1XX_H_
 
+#include <stdbool.h>
 #include <stdint.h>
 
-float sf1xxParseFromI2C(uint8_t i2c_response_buf[2]);
+/**
+  * @brief  Just save i2c_manager_id
+  */
+void sf1xxInit(int8_t i2c_manager_id);
+
+
+/**
+  * @brief  Process measurement
+  * @note   Blocking operation. It should be performed as fast as possible.
+  */
+bool sf1xxCollectData(uint32_t measurement_period);
+
+
+/**
+  * @brief  Parse I2C rx buffer
+  */
+float sf1xxParseCollectedData();
 
 #endif  // RANGESENSOR_SF1XX_H_

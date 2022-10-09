@@ -13,26 +13,31 @@
 #ifndef RANGESENSOR_TF_LUNA_H_
 #define RANGESENSOR_TF_LUNA_H_
 
-#include <stdbool.h>
 #include <stdint.h>
+#include <stddef.h>
+#include <stdbool.h>
+#include "uavcan/data_types.h"
 
 #define TF_LUNA_SERIAL_FRAME_SIZE   9
 #define TF_LUNA_BUFFER_SIZE         18
 
+/**
+ * @brief Init UART DMA with correponded buffer and size
+ * @return STATUS_OK if there is no error, otherwise STATUS_ERROR
+ * @todo several sensors might required UART, handle this case
+ */
+int8_t tfLunaInit();
+
 
 /**
- * @return
+ * @brief Parse UART buffer
+ * @return true if frame appear, otherwise false
  */
-bool tfLunaNextByte(uint8_t byte);
-
-/**
- * @return
- */
-bool tfLunaParseSerialFrame();
+bool tfLunaCollectData();
 
 /**
  * @return range in meters
  */
-float tfLunaGetRange();
+float tfLunaParseCollectedData();
 
 #endif  // RANGESENSOR_TF_LUNA_H_

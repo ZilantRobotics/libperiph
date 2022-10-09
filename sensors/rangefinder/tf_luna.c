@@ -13,6 +13,8 @@
 
 #include "rangefinder/tf_luna.h"
 #include <string.h>
+#include "config.h"
+#include "hal_uart.h"
 
 #define HEADER_BYTE 0x59
 
@@ -37,14 +39,31 @@ typedef struct {
 } TfLunaSerialFrame_t;
 
 
+static bool tfLunaNextByte(uint8_t byte);
+static bool tfLunaParseSerialFrame();
+
+
 static uint8_t uart_buf[TF_LUNA_BUFFER_SIZE];           ///< should have double frame size
 static uint8_t frame_buf[TF_LUNA_SERIAL_FRAME_SIZE];
-static uint32_t nothing_recv_counter = 0;
-static uint32_t err_recv_counter = 0;
 static TfLunaState_t state;
 
 
-float tfLunaGetRange() {
+int8_t tfLunaInit() {
+    ///< handle case when several sensor migh have access to UART here
+    return uartInitRxDma(uart_buf, TF_LUNA_BUFFER_SIZE);
+}
+
+bool tfLunaCollectData() {
+    uint8_t* buffer_ptr = uartRxDmaPop();
+    if (!buffer_ptr) {
+        return false;
+    }
+
+    memcpy(frame_buf, buffer_ptr, TF_LUNA_SERIAL_FRAME_SIZE);
+    return tfLunaParseSerialFrame();
+}
+
+float tfLunaParseCollectedData() {
     uint16_t distance_sm = ((TfLunaSerialFrame_t*)frame_buf)->distance;
     return distance_sm * 0.01;
 }
@@ -88,6 +107,7 @@ bool tfLunaNextByte(uint8_t byte) {
             break;
         case STATE_CHECK_SUM:
             state = STATE_SYNC_CHAR_1;
+            ///< todo: Check checksum here!!!
             return (byte != HEADER_BYTE) ? true : false;
         default:
             break;
