@@ -20,6 +20,14 @@
 #define TF_LUNA_SERIAL_FRAME_SIZE   9
 #define TF_LUNA_BUFFER_SIZE         18
 
+typedef struct {
+    uint16_t header;
+    uint16_t distance;
+    uint16_t amp;
+    uint16_t temp;
+    uint8_t check_sum;
+} TfLunaSerialFrame_t;
+
 /**
  * @return STATUS_OK if there is no error, otherwise STATUS_ERROR
  */
@@ -30,11 +38,6 @@ int8_t tfLunaInit();
  * @brief Parse UART buffer
  * @return true if frame appear, otherwise false
  */
-bool tfLunaCollectData(const uint8_t* buffer_ptr);
-
-/**
- * @return range in meters
- */
-float tfLunaParseCollectedData();
+float tfParseRange(const TfLunaSerialFrame_t* frame);
 
 #endif  // RANGESENSOR_TF_LUNA_H_

@@ -14,105 +14,51 @@
 #include "tf_luna.h"
 #include <string.h>
 
-#define HEADER_BYTE 0x59
-
-typedef enum {
-    STATE_SYNC_CHAR_1,
-    STATE_SYNC_CHAR_2,
-    STATE_DIST_L,
-    STATE_DIST_H,
-    STATE_AMP_L,
-    STATE_AMP_H,
-    STATE_TEMP_L,
-    STATE_TEMP_H,
-    STATE_CHECK_SUM,
-} TfLunaState_t;
-
-typedef struct {
-    uint16_t header;
-    uint16_t distance;
-    uint16_t amp;
-    uint16_t temp;
-    uint8_t check_sum;
-} TfLunaSerialFrame_t;
+#define HEAD_BYTE 0x59
 
 
-static bool tfLunaNextByte(uint8_t byte);
-static bool tfLunaParseSerialFrame();
+static int8_t tfLunaFindFrameStart();
+static float tfLunaParseData(int8_t idx);
 static uint8_t crc_8(const uint8_t* buf, uint8_t size);
 
 // This buffer should have previous frame and current!
 static uint8_t buffer[TF_LUNA_BUFFER_SIZE];
-static TfLunaState_t state;
 
 
 int8_t tfLunaInit() {
     return 0;
 }
 
-bool tfLunaCollectData(const uint8_t* buffer_ptr) {
+float tfParseRange(const TfLunaSerialFrame_t* buffer_ptr) {
     if (!buffer_ptr) {
         return false;
     }
 
-    // copy previous frame to the beginning
+    // copy previous frame to the beginning and save the new one
     memcpy(buffer, buffer + TF_LUNA_SERIAL_FRAME_SIZE, TF_LUNA_SERIAL_FRAME_SIZE);
-
-    // save the new frame
     memcpy(buffer + TF_LUNA_SERIAL_FRAME_SIZE, buffer_ptr, TF_LUNA_SERIAL_FRAME_SIZE);
-    return tfLunaParseSerialFrame();
+    
+    int8_t idx = tfLunaFindFrameStart();
+    if (idx >= 0) {
+        return tfLunaParseData(idx);
+    }
+    return -1;
 }
 
-float tfLunaParseCollectedData() {
-    TfLunaSerialFrame_t* frame = (TfLunaSerialFrame_t*)&buffer[TF_LUNA_SERIAL_FRAME_SIZE];
-    uint16_t distance_sm = frame->distance;
-    return distance_sm * 0.01;
-}
-
-bool tfLunaParseSerialFrame() {
-    for (uint32_t idx = TF_LUNA_SERIAL_FRAME_SIZE; idx < TF_LUNA_BUFFER_SIZE; idx++) {
-        if (tfLunaNextByte(buffer[idx])) {
-            return crc_8(buffer + idx - 8, 8) == buffer[idx];
+int8_t tfLunaFindFrameStart() {
+    int8_t idx;
+    for (idx = TF_LUNA_SERIAL_FRAME_SIZE; idx > 0; idx--) {
+        if (buffer[idx] == HEAD_BYTE && buffer[idx + 1] == HEAD_BYTE && crc_8(buffer + idx, 8)) {
+            return idx;
         }
     }
-    return false;
+    return -1;
 }
 
-bool tfLunaNextByte(uint8_t byte) {
-    switch (state) {
-        case STATE_SYNC_CHAR_1:
-            if (byte == HEADER_BYTE) {
-                state = STATE_SYNC_CHAR_2;
-            }
-            break;
-        case STATE_SYNC_CHAR_2:
-            state = (byte == HEADER_BYTE) ? STATE_DIST_L : STATE_SYNC_CHAR_1;
-            break;
-        case STATE_DIST_L:
-            state = (byte != HEADER_BYTE) ? STATE_DIST_H : STATE_SYNC_CHAR_1;
-            break;
-        case STATE_DIST_H:
-            state = (byte != HEADER_BYTE) ? STATE_AMP_L : STATE_SYNC_CHAR_1;
-            break;
-        case STATE_AMP_L:
-            state = (byte != HEADER_BYTE) ? STATE_AMP_H : STATE_SYNC_CHAR_1;
-            break;
-        case STATE_AMP_H:
-            state = (byte != HEADER_BYTE) ? STATE_TEMP_L : STATE_SYNC_CHAR_1;
-            break;
-        case STATE_TEMP_L:
-            state = (byte != HEADER_BYTE) ? STATE_TEMP_H : STATE_SYNC_CHAR_1;
-            break;
-        case STATE_TEMP_H:
-            state = (byte != HEADER_BYTE) ? STATE_CHECK_SUM : STATE_SYNC_CHAR_1;
-            break;
-        case STATE_CHECK_SUM:
-            state = STATE_SYNC_CHAR_1;
-            return true;
-        default:
-            break;
-    }
-    return false;
+float tfLunaParseData(int8_t idx) {
+    TfLunaSerialFrame_t* frame = (TfLunaSerialFrame_t*)&buffer[idx];
+    uint16_t distance_sm = frame->distance;
+    return distance_sm * 0.01;
 }
 
 uint8_t crc_8(const uint8_t* buf, uint8_t size) {
