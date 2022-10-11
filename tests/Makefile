@@ -55,3 +55,7 @@ ttl_test:
 servo_test:
 	$(GXX_COMPILE) $(SRC_SERVO_TEST) $(COMMON_LIBS)
 	./shell
+
+rangefinder_tf_luna_test:
+	$(GXX_COMPILE) rangefinder/tf_luna.cpp ../sensors/rangefinder/tf_luna.c $(COMMON_LIBS)
+	./shell

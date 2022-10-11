@@ -6,7 +6,7 @@
  */
 
 /**
- * @file rangesensor/tf_luna.h
+ * @file tf_luna.h
  * @author d.ponomarev
  * @note https://files.seeedstudio.com/wiki/Grove-TF_Mini_LiDAR/res/SJ-PM-TF-Luna-A03-Product-Manual.pdf
  */
@@ -16,15 +16,12 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
-#include "uavcan/data_types.h"
 
 #define TF_LUNA_SERIAL_FRAME_SIZE   9
 #define TF_LUNA_BUFFER_SIZE         18
 
 /**
- * @brief Init UART DMA with correponded buffer and size
  * @return STATUS_OK if there is no error, otherwise STATUS_ERROR
- * @todo several sensors might required UART, handle this case
  */
 int8_t tfLunaInit();
 
@@ -33,7 +30,7 @@ int8_t tfLunaInit();
  * @brief Parse UART buffer
  * @return true if frame appear, otherwise false
  */
-bool tfLunaCollectData();
+bool tfLunaCollectData(const uint8_t* buffer_ptr);
 
 /**
  * @return range in meters

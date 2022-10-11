@@ -1,0 +1,40 @@
+/**
+ * @file tf_luna.cpp
+ * @author d.ponomarev
+ * @date Jun 05, 2021
+ */
+
+#include <gtest/gtest.h>
+#include <iostream>
+#include "rangefinder/tf_luna.h"
+
+uint8_t frame_ok_1[] = {'Y', 'Y', 53, 0, 25, 0, 3,   16, 19};
+uint8_t frame_ok_2[] = {'Y', 'Y', 0,  0, 0,  0, 205, 55, 182};
+uint8_t frame_ok_3[] = {'Y', 'Y', 0,  0, 0,  0, 128, 140, 190};
+uint8_t frame_ok_4[] = {'Y', 'Y', 0,  0, 0,  0, 4,   148, 74};
+
+float tfParse(uint8_t buf[]) {
+    return tfLunaCollectData(buf) ? tfLunaParseCollectedData() : -1;
+}
+
+TEST(TfLuna, parser_ok_1) {
+    ASSERT_FLOAT_EQ(0.53, tfParse(frame_ok_1));
+}
+
+TEST(TfLuna, parser_ok_2) {
+    ASSERT_FLOAT_EQ(0.0, tfParse(frame_ok_2));
+}
+
+TEST(TfLuna, parser_ok_3) {
+    ASSERT_FLOAT_EQ(0.0, tfParse(frame_ok_3));
+}
+
+TEST(TfLuna, parser_ok_4) {
+    ASSERT_FLOAT_EQ(0.0, tfParse(frame_ok_4));
+}
+
+
+int main (int argc, char *argv[]) {
+    testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
+}

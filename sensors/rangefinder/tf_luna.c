@@ -6,15 +6,13 @@
  */
 
 /**
- * @file rangesensor/tf_luna.c
+ * @file tf_luna.c
  * @author d.ponomarev
  * @note https://files.seeedstudio.com/wiki/Grove-TF_Mini_LiDAR/res/SJ-PM-TF-Luna-A03-Product-Manual.pdf
  */
 
-#include "rangefinder/tf_luna.h"
+#include "tf_luna.h"
 #include <string.h>
-#include "config.h"
-#include "hal_uart.h"
 
 #define HEADER_BYTE 0x59
 
@@ -41,37 +39,40 @@ typedef struct {
 
 static bool tfLunaNextByte(uint8_t byte);
 static bool tfLunaParseSerialFrame();
+static uint8_t crc_8(const uint8_t* buf, uint8_t size);
 
-
-static uint8_t uart_buf[TF_LUNA_BUFFER_SIZE];           ///< should have double frame size
-static uint8_t frame_buf[TF_LUNA_SERIAL_FRAME_SIZE];
+// This buffer should have previous frame and current!
+static uint8_t buffer[TF_LUNA_BUFFER_SIZE];
 static TfLunaState_t state;
 
 
 int8_t tfLunaInit() {
-    ///< handle case when several sensor migh have access to UART here
-    return uartInitRxDma(uart_buf, TF_LUNA_BUFFER_SIZE);
+    return 0;
 }
 
-bool tfLunaCollectData() {
-    uint8_t* buffer_ptr = uartRxDmaPop();
+bool tfLunaCollectData(const uint8_t* buffer_ptr) {
     if (!buffer_ptr) {
         return false;
     }
 
-    memcpy(frame_buf, buffer_ptr, TF_LUNA_SERIAL_FRAME_SIZE);
+    // copy previous frame to the beginning
+    memcpy(buffer, buffer + TF_LUNA_SERIAL_FRAME_SIZE, TF_LUNA_SERIAL_FRAME_SIZE);
+
+    // save the new frame
+    memcpy(buffer + TF_LUNA_SERIAL_FRAME_SIZE, buffer_ptr, TF_LUNA_SERIAL_FRAME_SIZE);
     return tfLunaParseSerialFrame();
 }
 
 float tfLunaParseCollectedData() {
-    uint16_t distance_sm = ((TfLunaSerialFrame_t*)frame_buf)->distance;
+    TfLunaSerialFrame_t* frame = (TfLunaSerialFrame_t*)&buffer[TF_LUNA_SERIAL_FRAME_SIZE];
+    uint16_t distance_sm = frame->distance;
     return distance_sm * 0.01;
 }
 
 bool tfLunaParseSerialFrame() {
-    for (uint32_t idx = 0; idx < TF_LUNA_SERIAL_FRAME_SIZE; idx++) {
-        if (tfLunaNextByte(frame_buf[idx])) {
-            return true;
+    for (uint32_t idx = TF_LUNA_SERIAL_FRAME_SIZE; idx < TF_LUNA_BUFFER_SIZE; idx++) {
+        if (tfLunaNextByte(buffer[idx])) {
+            return crc_8(buffer + idx - 8, 8) == buffer[idx];
         }
     }
     return false;
@@ -107,10 +108,17 @@ bool tfLunaNextByte(uint8_t byte) {
             break;
         case STATE_CHECK_SUM:
             state = STATE_SYNC_CHAR_1;
-            ///< todo: Check checksum here!!!
-            return (byte != HEADER_BYTE) ? true : false;
+            return true;
         default:
             break;
     }
     return false;
+}
+
+uint8_t crc_8(const uint8_t* buf, uint8_t size) {
+    uint8_t sum = 0;
+    for (uint_fast8_t idx = 0; idx < size; idx++) {
+        sum += buf[idx];
+    }
+    return sum;
 }
