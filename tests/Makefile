@@ -18,7 +18,7 @@ SRC_RM3100_TEST=test_rm3100.cpp             			../sensors/magnetometer/rm3100.c 
 SRC_TTL_TEST=test_ttl.cpp             					../common/ttl.c
 SRC_SERVO_TEST=test_servo.cpp           				../devices/servos.c		../common/ttl.c		./hal_timers_mock.c
 
-all: esc_flame_test ublox_test ms4525do_test stm32_temperature_test bmp280_test hmc5883l_test rm3100_test ttl_test servo_test
+all: esc_flame_test ublox_test ms4525do_test stm32_temperature_test bmp280_test hmc5883l_test rm3100_test ttl_test servo_test rangefinder_tf_luna_test
 
 esc_flame_test:
 	$(GXX_COMPILE) $(SRC_ESC_FLAME_TEST) $(COMMON_LIBS)
@@ -54,4 +54,8 @@ ttl_test:
 
 servo_test:
 	$(GXX_COMPILE) $(SRC_SERVO_TEST) $(COMMON_LIBS)
+	./shell
+
+rangefinder_tf_luna_test:
+	$(GXX_COMPILE) rangefinder/tf_luna.cpp ../sensors/rangefinder/tf_luna.c $(COMMON_LIBS)
 	./shell

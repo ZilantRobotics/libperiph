@@ -23,10 +23,10 @@ It was tested on:
 | sensors/mag_rm3100                | spi          | build |
 | sensors/mpu9250                   | i2c          | build |
 | sensors/ms4252do                  | -            | build + unit tests |
-| sensors/rangefinder_garmin_lite   | i2c          | build |
-| sensors/rangefinder_srf_05        | refactor me  | build |
-| sensors/rangesensor_sf1xx         | refactor me  | build |
-| sensors/rangesensor_tf_luna       | -            | build |
+| sensors/rangefinder/garmin_lite   | i2c          | build |
+| sensors/rangefinder/srf_05        | refactor me  | build |
+| sensors/rangesensor/sf1xx         | refactor me  | build |
+| sensors/rangesensor/tf_luna       | -            | build + unit tests |
 | sensors/temperature_sensor        | -            | build + unit tests |
 | sensors/ublox                     | -            | build + unit tests |
 

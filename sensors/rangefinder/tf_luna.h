@@ -6,33 +6,38 @@
  */
 
 /**
- * @file rangesensor/tf_luna.h
+ * @file tf_luna.h
  * @author d.ponomarev
  * @note https://files.seeedstudio.com/wiki/Grove-TF_Mini_LiDAR/res/SJ-PM-TF-Luna-A03-Product-Manual.pdf
  */
 #ifndef RANGESENSOR_TF_LUNA_H_
 #define RANGESENSOR_TF_LUNA_H_
 
-#include <stdbool.h>
 #include <stdint.h>
+#include <stddef.h>
+#include <stdbool.h>
 
 #define TF_LUNA_SERIAL_FRAME_SIZE   9
 #define TF_LUNA_BUFFER_SIZE         18
 
+typedef struct {
+    uint16_t header;
+    uint16_t distance;
+    uint16_t amp;
+    uint16_t temp;
+    uint8_t check_sum;
+} TfLunaSerialFrame_t;
 
 /**
- * @return
+ * @return STATUS_OK if there is no error, otherwise STATUS_ERROR
  */
-bool tfLunaNextByte(uint8_t byte);
+int8_t tfLunaInit();
+
 
 /**
- * @return
+ * @brief Parse UART buffer
+ * @return true if frame appear, otherwise false
  */
-bool tfLunaParseSerialFrame();
-
-/**
- * @return range in meters
- */
-float tfLunaGetRange();
+float tfParseRange(const TfLunaSerialFrame_t* frame);
 
 #endif  // RANGESENSOR_TF_LUNA_H_
