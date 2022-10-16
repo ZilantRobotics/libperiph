@@ -4,14 +4,9 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-/**
- * @file adc.hpp
- * @author d.ponomarev
- * @date Jun 25, 2018
- */
 
-#ifndef PLATFORM_SPECIFIC_STM32_ADC_H_
-#define PLATFORM_SPECIFIC_STM32_ADC_H_
+#ifndef PLATFORM_SPECIFIC_HAL_ADC_H_
+#define PLATFORM_SPECIFIC_HAL_ADC_H_
 
 #include <stdint.h>
 
@@ -29,4 +24,4 @@ uint16_t adcGet(uint8_t rank);
 int8_t adcInitWithoutDma(uint8_t num_of_channels);
 int8_t adcMeasureWithoutDma(uint16_t values[]);
 
-#endif //PLATFORM_SPECIFIC_STM32_ADC_H_
+#endif // PLATFORM_SPECIFIC_HAL_ADC_H_

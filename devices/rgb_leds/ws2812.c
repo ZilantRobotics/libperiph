@@ -24,6 +24,7 @@
 
 #include "ws2812.h"
 #include <stdbool.h>
+#include <stddef.h>
 #include "config.h"
 
 
