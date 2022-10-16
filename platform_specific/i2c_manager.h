@@ -5,12 +5,11 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-#ifndef SRC_HAL_STM32_I2C_MANAGER_H_
-#define SRC_HAL_STM32_I2C_MANAGER_H_
+#ifndef PLATFORM_SPECIFIC_I2C_MANAGER_H_
+#define PLATFORM_SPECIFIC_I2C_MANAGER_H_
 
 #include <stdint.h>
 #include "hal_i2c.h"
-
 
 /**
  * @brief Initialize an i2c master node by creating a semaphore
@@ -33,4 +32,4 @@ void i2cManagerSpin();
 int8_t i2cWriteRegisterOneByte(uint8_t dev_id, uint8_t reg_addr, uint8_t new_reg_value);
 int8_t i2cReadRegister(uint8_t dev_id, uint8_t reg_addr, uint8_t* out, uint8_t out_length);
 
-#endif  // SRC_HAL_STM32_I2C_MANAGER_H_
+#endif  // PLATFORM_SPECIFIC_I2C_MANAGER_H_

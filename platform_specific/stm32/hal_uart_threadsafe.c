@@ -63,27 +63,27 @@ int8_t uartInitTxDmaThreadSafe() {
 #endif
 }
 
-HAL_StatusTypeDef uartTransmitDmaThreadSafe(uint8_t buffer[], size_t size) {
+int8_t uartTransmitDmaThreadSafe(uint8_t buffer[], size_t size) {
 #ifdef USE_THREAD_SAFE_UART
     if (dma_tx_sem == NULL) {
-        return HAL_ERROR;
+        return -1;
     } else if (xSemaphoreTake(dma_tx_sem, 100) == pdTRUE) {
-        HAL_StatusTypeDef tx_result = uartTransmitDma(buffer, size);
-        if (tx_result != HAL_OK) {
+        int8_t tx_result = uartTransmitDma(buffer, size);
+        if (tx_result != 0) {
             if (dma_tx_sem != NULL) {
                 xSemaphoreGiveFromISR(dma_tx_sem, &pxHigherPriorityTaskWoken);
             } else {
                 asm("NOP");  ///< handle critical error
             }
         }
-        return tx_result;
+        return (tx_result == HAL_OK) ? 0 : -1;
     } else {
-        return HAL_ERROR;
+        return -1;
     }
 #else
     UNUSED(buffer);
     UNUSED(size);
-    return HAL_ERROR;
+    return -1;
 #endif
 }
 

@@ -61,22 +61,22 @@ uint8_t* uartRxDmaPop() {
 }
 
 
-HAL_StatusTypeDef uartTransmit(uint8_t buffer[], size_t size) {
+int8_t uartTransmit(uint8_t buffer[], size_t size) {
     if (size > MAX_UART_TX_BUF_SIZE) {
-        return HAL_ERROR;
+        return -1;
     }
     memcpy(tx_buffer, buffer, size);
-    return HAL_UART_Transmit(&huart1, tx_buffer, size, 500);
+    return HAL_UART_Transmit(&huart1, tx_buffer, size, 500) == HAL_OK ? 0 : -1;
 }
 
-HAL_StatusTypeDef uartTransmitDma(uint8_t buffer[], size_t size) {
+int8_t uartTransmitDma(uint8_t buffer[], size_t size) {
     if (size > MAX_UART_TX_BUF_SIZE || !uart_full_transmitted) {
-        return HAL_ERROR;
+        return -1;
     }
     memcpy(tx_buffer, buffer, size);
     tx_buffer_max_size = size;
     uart_full_transmitted = false;
-    return HAL_UART_Transmit_DMA(&huart1, tx_buffer, size);
+    return HAL_UART_Transmit_DMA(&huart1, tx_buffer, size) == HAL_OK ? 0 : -1;
 }
 
 bool uartIsTxReady() {

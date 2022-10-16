@@ -5,8 +5,8 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-#ifndef SRC_HAL_STM32_HAL_UART_THREADSAFE_H_
-#define SRC_HAL_STM32_HAL_UART_THREADSAFE_H_
+#ifndef PLATFORM_SPECIFIC_HAL_UART_THREADSAFE_H_
+#define PLATFORM_SPECIFIC_HAL_UART_THREADSAFE_H_
 
 #include "hal_uart.h"
 
@@ -22,9 +22,9 @@ bool uartWaitUntilReceiveIsComplete(uint32_t timeout_ms);
  * @brief UART1 TX
  */
 int8_t uartInitTxDmaThreadSafe();
-HAL_StatusTypeDef uartTransmitDmaThreadSafe(uint8_t buffer[], size_t size);
+int8_t uartTransmitDmaThreadSafe(uint8_t buffer[], size_t size);
 
 void uartTxDmaCallback();
 void uartRxDmaCallback();
 
-#endif  // SRC_HAL_STM32_HAL_UART_THREADSAFE_H_
+#endif  // PLATFORM_SPECIFIC_HAL_UART_THREADSAFE_H_

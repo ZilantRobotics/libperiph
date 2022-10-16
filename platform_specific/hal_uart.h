@@ -5,12 +5,12 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-#ifndef SRC_HAL_STM32_HAL_UART_H_
-#define SRC_HAL_STM32_HAL_UART_H_
+#ifndef PLATFORM_SPECIFIC_HAL_UART_H_
+#define PLATFORM_SPECIFIC_HAL_UART_H_
 
 #include <stdint.h>
 #include <stdbool.h>
-#include "main.h"
+#include <stddef.h>
 
 
 /**
@@ -26,8 +26,8 @@ uint8_t* uartRxDmaPop();
 /**
  * @brief UART1 TX
  */
-HAL_StatusTypeDef uartTransmit(uint8_t buffer[], size_t size);
-HAL_StatusTypeDef uartTransmitDma(uint8_t buffer[], size_t size);
+int8_t uartTransmit(uint8_t buffer[], size_t size);
+int8_t uartTransmitDma(uint8_t buffer[], size_t size);
 bool uartIsTxReady();
 
 void uartEnableTx();
@@ -42,4 +42,4 @@ int8_t uartInitRxDmaSecond(uint8_t buffer[], uint16_t size);
 size_t uartLastRecvIndexSecond();
 
 
-#endif  // SRC_HAL_STM32_HAL_UART_H_
+#endif  // PLATFORM_SPECIFIC_HAL_UART_H_

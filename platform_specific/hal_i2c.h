@@ -5,18 +5,15 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-#ifndef SRC_HAL_STM32_HAL_EXTI_H_
-#define SRC_HAL_STM32_HAL_EXTI_H_
-
+#ifndef PLATFORM_SPECIFIC_HAL_I2C_H_
+#define PLATFORM_SPECIFIC_HAL_I2C_H_
 
 #include <stdint.h>
-#include <stdbool.h>
 
+/**
+ * @brief Simple wrappers under HAL TX/RX functions
+ */
+int8_t i2cTransmit(uint8_t id, const uint8_t tx[], uint8_t len);
+int8_t i2cReceive(uint8_t id, uint8_t* rx, uint8_t len);
 
-int8_t extiInit();
-bool extiIsInited();
-bool extiWaitForInterrupt_12_15(uint16_t block_time_ms);
-bool extiWaitForInterrupt_0_11(uint16_t block_time_ms);
-
-
-#endif  // SRC_HAL_STM32_HAL_EXTI_H_
+#endif  // PLATFORM_SPECIFIC_HAL_I2C_H_

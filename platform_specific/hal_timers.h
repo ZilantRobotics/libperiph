@@ -5,12 +5,10 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-#ifndef SRC_HAL_STM32_HAL_TIMERS_H_
-#define SRC_HAL_STM32_HAL_TIMERS_H_
-
+#ifndef PLATFORM_SPECIFIC_HAL_TIMERS_H_
+#define PLATFORM_SPECIFIC_HAL_TIMERS_H_
 
 #include <stdint.h>
-
 
 typedef enum {
     CH_A1_PIN_PB7 = 0,      // TIM4_CH2    I2C1_SDA
@@ -62,4 +60,4 @@ int32_t timerGetPwmDuration(Channel_t channel);
   */
 uint32_t timerGetCapturedValue(Channel_t channel);
 
-#endif  // SRC_HAL_STM32_HAL_TIMERS_H_
+#endif  // PLATFORM_SPECIFIC_HAL_TIMERS_H_
