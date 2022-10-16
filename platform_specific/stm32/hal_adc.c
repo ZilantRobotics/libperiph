@@ -4,28 +4,13 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-/**
- * @file adc.cpp
- * @author d.ponomarev
- * @date Jun 25, 2018
- * @note stm32f103:
- * There are 2 adc (ADC1, ADC2) with 16 channels both.
- * There are 2 types:
- * 1. Injected (up to 4) - have separate cell for each channel
- * 2. Regular (no limit) - only one cell, but you can use DMA
- */
 
 #include "hal_adc.h"
 #include "main.h"
 #include <string.h>
 #include <stdbool.h>
+#include "config.h"
 
-#ifndef STATUS_OK
-    #define STATUS_OK 0
-#endif
-#ifndef STATUS_ERROR
-    #define STATUS_ERROR -1
-#endif
 
 #define MAX_CHANNELS_NUM    8
 
