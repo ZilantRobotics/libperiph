@@ -44,10 +44,13 @@ void uavcanServosUpdateParams(Channel_t tim_ch, const ServoParameters_t* new_par
 
 /**
   * @brief You should periodically call this function to set default values to `dead` setpoints.
+  * uavcanServosSetSetpoint and uavcanServosProcessTimeToLiveChecks do not actually update the output
+  * uavcanServosUpdateAllChannelsPwm updates the actual output pin state
   */
-void uavcanServosProcessTimeToLiveChecks(uint32_t crnt_ts_ms);
+void uavcanServosSetArmingStatus(bool arm, uint32_t crnt_time_ms);
 void uavcanServosSetSetpoint(uint8_t sp_idx, int16_t value, uint32_t crnt_time_ms);
-void uavcanServosUpdateAllChannelsPwm();
+void uavcanServosProcessTimeToLiveChecks(uint32_t crnt_ts_ms);
+void uavcanServosUpdateAllChannelsPwm(uint32_t crnt_ts_ms);
 
 /**
   * @return Auxillary getters
