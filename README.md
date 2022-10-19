@@ -27,6 +27,7 @@ It was tested on:
 | sensors/rangefinder/srf_05        | refactor me  | build |
 | sensors/rangesensor/sf1xx         | refactor me  | build |
 | sensors/rangesensor/tf_luna       | -            | build + unit tests |
+| sensors/rangesensor/vl53l0x       | -            |  |
 | sensors/temperature_sensor        | -            | build + unit tests |
 | sensors/ublox                     | -            | build + unit tests |
 
