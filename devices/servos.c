@@ -26,22 +26,31 @@
 ServoParameters_t params[SERVO_TIM_CHANNELS_AMOUNT];
 static bool inited_channels[SERVO_TIM_CHANNELS_AMOUNT] = {};
 static int16_t setpoints[SETPOINTS_AMOUNT] = {};  ///< the same as RawCommand
+static uint32_t arm_ts_ms = 0;
 
 static int8_t uavcanServosInitPwmChannel(Channel_t tim_channel_idx);
 static void uavcanServosSetDefaultValueForChannel(Channel_t tim_channel);
-
+static void uavcanServosUpdateChannelStateAccordingToSetpoint(Channel_t tim_ch);
 
 int8_t uavcanServosInitChannel(Channel_t tim_channel, const ServoParameters_t* servo_params) {
-    if (!servo_params || (uint32_t)tim_channel >= SERVO_TIM_CHANNELS_AMOUNT) {
+    if (!servo_params ||
+            (uint32_t)tim_channel >= SERVO_TIM_CHANNELS_AMOUNT ||
+            servo_params->ch >= SETPOINTS_AMOUNT) {
         return STATUS_ERROR;
     }
 
     uavcanServosUpdateParams(tim_channel, servo_params);
+
+    if (inited_channels[tim_channel]) {
+        return STATUS_OK;
+    }
+
     setpoints[servo_params->ch] = DEFAULT_SETPOINT_VALUE;
     if (uavcanServosInitPwmChannel(tim_channel) == STATUS_ERROR) {
         return STATUS_ERROR;
     }
     inited_channels[tim_channel] = true;
+
     return STATUS_OK;
 }
 
@@ -55,19 +64,8 @@ void uavcanServosUpdateParams(Channel_t tim_ch_idx, const ServoParameters_t* new
     params[tim_ch_idx].def = new_params->def;
 }
 
-void uavcanServosProcessTimeToLiveChecks(uint32_t crnt_ts_ms) {
-    for (uint_fast8_t tim_idx = 0; tim_idx < SERVO_TIM_CHANNELS_AMOUNT; tim_idx++) {
-        Channel_t tim_ch = (Channel_t)tim_idx;
-        if (!uavcanServosIsChannelInited(tim_ch)) {
-            continue;
-        }
-
-        uint8_t sp_idx = params[tim_ch].ch;
-        if (!ttlIsSetpointAlive(sp_idx, crnt_ts_ms)) {
-            setpoints[sp_idx] = DEFAULT_SETPOINT_VALUE;
-            uavcanServosSetDefaultValueForChannel(tim_ch);
-        }
-    }
+void uavcanServosSetArmingStatus(bool arm, uint32_t crnt_time_ms) {
+    arm_ts_ms = (arm) ? crnt_time_ms : 0;
 }
 
 void uavcanServosSetSetpoint(uint8_t sp_idx, int16_t value, uint32_t crnt_time_ms) {
@@ -77,18 +75,26 @@ void uavcanServosSetSetpoint(uint8_t sp_idx, int16_t value, uint32_t crnt_time_m
     }
 }
 
-void uavcanServosUpdateAllChannelsPwm() {
+void uavcanServosProcessTimeToLiveChecks(uint32_t crnt_ts_ms) {
     for (uint_fast8_t tim_idx = 0; tim_idx < SERVO_TIM_CHANNELS_AMOUNT; tim_idx++) {
-        Channel_t tim = (Channel_t)tim_idx;
-        if (!uavcanServosIsChannelInited(tim)) {
+        uint8_t sp_idx = params[tim_idx].ch;
+        if (sp_idx >= SETPOINTS_AMOUNT) {
             continue;
         }
-        uint8_t sp_idx = uavcanServosGetTimerSetpoint(tim);
-        int32_t val = uavcanServosGetSetpoint(sp_idx);
+        if (!ttlIsSetpointAlive(sp_idx, crnt_ts_ms)) {
+            setpoints[sp_idx] = DEFAULT_SETPOINT_VALUE;
+        }
+    }
+}
 
-        int32_t pwm = mapRawCommandToPwm(val, params[tim].min, params[tim].max, params[tim].def);
-        if (pwm >= 0) {
-            timerSetPwmDuration(tim, pwm);
+void uavcanServosUpdateAllChannelsPwm(uint32_t crnt_ts_ms) {
+    for (uint_fast8_t tim_idx = 0; tim_idx < SERVO_TIM_CHANNELS_AMOUNT; tim_idx++) {
+        Channel_t tim_ch = (Channel_t)tim_idx;
+
+        if (arm_ts_ms + 500 < crnt_ts_ms) {
+            uavcanServosSetDefaultValueForChannel(tim_ch);
+        } else {
+            uavcanServosUpdateChannelStateAccordingToSetpoint(tim_ch);
         }
     }
 }
@@ -160,6 +166,19 @@ int8_t uavcanServosInitPwmChannel(Channel_t tim_channel_idx) {
 
 void uavcanServosSetDefaultValueForChannel(Channel_t tim_ch) {
     timerSetPwmDuration(tim_ch, params[tim_ch].def);
+}
+
+void uavcanServosUpdateChannelStateAccordingToSetpoint(Channel_t tim_ch) {
+    uint8_t sp_idx = uavcanServosGetTimerSetpoint(tim_ch);
+    int32_t val = uavcanServosGetSetpoint(sp_idx);
+    uint32_t min = params[tim_ch].min;
+    uint32_t max = params[tim_ch].max;
+    uint32_t def = params[tim_ch].def;
+
+    int32_t pwm = mapRawCommandToPwm(val, min, max, def);
+    if (pwm >= 0) {
+        timerSetPwmDuration(tim_ch, pwm);
+    }
 }
 
 int32_t mapRawCommandToPwm(int32_t value, int32_t min_pwm, int32_t max_pwm, int32_t def_pwm) {
