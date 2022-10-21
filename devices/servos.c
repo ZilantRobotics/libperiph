@@ -40,11 +40,17 @@ int8_t uavcanServosInitChannel(Channel_t tim_channel, const ServoParameters_t* s
     }
 
     uavcanServosUpdateParams(tim_channel, servo_params);
+
+    if (inited_channels[tim_channel]) {
+        return STATUS_OK;
+    }
+
     setpoints[servo_params->ch] = DEFAULT_SETPOINT_VALUE;
     if (uavcanServosInitPwmChannel(tim_channel) == STATUS_ERROR) {
         return STATUS_ERROR;
     }
     inited_channels[tim_channel] = true;
+
     return STATUS_OK;
 }
 
