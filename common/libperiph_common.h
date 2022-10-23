@@ -6,19 +6,15 @@
  */
 
 /**
- * @file hal_i2c_mock.cpp
+ * @file libperiph_common.h
  * @author d.ponomarev
+ * @date Oct 23, 2022
  */
 
-#include <stdint.h>
+#ifndef SRC_COMMON_LIBPERIPH_COMMON_H_
+#define SRC_COMMON_LIBPERIPH_COMMON_H_
 
-int8_t i2cManagerPerformRequest(int8_t device_id, void (*function)()) {
-    function();
-    return 0;
-}
-int8_t i2cTransmit(uint8_t id, const uint8_t tx[], uint8_t len) {
-    return 0;
-}
-int8_t i2cReceive(uint8_t id, uint8_t* rx, uint8_t len) {
-    return len;
-}
+#define STATUS_OK       0
+#define STATUS_ERROR    -1
+
+#endif  // SRC_COMMON_LIBPERIPH_COMMON_H_

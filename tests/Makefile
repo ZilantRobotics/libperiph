@@ -3,8 +3,14 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-COMMON_INCLUDES=-I ../common/ -I ../devices/ -I ../sensors/ -I ./
+COMMON_INCLUDES=-I ../common/ \
+				-I ../devices/ \
+				-I ../sensors/ \
+				-I ./ \
+				-I ../platform_specific
+
 COMMON_LIBS=-lpthread -pthread -lgtest
+COMMON_LIBS += $(wildcard ../platform_specific/dummy/*.c)
 FLAGS=-Wall -std=c++11
 GXX_COMPILE=g++ $(COMMON_INCLUDES) $(FLAGS)  -o shell 
 
@@ -12,11 +18,11 @@ SRC_UBLOX_TEST=test_ublox.cpp                   		../sensors/gps/ublox.c ../sens
 SRC_ESC_FLAME_TEST=test_esc_flame.cpp           		../sensors/esc/flame.c
 SRC_MS4525DO_TEST=test_ms4525do.cpp             		../sensors/differential_pressure/ms4525do.c
 SRC_STM32_TEMPERATURE_TEST=test_stm32_temperature.cpp 	../sensors/temperature_sensor/stm32_temperature.c
-SRC_BMP280_TEST=test_bmp280.cpp             			../sensors/barometer/bmp280.c hal_i2c_mock.cpp
-SRC_HMC5883_TEST=test_hmc5883l.cpp             			../sensors/magnetometer/hmc5883l.c hal_i2c_mock.cpp
-SRC_RM3100_TEST=test_rm3100.cpp             			../sensors/magnetometer/rm3100.c hal_spi_mock.cpp
+SRC_BMP280_TEST=test_bmp280.cpp             			../sensors/barometer/bmp280.c
+SRC_HMC5883_TEST=test_hmc5883l.cpp             			../sensors/magnetometer/hmc5883l.c
+SRC_RM3100_TEST=test_rm3100.cpp             			../sensors/magnetometer/rm3100.c
 SRC_TTL_TEST=test_ttl.cpp             					../common/ttl.c
-SRC_SERVO_TEST=test_servo.cpp           				../devices/servos.c		../common/ttl.c		./hal_timers_mock.c
+SRC_SERVO_TEST=test_servo.cpp           				../devices/servos.c		../common/ttl.c
 
 all: esc_flame_test ublox_test ms4525do_test stm32_temperature_test bmp280_test hmc5883l_test rm3100_test ttl_test servo_test rangefinder_tf_luna_test
 
