@@ -13,7 +13,7 @@ $CXX $FLAGS devices/seven_segments_indicators.cpp   $INC -o build/seven_segments
 # $CC $FLAGS devices/ws2812.c                         $INC -o build/ws2812.o
 
 $CC $FLAGS sensors/barometer/bmp280.c               $INC -o build/baro_bmp280.o
-$CC $FLAGS sensors/current_sensor/acs712.c          $INC -o build/acs712.o
+$CC $FLAGS sensors/current_sensor/acs712.c   ms4525do       $INC -o build/acs712.o
 $CC $FLAGS sensors/differential_pressure/ms4525do.c $INC -o build/ms4525do.o
 $CXX $FLAGS sensors/encoder/encoder.cpp             $INC -o build/encoder.o
 $CC $FLAGS sensors/esc/flame.c                      $INC -o build/esc_flame.o

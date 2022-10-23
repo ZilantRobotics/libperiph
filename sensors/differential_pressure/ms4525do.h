@@ -15,7 +15,7 @@
 
 #include <stdint.h>
 
-void ms4525doInit();
+int8_t ms4525doInit();
 void ms4525doMeasure();
 void ms4525doParse(float* raw_temperature, float* raw_diff_press);
 
