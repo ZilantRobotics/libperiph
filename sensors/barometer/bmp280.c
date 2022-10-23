@@ -11,17 +11,10 @@
  */
 
 #include "barometer/bmp280.h"
+#include "libperiph_common.h"
 #include <stdint.h>
 #include <stdbool.h>
 #include <math.h>
-
-
-#ifndef STATUS_OK
-    #define STATUS_OK       0
-#endif
-#ifndef STATUS_ERROR
-    #define STATUS_ERROR    -1
-#endif
 
 
 #define I2C_ID                  0xEE

@@ -12,14 +12,9 @@
  */
 
 #include "magnetometer/hmc5883l.h"
+#include "libperiph_common.h"
 #include <string.h>
 
-#ifndef STATUS_OK
-    #define STATUS_OK       0
-#endif
-#ifndef STATUS_ERROR
-    #define STATUS_ERROR    -1
-#endif
 
 #define I2C_ID                      0x3C
 #define I2C_ID_READ                 0x3C

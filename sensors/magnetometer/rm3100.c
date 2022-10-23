@@ -12,17 +12,12 @@
  */
 
 #include "magnetometer/rm3100.h"
+#include "libperiph_common.h"
 #include <string.h>
 #include <stdbool.h>
 #include <stdio.h> 
 
 
-#ifndef STATUS_OK
-    #define STATUS_OK       0
-#endif
-#ifndef STATUS_ERROR
-    #define STATUS_ERROR    -1
-#endif
 #ifndef UNUSED
     #define UNUSED(x) (void)(x)
 #endif

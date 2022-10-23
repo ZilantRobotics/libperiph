@@ -6,11 +6,11 @@
  */
 
 /**
- * @file ms4525do.c
+ * @file ms4525do_parser.c
  * @author d.ponomarev
  */
 
-#include "differential_pressure/ms4525do.h"
+#include "ms4525do_parser.h"
 #include <stdint.h>
 #include <string.h>
 
@@ -19,6 +19,8 @@
 #define I2C_RESPONSE_SIZE   4
 static uint8_t ms4525do_rx_buf[I2C_RESPONSE_SIZE] = {0x00};
 
+void ms4525Init() {
+}
 
 void ms4525doParse(float* raw_temperature, float* raw_diff_press) {
     int16_t dp_raw = 0, dT_raw = 0;
