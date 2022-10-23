@@ -6,20 +6,27 @@
  */
 
 /**
- * @file ms4525do_parser.c
+ * @file ms4525do.c
  * @author d.ponomarev
  */
 
-#include "ms4525do_parser.h"
-#include <stdint.h>
+#include "ms4525do.h"
+#include "libperiph_common.h"
+#include "hal_i2c.h"
 #include <string.h>
 
 
 #define I2C_ID              (0x28 << 1) + 1
 #define I2C_RESPONSE_SIZE   4
+
 static uint8_t ms4525do_rx_buf[I2C_RESPONSE_SIZE] = {0x00};
 
-void ms4525Init() {
+int8_t ms4525doInit() {
+    return STATUS_OK;
+}
+
+void ms4525doMeasure() {
+    i2cReceive(I2C_ID, ms4525do_rx_buf, I2C_RESPONSE_SIZE);
 }
 
 void ms4525doParse(float* raw_temperature, float* raw_diff_press) {

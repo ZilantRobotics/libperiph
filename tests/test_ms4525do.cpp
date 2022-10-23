@@ -14,7 +14,7 @@
 #include <gtest/gtest.h>
 #include <iostream>
 #include <math.h>
-#include "differential_pressure/ms4525do_parser.h"
+#include "differential_pressure/ms4525do.h"
 
 
 #define I2C_RESPONSE_SIZE   4
@@ -30,7 +30,7 @@ void fill_pressure(uint16_t table_value) {
     ms4525do_rx_buf[1] = 0xFF & raw;
     ms4525doFillBuffer(ms4525do_rx_buf);
 }
-TEST(ms4525do_parser, pressure_less_then_min) {
+TEST(ms4525do, pressure_less_then_min) {
     float raw_temperature, raw_diff_press;
     float expected_pressure = 8618.45;
 
@@ -39,7 +39,7 @@ TEST(ms4525do_parser, pressure_less_then_min) {
 
     ASSERT_TRUE(abs(raw_diff_press - expected_pressure) < 2.0);
 }
-TEST(ms4525do_parser, pressure_min) {
+TEST(ms4525do, pressure_min) {
     float raw_temperature, raw_diff_press;
     float expected_pressure = 6894.757f;
 
@@ -49,7 +49,7 @@ TEST(ms4525do_parser, pressure_min) {
     ASSERT_TRUE(abs(raw_diff_press - expected_pressure) < 2.0);
 
 }
-TEST(ms4525do_parser, pressure_zero) {
+TEST(ms4525do, pressure_zero) {
     float raw_temperature, raw_diff_press;
     float expected_pressure = 0;
 
@@ -58,7 +58,7 @@ TEST(ms4525do_parser, pressure_zero) {
 
     ASSERT_TRUE(abs(raw_diff_press - expected_pressure) < 2.0);
 }
-TEST(ms4525do_parser, pressure_max) {
+TEST(ms4525do, pressure_max) {
     float raw_temperature, raw_diff_press;
     float expected_pressure = -6894.757f;
 
@@ -68,7 +68,7 @@ TEST(ms4525do_parser, pressure_max) {
     ASSERT_TRUE(abs(raw_diff_press - expected_pressure) < 2.0);
 
 }
-TEST(ms4525do_parser, pressure_more_then_max) {
+TEST(ms4525do, pressure_more_then_max) {
     float raw_temperature, raw_diff_press;
     float expected_pressure = -8618.45;
 
@@ -89,7 +89,7 @@ void fill_temperature(uint16_t table_value) {
     ms4525do_rx_buf[3] = (0x07 & raw) << 5;
     ms4525doFillBuffer(ms4525do_rx_buf);
 }
-TEST(ms4525do_parser, temperature_minus_50) {
+TEST(ms4525do, temperature_minus_50) {
     float raw_temperature, raw_diff_press;
     float expected_temperature = -50;
 
@@ -98,7 +98,7 @@ TEST(ms4525do_parser, temperature_minus_50) {
 
     ASSERT_EQ(raw_temperature, expected_temperature);
 }
-TEST(ms4525do_parser, temperature_zero) {
+TEST(ms4525do, temperature_zero) {
     float raw_temperature, raw_diff_press;
     float expected_temperature = 0;
 
@@ -107,7 +107,7 @@ TEST(ms4525do_parser, temperature_zero) {
 
     ASSERT_EQ(round(raw_temperature), expected_temperature);
 }
-TEST(ms4525do_parser, temperature_plus_10) {
+TEST(ms4525do, temperature_plus_10) {
     float raw_temperature, raw_diff_press;
     float expected_temperature = 10;
 
@@ -116,7 +116,7 @@ TEST(ms4525do_parser, temperature_plus_10) {
 
     ASSERT_EQ(round(raw_temperature), expected_temperature);
 }
-TEST(ms4525do_parser, temperature_plus_85) {
+TEST(ms4525do, temperature_plus_85) {
     float raw_temperature, raw_diff_press;
     float expected_temperature = 85;
 
@@ -125,7 +125,7 @@ TEST(ms4525do_parser, temperature_plus_85) {
 
     ASSERT_EQ(round(raw_temperature), expected_temperature);
 }
-TEST(ms4525do_parser, temperature_plus_150) {
+TEST(ms4525do, temperature_plus_150) {
     float raw_temperature, raw_diff_press;
     float expected_temperature = 150;
 
