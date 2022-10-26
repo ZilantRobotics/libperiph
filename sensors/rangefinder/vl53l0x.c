@@ -173,9 +173,17 @@ bool vl53l0xPerformSingleRefCalibration(Calibration_type_t calib_type) {
     /* Wait for interrupt */
     uint8_t interrupt_status = 0;
     bool success = false;
-    do {
+
+    uint_fast16_t try;
+    for (try = 0; try <= 5000; try++) {
         success = i2c_read_addr8_data8(REG_RESULT_INTERRUPT_STATUS, &interrupt_status);
-    } while (success && ((interrupt_status & 0x07) == 0));
+        if (!(success && ((interrupt_status & 0x07) == 0))) {
+            break;
+        }
+    }
+    if (try > 5000) {
+        return false;
+    }
 
     if (!success) {
         return false;
@@ -266,18 +274,33 @@ bool vl53l0xReadRangeSingle() {
     }
 
     uint8_t sysrange_start = 0;
-    do {
+
+    uint_fast16_t try;
+    for (try = 0; try <= 5000; try++) {
         success = i2c_read_addr8_data8(REG_SYSRANGE_START, &sysrange_start);
-    } while (success && (sysrange_start & 0x01));
+        if (!(success && (sysrange_start & 0x01))) {
+            break;
+        }
+    }
+    if (try > 5000) {
+        return false;
+    }
 
     if (!success) {
         return false;
     }
 
     uint8_t interrupt_status = 0;
-    do {
+
+    for (try = 0; try <= 5000; try++) {
         success = i2c_read_addr8_data8(REG_RESULT_INTERRUPT_STATUS, &interrupt_status);
-    } while (success && ((interrupt_status & 0x07) == 0));
+        if (!(success && ((interrupt_status & 0x07) == 0))) {
+            break;
+        }
+    }
+    if (try > 5000) {
+        return false;
+    }
 
     if (!success) {
         return false;
