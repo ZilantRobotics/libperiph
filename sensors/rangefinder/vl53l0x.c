@@ -58,7 +58,7 @@ static bool vl53l0xDataInit();
 static bool vl53l0xStaticInit();
 static bool vl53l0xPerformRefCalibration();
 static void vl53l0xMeasureCallback();
-static bool vl53l0xReadRangeSingle();
+static bool vl53l0xProcessSingleMeasurement();
 static bool vl53l0xSetSequenceStepsEnabled(uint8_t sequence_step);
 static bool vl53l0xPerformSingleRefCalibration(Calibration_type_t calib_type);
 
@@ -173,9 +173,17 @@ bool vl53l0xPerformSingleRefCalibration(Calibration_type_t calib_type) {
     /* Wait for interrupt */
     uint8_t interrupt_status = 0;
     bool success = false;
-    do {
+
+    uint_fast16_t try;
+    for (try = 0; try <= 5000; try++) {
         success = i2c_read_addr8_data8(REG_RESULT_INTERRUPT_STATUS, &interrupt_status);
-    } while (success && ((interrupt_status & 0x07) == 0));
+        if (!(success && ((interrupt_status & 0x07) == 0))) {
+            break;
+        }
+    }
+    if (try > 5000) {
+        return false;
+    }
 
     if (!success) {
         return false;
@@ -249,7 +257,11 @@ bool vl53l0xDataInit() {
     return success;
 }
 
-bool vl53l0xReadRangeSingle() {
+bool vl53l0xRequestMeasurement() {
+    if (!i2c_write_addr8_data8(REG_SYSTEM_INTERRUPT_CLEAR, 0x01)) {
+        return false;
+    }
+
     bool success = i2c_write_addr8_data8(0x80, 0x01);
     success &= i2c_write_addr8_data8(0xFF, 0x01);
     success &= i2c_write_addr8_data8(0x00, 0x00);
@@ -257,6 +269,7 @@ bool vl53l0xReadRangeSingle() {
     success &= i2c_write_addr8_data8(0x00, 0x01);
     success &= i2c_write_addr8_data8(0xFF, 0x00);
     success &= i2c_write_addr8_data8(0x80, 0x00);
+
     if (!success) {
         return false;
     }
@@ -265,29 +278,50 @@ bool vl53l0xReadRangeSingle() {
         return false;
     }
 
+    return true;
+}
+
+bool vl53l0xWaitForResult(uint16_t max_tries) {
     uint8_t sysrange_start = 0;
-    do {
+    uint_fast16_t try;
+    bool success = false;
+    for (try = 0; try <= max_tries; try++) {
         success = i2c_read_addr8_data8(REG_SYSRANGE_START, &sysrange_start);
-    } while (success && (sysrange_start & 0x01));
+        if (!(success && (sysrange_start & 0x01))) {
+            break;
+        }
+    }
+
+    if (try > max_tries) {
+        return false;
+    }
 
     if (!success) {
         return false;
     }
 
     uint8_t interrupt_status = 0;
-    do {
+
+    for (try = 0; try <= max_tries; try++) {
         success = i2c_read_addr8_data8(REG_RESULT_INTERRUPT_STATUS, &interrupt_status);
-    } while (success && ((interrupt_status & 0x07) == 0));
+        if (!(success && ((interrupt_status & 0x07) == 0))) {
+            break;
+        }
+    }
+
+    if (try > max_tries) {
+        return false;
+    }
 
     if (!success) {
         return false;
     }
 
-    if (!i2c_read_addr8_data16(REG_RESULT_RANGE_STATUS + 10, &range)) {
-        return false;
-    }
+    return true;
+}
 
-    if (!i2c_write_addr8_data8(REG_SYSTEM_INTERRUPT_CLEAR, 0x01)) {
+bool vl53l0xReadMeasurement() {
+    if (!i2c_read_addr8_data16(REG_RESULT_RANGE_STATUS + 10, &range)) {
         return false;
     }
 
@@ -296,6 +330,12 @@ bool vl53l0xReadRangeSingle() {
     }
 
     return true;
+}
+
+bool vl53l0xProcessSingleMeasurement() {
+    vl53l0xWaitForResult(100);
+    vl53l0xReadMeasurement();
+    return vl53l0xRequestMeasurement();
 }
 
 
@@ -308,5 +348,5 @@ void vl53l0xMeasureCallback() {
         return;
     }
 
-    vl53l0xReadRangeSingle();
+    vl53l0xProcessSingleMeasurement();
 }
