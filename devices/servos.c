@@ -193,7 +193,7 @@ int32_t mapRawCommandToPwm(int32_t value, int32_t min_pwm, int32_t max_pwm, int3
     return pwm;
 }
 
-uint32_t mapU32(uint32_t x, uint32_t in_min, uint32_t in_max, uint32_t out_min, uint32_t out_max){
+uint32_t mapU32(uint32_t x, uint32_t in_min, uint32_t in_max, uint32_t out_min, uint32_t out_max) {
     if (in_min == in_max) {
         return out_min;
     }

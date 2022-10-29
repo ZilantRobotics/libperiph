@@ -33,26 +33,22 @@ __attribute__ ((weak)) void seven_segments_incicator_set(uint16_t odr_reg_value)
     // GPIOB->ODR = odr_reg_value;
 }
 
-/// 
-enum
-{
-    a = (1 << 2), 
-    b = (1 << 6), 
-    c = (1 << 10), 
-    d = (1 << 8), 
-    e = (1 << 7), 
-    f = (1 << 3), 
-    g = (1 << 11), 
-    dot=(1 << 9),
+enum {
+    a = (1 << 2),
+    b = (1 << 6),
+    c = (1 << 10),
+    d = (1 << 8),
+    e = (1 << 7),
+    f = (1 << 3),
+    g = (1 << 11),
+    dot = (1 << 9),
     digit3 = (1 << 4) | (1 << 5),
     digit2 = (1 << 1) | (1 << 5),
     digit1 = (1 << 1) | (1 << 4)
 };
 
 
-///
-const short code_of_digit[] = 
-{
+const uint16_t code_of_digit[] = {
     a + b + c + d + e + f,
     b + c,
     a + b + g + e + d,
@@ -69,10 +65,9 @@ const short code_of_digit[] =
 * @brief Set number to sevensegments indicator
 * @param number - value, that will ve set
 */
-void Indicators::SetNumber(uint16_t number)
-{
+void Indicators::SetNumber(uint16_t number) {
     uint16_t odr_reg_value;
-    if (digit == 0)    {
+    if (digit == 0) {
         odr_reg_value = code_of_digit[number/100] | digit3 | dot;
         digit++;
     } else if (digit == 1) {
@@ -90,9 +85,8 @@ void Indicators::SetNumber(uint16_t number)
 * @brief Set number to sevensegments indicator
 * @param number - value, that will ve set
 */
-void Indicators::SetNumber(float number)
-{
-    if (digit == 0)    {
+void Indicators::SetNumber(float number) {
+    if (digit == 0) {
         digit++;
     } else if (digit == 1) {
         digit++;

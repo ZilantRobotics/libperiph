@@ -19,14 +19,14 @@
 /**
 * @brief Indicators
 */
-class Indicators
-{
-    public:
-        Indicators(): digit(0) {};
-        void SetNumber(uint16_t number);
-        void SetNumber(float number);
-    private:
-        uint8_t digit;
+class Indicators {
+ public:
+    Indicators(): digit(0) {}
+    void SetNumber(uint16_t number);
+    void SetNumber(float number);
+
+ private:
+    uint8_t digit;
 };
 
 #endif  // SEVEN_SEGMENTS_INDICATORS_HPP_
