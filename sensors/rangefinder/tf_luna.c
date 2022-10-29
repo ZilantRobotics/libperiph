@@ -37,7 +37,7 @@ float tfParseRange(const TfLunaSerialFrame_t* buffer_ptr) {
     // copy previous frame to the beginning and save the new one
     memcpy(buffer, buffer + TF_LUNA_SERIAL_FRAME_SIZE, TF_LUNA_SERIAL_FRAME_SIZE);
     memcpy(buffer + TF_LUNA_SERIAL_FRAME_SIZE, buffer_ptr, TF_LUNA_SERIAL_FRAME_SIZE);
-    
+
     int8_t idx = tfLunaFindFrameStart();
     if (idx >= 0) {
         return tfLunaParseData(idx);

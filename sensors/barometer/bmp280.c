@@ -11,10 +11,10 @@
  */
 
 #include "barometer/bmp280.h"
-#include "libperiph_common.h"
 #include <stdint.h>
 #include <stdbool.h>
 #include <math.h>
+#include "libperiph_common.h"
 #include "hal_i2c.h"
 
 

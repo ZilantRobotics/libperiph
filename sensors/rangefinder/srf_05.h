@@ -13,7 +13,7 @@
  */
 
 #ifndef SENSORS_RANGEFINDER_SRF_05_H_
-#define	SENSORS_RANGEFINDER_SRF_05_H_
+#define SENSORS_RANGEFINDER_SRF_05_H_
 
 #include <stdint.h>
 
