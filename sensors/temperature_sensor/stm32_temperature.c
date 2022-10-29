@@ -15,7 +15,7 @@
  * - Datasheet 5.3.19 Temperature sensor characteristics: https://www.st.com/resource/en/datasheet/stm32f103c8.pdf
  */
 
-#include "temperature_sensor/stm32_temperature.h"
+#include "stm32_temperature.h"
 
 ///< According to the datasheet:
 #define AVG_SLOPE_MV_C              4.3

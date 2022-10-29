@@ -11,8 +11,8 @@
  * @date Oct 20, 2018
  */
 
-#ifndef ENCODER_HPP_
-#define ENCODER_HPP_
+#ifndef SENSORS_ENCODER_ENCODER_HPP_
+#define SENSORS_ENCODER_ENCODER_HPP_
 
 #include <stdint.h>
 
@@ -47,4 +47,4 @@ public:
     static int32_t GetRightSpeed();
 };
 
-#endif /* ENCODER_HPP */
+#endif  // SENSORS_ENCODER_ENCODER_HPP_

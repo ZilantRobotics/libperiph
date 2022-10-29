@@ -11,8 +11,8 @@
  * @date Nov 18, 2018
  */
 
-#ifndef STM32_TEMPERATURE_H_
-#define STM32_TEMPERATURE_H_
+#ifndef SENSORS_TEMPERATURE_SENSOR_STM32_TEMPERATURE_H_
+#define SENSORS_TEMPERATURE_SENSOR_STM32_TEMPERATURE_H_
 
 #include "stdint.h"
 
@@ -22,4 +22,4 @@
 */
 uint16_t stm32TemperatureParse(uint16_t raw_adc_value);
 
-#endif  // STM32_TEMPERATURE_H_
+#endif  // SENSORS_TEMPERATURE_SENSOR_STM32_TEMPERATURE_H_

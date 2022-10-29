@@ -10,8 +10,8 @@
  * @author d.ponomarev
  */
 
-#ifndef GPS_UBLOX_INTERNAL_H_
-#define GPS_UBLOX_INTERNAL_H_
+#ifndef SENSORS_GPS_UBLOX_INTERNAL_H_
+#define SENSORS_GPS_UBLOX_INTERNAL_H_
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -124,4 +124,4 @@ typedef struct {
  */
 uint16_t ubloxCrc16(const uint8_t* buf, size_t size);
 
-#endif  // GPS_UBLOX_INTERNAL_H_
+#endif  // SENSORS_GPS_UBLOX_INTERNAL_H_

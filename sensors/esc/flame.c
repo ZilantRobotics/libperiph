@@ -6,12 +6,12 @@
  */
 
 /**
- * @file esc_flame.c
+ * @file flame.c
  * @author d.ponomarev
  * @date May 27, 2021
  */
 
-#include "esc/flame.h"
+#include "flame.h"
 #include <string.h>
 
 

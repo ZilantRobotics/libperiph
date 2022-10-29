@@ -11,9 +11,9 @@
  */
 
 #include "ms4525do.h"
+#include <string.h>
 #include "libperiph_common.h"
 #include "hal_i2c.h"
-#include <string.h>
 
 
 #define I2C_ID              (0x28 << 1) + 1

@@ -15,6 +15,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <math.h>
+#include "hal_i2c.h"
 
 
 #define I2C_ID                  0xEE
@@ -80,12 +81,6 @@ typedef struct {
     uint8_t t_lsb;
     uint8_t t_xlsb;
 } BMP280_measurement_registers_t;
-
-
-// functions below should be implemented outside
-int8_t i2cTransmit(uint8_t id, const uint8_t tx[], uint8_t len);
-int8_t i2cReceive(uint8_t id, uint8_t* rx, uint8_t len);
-// functions above should be implemented outside
 
 
 static void bmp280CheckDeviceId();

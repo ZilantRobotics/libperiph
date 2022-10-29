@@ -8,8 +8,8 @@
  * @file rm3100.h
  * @author d.ponomarev
  */
-#ifndef RM3100_H_
-#define RM3100_H_
+#ifndef SENSORS_MAGNETOMERE_RM3100_H_
+#define SENSORS_MAGNETOMERE_RM3100_H_
 
 #include <stdint.h>
 
@@ -19,4 +19,4 @@ int8_t rm3100Init();
 int8_t rm3100Measure();
 void rm310GetMeasurement(float* x, float* y, float* z);
 
-#endif  // RM3100_H_
+#endif  // SENSORS_MAGNETOMERE_RM3100_H_

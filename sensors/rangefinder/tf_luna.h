@@ -10,8 +10,8 @@
  * @author d.ponomarev
  * @note https://files.seeedstudio.com/wiki/Grove-TF_Mini_LiDAR/res/SJ-PM-TF-Luna-A03-Product-Manual.pdf
  */
-#ifndef RANGESENSOR_TF_LUNA_H_
-#define RANGESENSOR_TF_LUNA_H_
+#ifndef SENSORS_RANGESENSOR_TF_LUNA_H_
+#define SENSORS_RANGESENSOR_TF_LUNA_H_
 
 #include <stdint.h>
 #include <stddef.h>
@@ -40,4 +40,4 @@ int8_t tfLunaInit();
  */
 float tfParseRange(const TfLunaSerialFrame_t* frame);
 
-#endif  // RANGESENSOR_TF_LUNA_H_
+#endif  // SENSORS_RANGESENSOR_TF_LUNA_H_

@@ -11,7 +11,7 @@
  * @date Nov 18, 2018
  */
 
-#include "magnetometer/hmc5883l.h"
+#include "hmc5883l.h"
 #include "libperiph_common.h"
 #include <string.h>
 

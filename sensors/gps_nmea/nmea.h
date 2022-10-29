@@ -14,12 +14,12 @@
  *      http://forum.rcdesign.ru/blogs/86494/blog21244.html
  */
 
-#ifndef GPS_NMEA_H_
-#define GPS_NMEA_H_
+#ifndef SENSORS_GPS_NMEA_H_
+#define SENSORS_GPS_NMEA_H_
 
-#include <stdint.h>                 // For sizes like uint8_t
-#include <stdbool.h>                // For bool
-#include <stdlib.h>                 // For size_t
+#include <stdint.h>
+#include <stdbool.h>
+#include <stdlib.h>
 
 
 typedef enum {
@@ -142,4 +142,4 @@ bool nmeaProcess(uint8_t gns_buffer[], size_t gns_buffer_size, GnssFix2_t* uavca
 int8_t parseRMC(uint8_t buffer[], GnssFix2_t* Fix2);
 int8_t parseGGA(uint8_t buffer[], GnssFix2_t* Fix2);
 
-#endif  // GPS_NMEA_H_
+#endif  // SENSORS_GPS_NMEA_H_

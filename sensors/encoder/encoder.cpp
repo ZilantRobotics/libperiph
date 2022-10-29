@@ -12,7 +12,7 @@
  * @date Oct 20, 2018
  */
 
-#include "encoder/encoder.hpp"
+#include "encoder.hpp"
 
 
 static void left_wheel_a_cb();

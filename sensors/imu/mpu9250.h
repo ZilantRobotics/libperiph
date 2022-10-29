@@ -8,8 +8,8 @@
  * @file mpu9250.h
  * @author d.ponomarev
  */
-#ifndef IMU_MPU9250_H_
-#define IMU_MPU9250_H_
+#ifndef SENSORS_IMU_MPU9250_H_
+#define SENSORS_IMU_MPU9250_H_
 
 #include <stdbool.h>
 
@@ -17,4 +17,4 @@ bool mpu9250Init();
 void mpu9250Measure();
 void mpu9250GetMeasurements(float linear_acceleration[3], float angular_velocity[3]);
 
-#endif  // IMU_MPU9250_H_
+#endif  // SENSORS_IMU_MPU9250_H_

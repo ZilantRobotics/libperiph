@@ -5,12 +5,12 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 /**
- * @file rangefinder/sf1xx.h
+ * @file sf1xx.h
  * @author d.ponomarev
  */
 
-#ifndef RANGESENSOR_SF1XX_H_
-#define RANGESENSOR_SF1XX_H_
+#ifndef SENSORS_RANGESENSOR_SF1XX_H_
+#define SENSORS_RANGESENSOR_SF1XX_H_
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -33,4 +33,4 @@ bool sf1xxCollectData(uint32_t measurement_period);
   */
 float sf1xxParseCollectedData();
 
-#endif  // RANGESENSOR_SF1XX_H_
+#endif  // SENSORS_RANGESENSOR_SF1XX_H_
