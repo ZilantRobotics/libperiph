@@ -32,7 +32,7 @@ int8_t uartInitRxDmaWithSem(uint8_t buffer[], uint16_t size) {
         xSemaphoreGive(dma_rx_sem);
     }
 
-    return uartInitRxDma(buffer, size);
+    return uartInitRxDma(UART_FIRST, buffer, size);
 }
 
 bool uartWaitUntilReceiveIsComplete(uint32_t timeout_ms) {

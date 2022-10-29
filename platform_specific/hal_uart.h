@@ -12,14 +12,18 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+typedef enum {
+    UART_FIRST,
+    UART_SECOND,
+} UartInstance_t;
 
 /**
- * @brief UART1 RX DMA
+ * @brief UART RX DMA
  * @note It is expected to poll data with some period of time.
  * Response time is limited by a spin period. Not effective.
  */
-int8_t uartInitRxDma(uint8_t buffer[], uint16_t size);
-size_t uartLastRecvIndex();
+int8_t uartInitRxDma(UartInstance_t instance, uint8_t buffer[], uint16_t size);
+size_t uartLastRecvIndex(UartInstance_t instance);
 uint8_t* uartRxDmaPop();
 
 
@@ -33,13 +37,5 @@ bool uartIsTxReady();
 void uartEnableTx();
 void uartDisableTx();
 void UartChangeBaudrate(uint16_t rate);
-
-
-/**
- * @brief UART2 DMA RX
- */
-int8_t uartInitRxDmaSecond(uint8_t buffer[], uint16_t size);
-size_t uartLastRecvIndexSecond();
-
 
 #endif  // PLATFORM_SPECIFIC_HAL_UART_H_

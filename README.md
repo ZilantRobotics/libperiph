@@ -51,9 +51,18 @@ int8_t spiPerformTransaction(uint8_t* tx, uint8_t* rx, uint8_t size);
 
 **hal_uart**
 
-> in process
+```c++
+int8_t uartInitRx(UartInstance_t instance, UartType_t, uint8_t buffer[], uint16_t size);
+size_t uartLastRecvIndex(UartInstance_t instance);
+uint8_t* uartRxDmaPop(UartInstance_t instance);
+
+int8_t uartTransmit(UartInstance_t instance, uint8_t buffer[], size_t size);
+```
 
 **hal_tim**
 
 > in process
 
+## LICENSE
+
+This software is distributed under [MPL 2.0](license) license conditions.
