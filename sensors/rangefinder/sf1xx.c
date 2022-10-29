@@ -6,12 +6,12 @@
  */
 
 /**
- * @file rangefinder/sf1xx.c
+ * @file sf1xx.c
  * @author d.ponomarev
  * @note https://www.mouser.com/datasheet/2/321/28055-LW20-SF20-LiDAR-Manual-Rev-7-1371848.pdf
  */
 
-#include "rangefinder/sf1xx.h"
+#include "sf1xx.h"
 #include <string.h>
 #include "main.h"
 #include "i2c_manager.h"

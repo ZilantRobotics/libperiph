@@ -15,18 +15,9 @@
 #include <stdint.h>
 #include <string.h>
 #include <assert.h>
+#include "libperiph_common.h"
+#include "hal_i2c.h"
 
-// functions below should be implemented outside
-int8_t i2cTransmit(uint8_t id, const uint8_t tx[], uint8_t len);
-int8_t i2cReceive(uint8_t id, uint8_t* rx, uint8_t len);
-// functions above should be implemented outside
-
-#ifndef STATUS_OK
-    #define STATUS_OK       0
-#endif
-#ifndef STATUS_ERROR
-    #define STATUS_ERROR    -1
-#endif
 
 // Config
 #define MPU6050_USED

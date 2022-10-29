@@ -10,8 +10,8 @@
  * @author d.ponomarev
  */
 
-#ifndef WS2812_H_
-#define WS2812_H_
+#ifndef DEVICES_RGB_LEDS_WS2812_H_
+#define DEVICES_RGB_LEDS_WS2812_H_
 
 #include "main.h"
 #include "rgb_color.h"
@@ -41,4 +41,4 @@ void ws2812bSetColors(const Leds_Color_t* leds_color);
  */
 int8_t ws2812bStartOnce();
 
-#endif  // INC_WS2812_H_
+#endif  // DEVICES_RGB_LEDS_WS2812_H_

@@ -19,21 +19,21 @@
 #include <hal.h>
 
 
-class Motors
-{
-public:
+class Motors {
+ public:
     static void Init();
     static void SetLeftPower(int8_t);
     static void SetRightPower(int8_t);
     static int8_t GetLeftPower();
     static int8_t GetRightPower();
-private:
+
+ private:
     static PWMDriver* PwmDriverLeft;
     static PWMDriver* PwmDriverRight;
-    
+
     static int32_t PowerToPwm;
     static int8_t MotorLeftDutyCycle;
     static int8_t MotorRightDutyCycle;
 };
 
-#endif /* MOTORS_HPP */
+#endif  // MOTORS_HPP

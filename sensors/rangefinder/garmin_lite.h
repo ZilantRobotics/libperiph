@@ -5,11 +5,11 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 /**
- * @file rangefinder/garmin_lite.h
+ * @file garmin_lite.h
  * @author d.ponomarev
  */
-#ifndef RANGESENSOR_GARMIN_LITE_H_
-#define RANGESENSOR_GARMIN_LITE_H_
+#ifndef SENSORS_RANGESENSOR_GARMIN_LITE_H_
+#define SENSORS_RANGESENSOR_GARMIN_LITE_H_
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -37,4 +37,4 @@ float garminLiteParseCollectedData();
   */
 void garminGetSerialNumber(uint8_t buffer[]);
 
-#endif  // RANGESENSOR_GARMIN_LITE_H_
+#endif  // SENSORS_RANGESENSOR_GARMIN_LITE_H_

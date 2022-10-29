@@ -6,9 +6,9 @@
  */
 
 #include "hal_adc.h"
-#include "main.h"
 #include <string.h>
 #include <stdbool.h>
+#include "main.h"
 #include "config.h"
 
 

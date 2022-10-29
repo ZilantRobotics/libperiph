@@ -11,8 +11,8 @@
  * @date Nov 18, 2018
  */
 
-#ifndef HMC5883L_H_
-#define HMC5883L_H_
+#ifndef SENSORS_HMC5883L_H_
+#define SENSORS_HMC5883L_H_
 
 #include <stdint.h>
 
@@ -28,4 +28,4 @@ void hmc5883GetMeasurement(float* x, float* y, float* z);
 // For tests only:
 void hmc5883lFillRxBuffer(uint8_t new_buf[6]);
 
-#endif  // HMC5883L_H_
+#endif  // SENSORS_HMC5883L_H_

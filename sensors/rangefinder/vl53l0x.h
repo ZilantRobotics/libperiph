@@ -10,8 +10,8 @@
  * @author d.ponomarev
  */
 
-#ifndef RANGESENSOR_VL53L0X_H_
-#define RANGESENSOR_VL53L0X_H_
+#ifndef SENSORS_RANGESENSOR_VL53L0X_H_
+#define SENSORS_RANGESENSOR_VL53L0X_H_
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -31,4 +31,4 @@ bool vl53l0xCollectData(uint32_t measurement_period);
   */
 float vl53l0xParseCollectedData();
 
-#endif  // RANGESENSOR_VL53L0X_H_
+#endif  // SENSORS_RANGESENSOR_VL53L0X_H_

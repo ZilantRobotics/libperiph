@@ -6,13 +6,13 @@
  */
 
 /**
- * @file esc_flame.h
+ * @file flame.h
  * @author d.ponomarev
  * @date May 27, 2021
  */
 
-#ifndef HMC5883L_H_
-#define HMC5883L_H_
+#ifndef SENSORS_ESC_FLAME_H_
+#define SENSORS_ESC_FLAME_H_
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -61,4 +61,4 @@ bool escFlameIsItPackageStart(const uint8_t* raw_package_buffer);
   */
 void escFlameParse(const uint8_t* raw_package_buffer, EscFlameStatus_t* esc_status);
 
-#endif  // HMC5883L_H_
+#endif  // SENSORS_ESC_FLAME_H_

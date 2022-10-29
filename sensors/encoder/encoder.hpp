@@ -11,13 +11,12 @@
  * @date Oct 20, 2018
  */
 
-#ifndef ENCODER_HPP_
-#define ENCODER_HPP_
+#ifndef SENSORS_ENCODER_ENCODER_HPP_
+#define SENSORS_ENCODER_ENCODER_HPP_
 
 #include <stdint.h>
 
-enum EncoderPin
-{
+enum EncoderPin {
     LEFT_ENC_A_CH,
     LEFT_ENC_B_CH,
     RIGHT_ENC_A_CH,
@@ -37,9 +36,8 @@ enum EncoderPin
 * - PE_14  - right encoder A
 * - PE_15  - right encoder B
 */
-class Encoder
-{
-public:
+class Encoder {
+ public:
     static void Reset();
     static int32_t GetLeftValue();
     static int32_t GetRightValue();
@@ -47,4 +45,4 @@ public:
     static int32_t GetRightSpeed();
 };
 
-#endif /* ENCODER_HPP */
+#endif  // SENSORS_ENCODER_ENCODER_HPP_

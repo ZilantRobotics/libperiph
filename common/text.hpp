@@ -11,8 +11,8 @@
  * @date Jun 26, 2018
  */
 
-#ifndef __TEXT_HPP
-#define __TEXT_HPP
+#ifndef COMMON_TEXT_HPP
+#define COMMON_TEXT_HPP
 
 #include "stdint.h"
 
@@ -24,4 +24,4 @@
 */
 void num2str(int32_t num, uint8_t* str);
 
-#endif //__TEXT_HPP
+#endif  // COMMON_TEXT_HPP

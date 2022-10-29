@@ -15,7 +15,7 @@
  * - Datasheet 5.3.19 Temperature sensor characteristics: https://www.st.com/resource/en/datasheet/stm32f103c8.pdf
  */
 
-#include "temperature_sensor/stm32_temperature.h"
+#include "stm32_temperature.h"
 
 ///< According to the datasheet:
 #define AVG_SLOPE_MV_C              4.3
@@ -25,8 +25,7 @@
 #define CELSIUS_MINUS_40_ADC_RAW    2121.3  //< CELSIUS_25_ADC_RAW + (25 + 40) * CELSIUS_PER_ADC_RAW
 #define CELSIUS_PLUS_125_ADC_RAW    1240.9  //< CELSIUS_25_ADC_RAW - 100 * CELSIUS_PER_ADC_RAW
 
-uint16_t stm32TemperatureParse(uint16_t raw_temp)
-{
+uint16_t stm32TemperatureParse(uint16_t raw_temp) {
     const uint16_t V25 = 1750;      // when V25=1.41V at ref 3.3V
     const uint16_t AVG_SLOPE = 5;   // when AVG_SLOPE=4.3mV/C at ref 3.3V
     uint16_t temperature = (V25 - raw_temp) / AVG_SLOPE + 25 + 273;

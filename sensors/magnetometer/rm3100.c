@@ -11,11 +11,11 @@
  * @note https://www.terraelectronica.ru/pdf/show?pdf_file=%252Fds%252Fpdf%252FR%252FRM3100.pdf
  */
 
-#include "magnetometer/rm3100.h"
-#include "libperiph_common.h"
+#include "rm3100.h"
 #include <string.h>
 #include <stdbool.h>
-#include <stdio.h> 
+#include <stdio.h>
+#include "libperiph_common.h"
 
 
 #ifndef UNUSED

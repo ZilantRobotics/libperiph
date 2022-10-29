@@ -6,11 +6,11 @@
  */
 
 /**
- * @file rangefinder/garmin_lite.c
+ * @file garmin_lite.c
  * @author d.ponomarev
  */
 
-#include "rangefinder/garmin_lite.h"
+#include "garmin_lite.h"
 #include <string.h>
 #include "main.h"
 #include "i2c_manager.h"

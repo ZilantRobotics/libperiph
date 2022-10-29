@@ -10,8 +10,8 @@
  * @author d.ponomarev
  */
 
-#ifndef GPS_UBLOX_EMULATION_H_
-#define GPS_UBLOX_EMULATION_H_
+#ifndef SENSORS_GPS_UBLOX_EMULATION_H_
+#define SENSORS_GPS_UBLOX_EMULATION_H_
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -25,4 +25,4 @@
  */
 void ubloxCreateRawDataFromPackage(UbxNavPvtRaw_t* buffer, const GnssUblox_t* uavcan_fix2);
 
-#endif  // GPS_UBLOX_EMULATION_H_
+#endif  // SENSORS_GPS_UBLOX_EMULATION_H_

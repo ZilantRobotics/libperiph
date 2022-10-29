@@ -24,4 +24,4 @@ uint16_t adcGet(uint8_t rank);
 int8_t adcInitWithoutDma(uint8_t num_of_channels);
 int8_t adcMeasureWithoutDma(uint16_t values[]);
 
-#endif // PLATFORM_SPECIFIC_HAL_ADC_H_
+#endif  // PLATFORM_SPECIFIC_HAL_ADC_H_

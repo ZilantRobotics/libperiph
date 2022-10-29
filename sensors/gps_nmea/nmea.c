@@ -12,9 +12,7 @@
  */
 #include "nmea.h"
 #include <stdio.h>
-#include <stdlib.h>
 #include <math.h>
-#include <stdbool.h>
 
 
 #define SENTENCE_MAX_LEN        128

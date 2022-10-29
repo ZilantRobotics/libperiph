@@ -11,9 +11,9 @@
  * @date Nov 18, 2018
  */
 
-#include "magnetometer/hmc5883l.h"
-#include "libperiph_common.h"
+#include "hmc5883l.h"
 #include <string.h>
+#include "libperiph_common.h"
 
 
 #define I2C_ID                      0x3C
