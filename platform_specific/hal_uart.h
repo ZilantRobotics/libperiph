@@ -19,11 +19,9 @@ typedef enum {
 
 /**
  * @brief UART RX DMA
- * @note It is expected to poll data with some period of time.
- * Response time is limited by a spin period. Not effective.
  */
 int8_t uartInitRxDma(UartInstance_t instance, uint8_t buffer[], uint16_t size);
-size_t uartLastRecvIndex(UartInstance_t instance);
+size_t uartGetLastReceivedIndex(UartInstance_t instance);
 uint8_t* uartRxDmaPop();
 
 

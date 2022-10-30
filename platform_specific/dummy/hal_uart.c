@@ -11,7 +11,7 @@ int8_t uartInitRxDma(UartInstance_t instance, uint8_t buffer[], uint16_t size) {
     return 0;
 }
 
-size_t uartLastRecvIndex(UartInstance_t instance) {
+size_t uartGetLastReceivedIndex(UartInstance_t instance) {
     return 0;
 }
 

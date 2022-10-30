@@ -53,7 +53,7 @@ int8_t spiPerformTransaction(uint8_t* tx, uint8_t* rx, uint8_t size);
 
 ```c++
 int8_t uartInitRx(UartInstance_t instance, UartType_t, uint8_t buffer[], uint16_t size);
-size_t uartLastRecvIndex(UartInstance_t instance);
+size_t uartGetLastReceivedIndex(UartInstance_t instance);
 uint8_t* uartRxDmaPop(UartInstance_t instance);
 
 int8_t uartTransmit(UartInstance_t instance, uint8_t buffer[], size_t size);

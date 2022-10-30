@@ -8,23 +8,26 @@
 #ifndef PLATFORM_SPECIFIC_HAL_UART_THREADSAFE_H_
 #define PLATFORM_SPECIFIC_HAL_UART_THREADSAFE_H_
 
-#include "hal_uart.h"
+#include <stdint.h>
+#include <stddef.h>
+#include <stdbool.h>
 
 /**
  * @brief UART1 RX DMA with semaphores
  * @note It is expected to to wait until data is received.
  * Response time is as small as possible. More effective than simple DMA approach.
  */
-int8_t uartInitRxDmaWithSem(uint8_t buffer[], uint16_t size);
-bool uartWaitUntilReceiveIsComplete(uint32_t timeout_ms);
+int8_t tsUartInitRx(uint8_t buffer[], uint16_t size);
+bool tsUartWaitUntilReceiveIsComplete(uint32_t timeout_ms);
+uint8_t* tsUartPopRxDma();
 
 /**
  * @brief UART1 TX
  */
-int8_t uartInitTxDmaThreadSafe();
-int8_t uartTransmitDmaThreadSafe(uint8_t buffer[], size_t size);
+int8_t tsUartInitTx();
+int8_t tsUartTransmit(uint8_t buffer[], size_t size);
 
-void uartTxDmaCallback();
-void uartRxDmaCallback();
+void tsUartTxDmaCallback();
+void tsUartRxDmaCallback();
 
 #endif  // PLATFORM_SPECIFIC_HAL_UART_THREADSAFE_H_

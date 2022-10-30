@@ -50,7 +50,7 @@ int8_t uartInitRxDma(UartInstance_t instance, uint8_t buffer[], uint16_t size) {
     return STATUS_ERROR;
 }
 
-size_t uartLastRecvIndex(UartInstance_t instance) {
+size_t uartGetLastReceivedIndex(UartInstance_t instance) {
     if (instance == UART_FIRST) {
         if (rx_buffer_size1 == __HAL_DMA_GET_COUNTER(huart1.hdmarx)) {
             return rx_buffer_size1 - 1;
@@ -128,40 +128,34 @@ void uartDisableTx() {
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 }
 
-void HAL_UART_RxHalfCpltCallback(UART_HandleTypeDef *huart) {
-    if (huart == &huart1) {
-        uart_half_received = true;
-        uartRxDmaCallback();
-    }
-}
-
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
-    if (huart == &huart1) {
-        uart_full_received = true;
-        uartRxDmaCallback();
-    }
-}
-
-void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
-    if (huart == &huart1) {
-        uart_full_transmitted = true;
-        uartTxDmaCallback();
-    }
-}
-
 void UartChangeBaudrate(uint16_t rate) {
-    /*  there is no need to override all parameters
-    of usart connection, only baudrate should be changed  */
     huart1.Init.BaudRate = rate;
     if (HAL_UART_Init(&huart1) != HAL_OK) {
         Error_Handler();
     }
 }
 
-/**
- * @note Example of error: baud rate is wrong
- * For example, it may occur when during ESP8266 initialization
- */
+void HAL_UART_RxHalfCpltCallback(UART_HandleTypeDef *huart) {
+    if (huart == &huart1) {
+        uart_half_received = true;
+        tsUartRxDmaCallback();
+    }
+}
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
+    if (huart == &huart1) {
+        uart_full_received = true;
+        tsUartRxDmaCallback();
+    }
+}
+
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
+    if (huart == &huart1) {
+        uart_full_transmitted = true;
+        tsUartTxDmaCallback();
+    }
+}
+
 void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart) {
     if (huart == &huart1) {
         HAL_UART_Receive_DMA(&huart1, rx_buffer1, rx_buffer_size1);
