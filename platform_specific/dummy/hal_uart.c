@@ -7,11 +7,11 @@
 
 #include "hal_uart.h"
 
-int8_t uartInitRxDma(uint8_t buffer[], uint16_t size) {
+int8_t uartInitRxDma(UartInstance_t instance, uint8_t buffer[], uint16_t size) {
     return 0;
 }
 
-size_t uartLastRecvIndex() {
+size_t uartGetLastReceivedIndex(UartInstance_t instance) {
     return 0;
 }
 
@@ -37,12 +37,4 @@ void uartDisableTx() {
 }
 
 void UartChangeBaudrate(uint16_t rate) {
-}
-
-int8_t uartInitRxDmaSecond(uint8_t buffer[], uint16_t size) {
-    return 0;
-}
-
-size_t uartLastRecvIndexSecond() {
-    return 0;
 }

@@ -6,25 +6,47 @@
  */
 
 #include "hal_uart_threadsafe.h"
+#include <iostream>
+#include <chrono>
+#include <thread>
 
-int8_t uartInitRxDmaWithSem(uint8_t buffer[], uint16_t size) {
+// ubx_nav_pvt package example
+static uint8_t buffer[] = {
+    181, 98, 1, 7, 92, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 100, 193
+};
+
+int8_t tsUartInitRx(uint8_t buffer[], uint16_t size) {
     return 0;
 }
 
-bool uartWaitUntilReceiveIsComplete(uint32_t timeout_ms) {
-    return false;
+bool tsUartWaitUntilReceiveIsComplete(uint32_t timeout_ms) {
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+    return true;
 }
 
-int8_t uartInitTxDmaThreadSafe() {
+uint8_t* tsUartPopRxDma() {
+    return buffer;
+}
+
+int8_t tsUartInitTx() {
     return 0;
 }
 
-int8_t uartTransmitDmaThreadSafe(uint8_t buffer[], size_t size) {
+int8_t tsUartTransmit(uint8_t buffer[], size_t size) {
     return 0;
 }
 
-void uartTxDmaCallback() {
+void tsUartTxDmaCallback() {
 }
 
-void uartRxDmaCallback() {
+void tsUartRxDmaCallback() {
 }

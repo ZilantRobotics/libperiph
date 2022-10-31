@@ -32,18 +32,40 @@ static bool uart_full_received = false;
 #endif
 
 
-int8_t uartInitRxDma(uint8_t buffer[], uint16_t size) {
-    rx_buffer1 = buffer;
-    rx_buffer_size1 = size;
-    HAL_StatusTypeDef status = HAL_UART_Receive_DMA(&huart1, buffer, size);
-    return (status == HAL_OK) ? STATUS_OK : STATUS_ERROR;
+int8_t uartInitRxDma(UartInstance_t instance, uint8_t buffer[], uint16_t size) {
+    if (instance == UART_FIRST) {
+        rx_buffer1 = buffer;
+        rx_buffer_size1 = size;
+        HAL_StatusTypeDef status = HAL_UART_Receive_DMA(&huart1, buffer, size);
+        return (status == HAL_OK) ? STATUS_OK : STATUS_ERROR;
+    } else if (instance == UART_SECOND) {
+#if defined(SECOND_UART)
+        rx_buffer2 = buffer;
+        rx_buffer_size2 = size;
+        HAL_StatusTypeDef status = HAL_UART_Receive_DMA(&huart2, buffer, size);
+        return (status == HAL_OK) ? STATUS_OK : STATUS_ERROR;
+#endif
+    }
+
+    return STATUS_ERROR;
 }
 
-size_t uartLastRecvIndex() {
-    if (rx_buffer_size1 == __HAL_DMA_GET_COUNTER(huart1.hdmarx)) {
-        return rx_buffer_size1 - 1;
+size_t uartGetLastReceivedIndex(UartInstance_t instance) {
+    if (instance == UART_FIRST) {
+        if (rx_buffer_size1 == __HAL_DMA_GET_COUNTER(huart1.hdmarx)) {
+            return rx_buffer_size1 - 1;
+        }
+        return rx_buffer_size1 - __HAL_DMA_GET_COUNTER(huart1.hdmarx) - 1;
+    } else if (instance == UART_SECOND) {
+#if defined(SECOND_UART)
+        if (rx_buffer_size2 == __HAL_DMA_GET_COUNTER(huart2.hdmarx)) {
+            return rx_buffer_size2 - 1;
+        }
+        return rx_buffer_size2 - __HAL_DMA_GET_COUNTER(huart2.hdmarx) - 1;
+#endif
     }
-    return rx_buffer_size1 - __HAL_DMA_GET_COUNTER(huart1.hdmarx) - 1;
+
+    return 0;
 }
 
 uint8_t* uartRxDmaPop() {
@@ -106,57 +128,34 @@ void uartDisableTx() {
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 }
 
-#if defined(SECOND_UART)
-int8_t uartInitRxDmaSecond(uint8_t buffer[], uint16_t size) {
-    rx_buffer2 = buffer;
-    rx_buffer_size2 = size;
-    HAL_StatusTypeDef status = HAL_UART_Receive_DMA(&huart2, buffer, size);
-    return (status == HAL_OK) ? STATUS_OK : STATUS_ERROR;
-}
-
-size_t uartLastRecvIndexSecond() {
-    if (rx_buffer_size2 == __HAL_DMA_GET_COUNTER(huart2.hdmarx)) {
-        return rx_buffer_size2 - 1;
-    }
-    return rx_buffer_size2 - __HAL_DMA_GET_COUNTER(huart2.hdmarx) - 1;
-}
-#endif
-
-
-void HAL_UART_RxHalfCpltCallback(UART_HandleTypeDef *huart) {
-    if (huart == &huart1) {
-        uart_half_received = true;
-        uartRxDmaCallback();
-    }
-}
-
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
-    if (huart == &huart1) {
-        uart_full_received = true;
-        uartRxDmaCallback();
-    }
-}
-
-void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
-    if (huart == &huart1) {
-        uart_full_transmitted = true;
-        uartTxDmaCallback();
-    }
-}
-
 void UartChangeBaudrate(uint16_t rate) {
-    /*  there is no need to override all parameters
-    of usart connection, only baudrate should be changed  */
     huart1.Init.BaudRate = rate;
     if (HAL_UART_Init(&huart1) != HAL_OK) {
         Error_Handler();
     }
 }
 
-/**
- * @note Example of error: baud rate is wrong
- * For example, it may occur when during ESP8266 initialization
- */
+void HAL_UART_RxHalfCpltCallback(UART_HandleTypeDef *huart) {
+    if (huart == &huart1) {
+        uart_half_received = true;
+        tsUartRxDmaCallback();
+    }
+}
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
+    if (huart == &huart1) {
+        uart_full_received = true;
+        tsUartRxDmaCallback();
+    }
+}
+
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
+    if (huart == &huart1) {
+        uart_full_transmitted = true;
+        tsUartTxDmaCallback();
+    }
+}
+
 void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart) {
     if (huart == &huart1) {
         HAL_UART_Receive_DMA(&huart1, rx_buffer1, rx_buffer_size1);

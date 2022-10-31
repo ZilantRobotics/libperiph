@@ -10,6 +10,7 @@
 #include "cmsis_os.h"
 #include "semphr.h"
 #include "main.h"
+#include "hal_uart.h"
 
 #ifdef USE_THREAD_SAFE_UART
     static xSemaphoreHandle dma_tx_sem;
@@ -24,7 +25,7 @@ static StaticSemaphore_t dma_rx_sem_buf;
     static BaseType_t dma_rx_sem_task_woken = pdTRUE;
 #endif
 
-int8_t uartInitRxDmaWithSem(uint8_t buffer[], uint16_t size) {
+int8_t tsUartInitRx(uint8_t buffer[], uint16_t size) {
     dma_rx_sem = xSemaphoreCreateBinaryStatic(&dma_rx_sem_buf);
     if (dma_rx_sem == NULL) {
         return STATUS_ERROR;
@@ -32,21 +33,23 @@ int8_t uartInitRxDmaWithSem(uint8_t buffer[], uint16_t size) {
         xSemaphoreGive(dma_rx_sem);
     }
 
-    return uartInitRxDma(buffer, size);
+    return uartInitRxDma(UART_FIRST, buffer, size);
 }
 
-bool uartWaitUntilReceiveIsComplete(uint32_t timeout_ms) {
+bool tsUartWaitUntilReceiveIsComplete(uint32_t timeout_ms) {
     if (dma_rx_sem == NULL) {
         return false;
-    } else if (xSemaphoreTake(dma_rx_sem, timeout_ms) == pdTRUE) {
-        return true;
-    } else {
-        return false;
     }
+
+    return (xSemaphoreTake(dma_rx_sem, timeout_ms) == pdTRUE) ? true : false;
+}
+
+uint8_t* tsUartPopRxDma() {
+    return uartRxDmaPop();
 }
 
 
-int8_t uartInitTxDmaThreadSafe() {
+int8_t tsUartInitTx() {
 #if defined(HAL_UART_MODULE_ENABLED) && defined(USE_THREAD_SAFE_UART)
     if (dma_tx_sem != NULL) {
         return STATUS_ERROR;
@@ -63,7 +66,7 @@ int8_t uartInitTxDmaThreadSafe() {
 #endif
 }
 
-int8_t uartTransmitDmaThreadSafe(uint8_t buffer[], size_t size) {
+int8_t tsUartTransmit(uint8_t buffer[], size_t size) {
 #ifdef USE_THREAD_SAFE_UART
     if (dma_tx_sem == NULL) {
         return -1;
@@ -87,7 +90,7 @@ int8_t uartTransmitDmaThreadSafe(uint8_t buffer[], size_t size) {
 #endif
 }
 
-void uartRxDmaCallback() {
+void tsUartRxDmaCallback() {
 #ifdef HAL_UART_MODULE_ENABLED
     if (dma_rx_sem != NULL) {
         xSemaphoreGiveFromISR(dma_rx_sem, &dma_rx_sem_task_woken);
@@ -95,7 +98,7 @@ void uartRxDmaCallback() {
 #endif
 }
 
-void uartTxDmaCallback() {
+void tsUartTxDmaCallback() {
 #ifdef USE_THREAD_SAFE_UART
     if (dma_tx_sem != NULL) {
         xSemaphoreGiveFromISR(dma_tx_sem, &pxHigherPriorityTaskWoken);
