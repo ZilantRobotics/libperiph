@@ -6,10 +6,8 @@
  */
 
 #include "hal_adc.h"
+#include "libperiph_common.h"
 
-#ifndef STATUS_OK
-    #define STATUS_OK 0
-#endif
 
 int8_t adcInitDma(uint8_t num_of_channels) {
     return STATUS_OK;

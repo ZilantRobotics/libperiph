@@ -6,9 +6,10 @@
  */
 
 #include "hal_timers.h"
+#include "libperiph_common.h"
 
 int8_t timerInit(Channel_t channel, TimerMode_t mode) {
-    return 0;
+    return STATUS_OK;
 }
 
 TimerMode_t timerGetMode(Channel_t channel) {

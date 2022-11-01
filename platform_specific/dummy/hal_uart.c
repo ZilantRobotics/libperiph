@@ -6,9 +6,10 @@
  */
 
 #include "hal_uart.h"
+#include "libperiph_common.h"
 
 int8_t uartInitRxDma(UartInstance_t instance, uint8_t buffer[], uint16_t size) {
-    return 0;
+    return STATUS_OK;
 }
 
 size_t uartGetLastReceivedIndex(UartInstance_t instance) {
@@ -20,11 +21,11 @@ uint8_t* uartRxDmaPop() {
 }
 
 int8_t uartTransmit(uint8_t buffer[], size_t size) {
-    return 0;
+    return STATUS_OK;
 }
 
 int8_t uartTransmitDma(uint8_t buffer[], size_t size) {
-    return 0;
+    return STATUS_OK;
 }
 bool uartIsTxReady() {
     return false;

@@ -13,13 +13,7 @@
 
 #include "servos.h"
 #include "ttl.h"
-
-#ifndef STATUS_OK
-    #define STATUS_OK       0
-#endif
-#ifndef STATUS_ERROR
-    #define STATUS_ERROR    -1
-#endif
+#include "libperiph_common.h"
 
 #define DEFAULT_SETPOINT_VALUE -1
 

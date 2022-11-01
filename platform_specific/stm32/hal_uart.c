@@ -10,6 +10,7 @@
 #include "config.h"
 #include "hal_uart_threadsafe.h"
 #include "main.h"
+#include "libperiph_common.h"
 
 #define MAX_UART_TX_BUF_SIZE    100
 
@@ -85,7 +86,7 @@ uint8_t* uartRxDmaPop() {
 
 int8_t uartTransmit(uint8_t buffer[], size_t size) {
     if (size > MAX_UART_TX_BUF_SIZE) {
-        return -1;
+        return STATUS_ERROR;
     }
     memcpy(tx_buffer, buffer, size);
     return HAL_UART_Transmit(&huart1, tx_buffer, size, 500) == HAL_OK ? 0 : -1;
@@ -93,7 +94,7 @@ int8_t uartTransmit(uint8_t buffer[], size_t size) {
 
 int8_t uartTransmitDma(uint8_t buffer[], size_t size) {
     if (size > MAX_UART_TX_BUF_SIZE || !uart_full_transmitted) {
-        return -1;
+        return STATUS_ERROR;
     }
     memcpy(tx_buffer, buffer, size);
     tx_buffer_max_size = size;

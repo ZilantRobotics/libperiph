@@ -7,6 +7,7 @@
 
 #include <hal_i2c.h>
 #include "main.h"
+#include "libperiph_common.h"
 
 
 #ifdef HAL_I2C_MODULE_ENABLED
@@ -27,19 +28,19 @@ int8_t i2cTransmit(uint8_t id, const uint8_t tx[], uint8_t len) {
     UNUSED(tx);
     UNUSED(len);
 #endif
-    return -1;
+    return STATUS_ERROR;
 }
 
 int8_t i2cReceive(uint8_t id, uint8_t* rx, uint8_t len) {
 #ifdef HAL_I2C_MODULE_ENABLED
     HAL_StatusTypeDef res = HAL_I2C_Master_Receive(&hi2c1, id, rx, len, I2C_TIMEOUT_MS);
     if (res == HAL_OK) {
-        return 0;
+        return STATUS_OK;
     }
 #else
     UNUSED(id);
     UNUSED(rx);
     UNUSED(len);
 #endif
-    return -1;
+    return STATUS_ERROR;
 }

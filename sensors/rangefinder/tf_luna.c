@@ -13,6 +13,7 @@
 
 #include "tf_luna.h"
 #include <string.h>
+#include "libperiph_common.h"
 
 #define HEAD_BYTE 0x59
 
@@ -26,7 +27,7 @@ static uint8_t buffer[TF_LUNA_BUFFER_SIZE];
 
 
 int8_t tfLunaInit() {
-    return 0;
+    return STATUS_OK;
 }
 
 float tfParseRange(const TfLunaSerialFrame_t* buffer_ptr) {
@@ -42,7 +43,7 @@ float tfParseRange(const TfLunaSerialFrame_t* buffer_ptr) {
     if (idx >= 0) {
         return tfLunaParseData(idx);
     }
-    return -1;
+    return STATUS_ERROR;
 }
 
 int8_t tfLunaFindFrameStart() {
@@ -52,7 +53,7 @@ int8_t tfLunaFindFrameStart() {
             return idx;
         }
     }
-    return -1;
+    return STATUS_ERROR;
 }
 
 float tfLunaParseData(int8_t idx) {

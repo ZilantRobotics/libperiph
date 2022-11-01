@@ -11,6 +11,7 @@
 #include "semphr.h"
 #include "main.h"
 #include "hal_uart.h"
+#include "libperiph_common.h"
 
 #ifdef USE_THREAD_SAFE_UART
     static xSemaphoreHandle dma_tx_sem;
@@ -69,7 +70,7 @@ int8_t tsUartInitTx() {
 int8_t tsUartTransmit(uint8_t buffer[], size_t size) {
 #ifdef USE_THREAD_SAFE_UART
     if (dma_tx_sem == NULL) {
-        return -1;
+        return STATUS_ERROR;
     } else if (xSemaphoreTake(dma_tx_sem, 100) == pdTRUE) {
         int8_t tx_result = uartTransmitDma(buffer, size);
         if (tx_result != 0) {
@@ -81,12 +82,12 @@ int8_t tsUartTransmit(uint8_t buffer[], size_t size) {
         }
         return (tx_result == HAL_OK) ? 0 : -1;
     } else {
-        return -1;
+        return STATUS_ERROR;
     }
 #else
     UNUSED(buffer);
     UNUSED(size);
-    return -1;
+    return STATUS_ERROR;
 #endif
 }
 

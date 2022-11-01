@@ -6,11 +6,12 @@
  */
 
 #include "hal_i2c.h"
+#include "libperiph_common.h"
 
 int8_t i2cTransmit(uint8_t id, const uint8_t tx[], uint8_t len) {
-    return 0;
+    return STATUS_OK;
 }
 
 int8_t i2cReceive(uint8_t id, uint8_t* rx, uint8_t len) {
-    return -1;
+    return STATUS_ERROR;
 }

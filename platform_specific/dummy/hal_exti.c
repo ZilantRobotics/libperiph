@@ -6,9 +6,10 @@
  */
 
 #include "hal_exti.h"
+#include "libperiph_common.h"
 
 int8_t extiInit() {
-    return 0;
+    return STATUS_OK;
 }
 
 bool extiIsInited() {

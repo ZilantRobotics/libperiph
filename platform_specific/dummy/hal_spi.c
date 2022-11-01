@@ -6,7 +6,8 @@
  */
 
 #include <hal_spi.h>
+#include "libperiph_common.h"
 
 int8_t spiPerformTransaction(uint8_t* tx, uint8_t* rx, uint8_t size) {
-    return 0;
+    return STATUS_OK;
 }

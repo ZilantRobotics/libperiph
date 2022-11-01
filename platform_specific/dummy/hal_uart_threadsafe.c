@@ -9,6 +9,7 @@
 #include <iostream>
 #include <chrono>
 #include <thread>
+#include "libperiph_common.h"
 
 // ubx_nav_pvt package example
 static uint8_t buffer[] = {
@@ -25,7 +26,7 @@ static uint8_t buffer[] = {
 };
 
 int8_t tsUartInitRx(uint8_t buffer[], uint16_t size) {
-    return 0;
+    return STATUS_OK;
 }
 
 bool tsUartWaitUntilReceiveIsComplete(uint32_t timeout_ms) {
@@ -38,11 +39,11 @@ uint8_t* tsUartPopRxDma() {
 }
 
 int8_t tsUartInitTx() {
-    return 0;
+    return STATUS_OK;
 }
 
 int8_t tsUartTransmit(uint8_t buffer[], size_t size) {
-    return 0;
+    return STATUS_OK;
 }
 
 void tsUartTxDmaCallback() {
