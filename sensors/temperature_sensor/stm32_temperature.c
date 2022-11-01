@@ -10,24 +10,25 @@
  * @author d.ponomarev
  * @brief Implementation of TemperatureSensor
  * @date Nov 18, 2018
- * @note stm32f103 datasheet and manual:
- * - Reference manual 11.10 Temperature sensor: https://www.st.com/resource/en/reference_manual/cd00171190-stm32f101xx-stm32f102xx-stm32f103xx-stm32f105xx-and-stm32f107xx-advanced-arm-based-32-bit-mcus-stmicroelectronics.pdf
- * - Datasheet 5.3.19 Temperature sensor characteristics: https://www.st.com/resource/en/datasheet/stm32f103c8.pdf
+ * @note From the datasheets:
+ * mcu          temp_ref, C     v_ref,V     avg_slope,mV/C
+ * stm32f103    25              1.41        4.3
+ * stm32g0      30              0.76        2.5
  */
 
 #include "stm32_temperature.h"
 
-///< According to the datasheet:
-#define AVG_SLOPE_MV_C              4.3
-#define CELSIUS_25_V                1.43
-#define CELSIUS_25_ADC_RAW          1774.5  //< 4095*1.43/3.3
-#define CELSIUS_PER_ADC_RAW         5.3359  //< 4095*0.0043/3.3
-#define CELSIUS_MINUS_40_ADC_RAW    2121.3  //< CELSIUS_25_ADC_RAW + (25 + 40) * CELSIUS_PER_ADC_RAW
-#define CELSIUS_PLUS_125_ADC_RAW    1240.9  //< CELSIUS_25_ADC_RAW - 100 * CELSIUS_PER_ADC_RAW
+#ifdef STM32G0B1xx
+    static const uint16_t TEMP_REF = 30;
+    static const uint16_t ADC_REF = 943;    ///< v_ref / 3.3 * 4095
+    static const uint16_t AVG_SLOPE = 3.1;  ///< avg_slope/(3.3/4096)
+#else  // STM32F103xB
+    static const uint16_t TEMP_REF = 25;
+    static const uint16_t ADC_REF = 1750;   ///< v_ref / 3.3 * 4095
+    static const uint16_t AVG_SLOPE = 5;    ///< avg_slope/(3.3/4096)
+#endif
 
-uint16_t stm32TemperatureParse(uint16_t raw_temp) {
-    const uint16_t V25 = 1750;      // when V25=1.41V at ref 3.3V
-    const uint16_t AVG_SLOPE = 5;   // when AVG_SLOPE=4.3mV/C at ref 3.3V
-    uint16_t temperature = (V25 - raw_temp) / AVG_SLOPE + 25 + 273;
+uint16_t stm32TemperatureParse(uint16_t adc_measurement) {
+    uint16_t temperature = (ADC_REF - adc_measurement) / AVG_SLOPE + TEMP_REF + 273;
     return temperature;
 }
