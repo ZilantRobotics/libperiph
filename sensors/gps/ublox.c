@@ -118,7 +118,7 @@ void ubloxDeserializeFix2(GnssUblox_t* uavcan_fix2) {
     if (sizeof(UbxNavPvt_t) != package.length) {
         return;
     }
-    UbxNavPvt_t* ubx_nav_pvt = (UbxNavPvt_t*)package.payload;
+    UbxNavPvt_t* ubx_nav_pvt = (UbxNavPvt_t*)(void*)package.payload;
     uavcan_fix2->timestamp = (uint64_t)(ubx_nav_pvt->time_ms) * 1000;
     uavcan_fix2->gnss_timestamp = dayToUnixTimestamp(ubx_nav_pvt->year,
                                                      ubx_nav_pvt->month,

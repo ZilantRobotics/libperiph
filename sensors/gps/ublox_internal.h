@@ -16,6 +16,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stddef.h>
+#include <assert.h>
 
 #define GPS_UBLOX_SYNC_CHAR_1_CODE        0xB5    // 181
 #define GPS_UBLOX_SYNC_CHAR_2_CODE        0x62    // 98
@@ -55,6 +56,7 @@ typedef struct {
     int16_t magDec;
     uint16_t magAcc;
 } UbxNavPvt_t;
+static_assert(sizeof(UbxNavPvt_t) == 92);
 
 typedef enum {
     STATE_SYNC_CHAR_1 = 0,
