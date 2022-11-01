@@ -14,15 +14,15 @@
     extern TIM_HandleTypeDef htim1;
 #endif
 
-#if defined(CAN_PWM_B1_CHANNEL) || defined(CAN_PWM_B2_CHANNEL)
+#if defined(PIN_A3_SET_TIM2_CH4) || defined(PIN_A2_SET_TIM2_CH3)
     extern TIM_HandleTypeDef htim2;
 #endif
 
-#if defined(CAN_PWM_D1_CHANNEL) || defined(CAN_PWM_D2_CHANNEL)
+#if defined(PIN_PB4_SET_TIM3_CH1) || defined(PIN_PB5_SET_TIM3_CH2)
     extern TIM_HandleTypeDef htim3;
 #endif
 
-#if defined(CAN_PWM_A1_CHANNEL) || defined(CAN_PWM_A2_CHANNEL)
+#if defined(PIN_PB7_SET_TIM4_CH2) || defined(PIN_PB6_SET_TIM4_CH1)
     extern TIM_HandleTypeDef htim4;
 #endif
 
@@ -34,15 +34,19 @@ typedef struct {
 } TimChannel_t;
 
 static volatile TimChannel_t channels[TIM_CH_AMOUNT] = {
-#if defined(CAN_PWM_A1_CHANNEL) || defined(CAN_PWM_A2_CHANNEL)
-    {&TIM4->CCR2,   &htim4, TIM_CHANNEL_2,  TIMER_NOT_CONFIGURED},  // PB7  TIM4_CH2
-    {&TIM4->CCR1,   &htim4, TIM_CHANNEL_1,  TIMER_NOT_CONFIGURED},  // PB6  TIM4_CH1
+#if defined(PIN_PB7_SET_TIM4_CH2)
+    {&TIM4->CCR2,   &htim4, TIM_CHANNEL_2,  TIMER_NOT_CONFIGURED},
 #else
     {NULL,          NULL,   TIM_CHANNEL_2,  TIMER_NOT_CONFIGURED},
+#endif
+
+#if defined(PIN_PB6_SET_TIM4_CH1)
+    {&TIM4->CCR1,   &htim4, TIM_CHANNEL_1,  TIMER_NOT_CONFIGURED},
+#else
     {NULL,          NULL,   TIM_CHANNEL_1,  TIMER_NOT_CONFIGURED},
 #endif
 
-#if defined(CAN_PWM_B1_CHANNEL) || defined(CAN_PWM_B2_CHANNEL)
+#if defined(PIN_A3_SET_TIM2_CH4) || defined(PIN_A2_SET_TIM2_CH3)
     {&TIM2->CCR4,   &htim2, TIM_CHANNEL_4,  TIMER_NOT_CONFIGURED},  // PA3  TIM2_CH4
     {&TIM2->CCR3,   &htim2, TIM_CHANNEL_3,  TIMER_NOT_CONFIGURED},  // PA2  TIM2_CH3
 #else
@@ -60,10 +64,10 @@ static volatile TimChannel_t channels[TIM_CH_AMOUNT] = {
     {NULL,          NULL,   TIM_CHANNEL_3,  TIMER_NOT_CONFIGURED},
 #endif
 
-#if defined(CAN_PWM_D1_CHANNEL) || defined(CAN_PWM_D2_CHANNEL)
-    {&TIM3->CCR1,   &htim3, TIM_CHANNEL_1,  TIMER_NOT_CONFIGURED},  // TIM_3_CH_1_PIN_PB4
-    {&TIM3->CCR2,   &htim3, TIM_CHANNEL_2,  TIMER_NOT_CONFIGURED},  // TIM_3_CH_2_PIN_PB5
-    {&TIM3->CCR3,   &htim3, TIM_CHANNEL_3,  TIMER_NOT_CONFIGURED},  // TIM_3_CH_3_PIN_PB0
+#if defined(PIN_PB4_SET_TIM3_CH1) || defined(PIN_PB5_SET_TIM3_CH2)
+    {&TIM3->CCR1,   &htim3, TIM_CHANNEL_1,  TIMER_NOT_CONFIGURED},  // PIN_PB4_TIM3_CH1
+    {&TIM3->CCR2,   &htim3, TIM_CHANNEL_2,  TIMER_NOT_CONFIGURED},  // PIN_PB5_TIM3_CH2
+    {&TIM3->CCR3,   &htim3, TIM_CHANNEL_3,  TIMER_NOT_CONFIGURED},  // PIN_PB0_TIM3_CH3
 #else
     {NULL,          NULL,   TIM_CHANNEL_1,  TIMER_NOT_CONFIGURED},
     {NULL,          NULL,   TIM_CHANNEL_2,  TIMER_NOT_CONFIGURED},

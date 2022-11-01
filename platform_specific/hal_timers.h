@@ -11,19 +11,22 @@
 #include <stdint.h>
 
 typedef enum {
-    CH_A1_PIN_PB7 = 0,      // TIM4_CH2    I2C1_SDA
-    CH_A2_PIN_PB6,          // TIM4_CH1    I2C1_SCL
+    PIN_PB7_TIM4_CH2 = 0,   // I2C1_SDA
+    PIN_PB6_TIM4_CH1,       // I2C1_SCL
 
-    CH_B1_PIN_A3,           // TIM2_CH4    ADC12_IN3   USART2_RX
-    CH_B2_PIN_A2,           // TIM2_CH3    ADC12_IN2   USART2_TX
+    PIN_A3_TIM2_CH4,        // ADC12_IN3    USART2_RX
+    PIN_A2_TIM2_CH3,        // ADC12_IN2    USART2_TX
 
-    CH_C1_PIN_A9_TIM1_2,    // TIM1_CH2    USART1_TX
-    CH_C2_PIN_A8_TIM1_1,    // TIM1_CH1    USART1_CK
-    CH_C3_PIN_A10_TIM1_3,   // TIM1_CH3                             starter_throttle
+    PIN_A9_TIM1_CH2,        // USART1_TX
+    PIN_A8_TIM1_CH1,        // USART1_CK
+    PIN_A10_TIM1_CH3,       //                          starter_throttle
 
-    TIM_3_CH_1_PIN_PB4,     // TIM3_CH1                             rgb led
-    TIM_3_CH_2_PIN_PB5,     // TIM3_CH2                             rgb led
-    TIM_3_CH_3_PIN_PB0,     // TIM3_CH3                             rgb led
+    PIN_PB4_TIM3_CH1,       //                          rgb led
+    PIN_PB5_TIM3_CH2,       //                          rgb led
+    PIN_PB0_TIM3_CH3,       //                          rgb led
+
+    // TIM4_CH3
+    // TIM4_CH4
 
     TIM_CH_AMOUNT,
 } Channel_t;
