@@ -27,7 +27,4 @@ uint8_t* tsUartPopRxDma();
 int8_t tsUartInitTx();
 int8_t tsUartTransmit(uint8_t buffer[], size_t size);
 
-void tsUartTxDmaCallback();
-void tsUartRxDmaCallback();
-
 #endif  // PLATFORM_SPECIFIC_HAL_UART_THREADSAFE_H_
