@@ -7,8 +7,6 @@
 
 #include "hal_uart.h"
 #include <string.h>
-#include "config.h"
-#include "hal_uart_threadsafe.h"
 #include "main.h"
 #include "libperiph_common.h"
 
@@ -139,21 +137,21 @@ void UartChangeBaudrate(uint16_t rate) {
 void HAL_UART_RxHalfCpltCallback(UART_HandleTypeDef *huart) {
     if (huart == &huart1) {
         uart_half_received = true;
-        tsUartRxDmaCallback();
+        // tsUartRxDmaCallback();
     }
 }
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     if (huart == &huart1) {
         uart_full_received = true;
-        tsUartRxDmaCallback();
+        // tsUartRxDmaCallback();
     }
 }
 
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
     if (huart == &huart1) {
         uart_full_transmitted = true;
-        tsUartTxDmaCallback();
+        // tsUartTxDmaCallback();
     }
 }
 

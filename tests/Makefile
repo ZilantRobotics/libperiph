@@ -7,10 +7,14 @@ COMMON_INCLUDES=-I ../common/ \
 				-I ../devices/ \
 				-I ../sensors/ \
 				-I ./ \
-				-I ../platform_specific
+				-I ../platform_specific/hal_i2c \
+				-I ../platform_specific/hal_timers \
+				-I ../platform_specific/hal_spi
 
 COMMON_LIBS=-lpthread -pthread -lgtest
-COMMON_LIBS += $(wildcard ../platform_specific/dummy/*.c)
+COMMON_LIBS += $(wildcard ../platform_specific/hal_i2c/dummy/*.c)
+COMMON_LIBS += $(wildcard ../platform_specific/hal_spi/dummy/*.c)
+COMMON_LIBS += $(wildcard ../platform_specific/hal_timers/dummy/*.c)
 FLAGS=-Wall -std=c++11
 GXX_COMPILE=g++ $(COMMON_INCLUDES) $(FLAGS)  -o shell 
 
@@ -63,5 +67,5 @@ servo_test:
 	./shell
 
 rangefinder_tf_luna_test:
-	$(GXX_COMPILE) rangefinder/tf_luna.cpp ../sensors/rangefinder/tf_luna.c $(COMMON_LIBS)
+	$(GXX_COMPILE) rangefinder/tf_luna.cpp ../sensors/rangefinder/tf_luna/tf_luna.c $(COMMON_LIBS)
 	./shell

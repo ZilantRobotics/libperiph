@@ -9,7 +9,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include "main.h"
-#include "config.h"
+#include "libperiph_common.h"
 
 
 #define MAX_CHANNELS_NUM    8

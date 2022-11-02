@@ -7,7 +7,7 @@
 
 #include "hal_timers.h"
 #include "main.h"
-#include "config.h"
+#include "libperiph_common.h"
 
 
 #if defined(CAN_PWM_C_CHANNELS)

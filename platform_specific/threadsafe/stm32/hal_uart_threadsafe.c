@@ -6,7 +6,6 @@
  */
 
 #include "hal_uart_threadsafe.h"
-#include "config.h"
 #include "cmsis_os.h"
 #include "semphr.h"
 #include "main.h"

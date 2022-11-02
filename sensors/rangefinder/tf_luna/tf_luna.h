@@ -16,17 +16,19 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
+#include <assert.h>
 
 #define TF_LUNA_SERIAL_FRAME_SIZE   9
 #define TF_LUNA_BUFFER_SIZE         18
 
-typedef struct {
+typedef struct __attribute__((__packed__)) {
     uint16_t header;
     uint16_t distance;
     uint16_t amp;
     uint16_t temp;
     uint8_t check_sum;
 } TfLunaSerialFrame_t;
+static_assert(sizeof(TfLunaSerialFrame_t) == TF_LUNA_SERIAL_FRAME_SIZE);
 
 /**
  * @return STATUS_OK if there is no error, otherwise STATUS_ERROR

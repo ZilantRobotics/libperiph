@@ -32,7 +32,7 @@ int8_t tfLunaInit() {
 
 float tfParseRange(const TfLunaSerialFrame_t* buffer_ptr) {
     if (!buffer_ptr) {
-        return false;
+        return -1.0;
     }
 
     // copy previous frame to the beginning and save the new one
@@ -43,7 +43,7 @@ float tfParseRange(const TfLunaSerialFrame_t* buffer_ptr) {
     if (idx >= 0) {
         return tfLunaParseData(idx);
     }
-    return STATUS_ERROR;
+    return -1.0;
 }
 
 int8_t tfLunaFindFrameStart() {
