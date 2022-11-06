@@ -16,6 +16,7 @@
     static xSemaphoreHandle dma_tx_sem;
     static StaticSemaphore_t dma_tx_sem_buf;
     static BaseType_t pxHigherPriorityTaskWoken = pdTRUE;
+    static void tsUartTxDmaCallback();
 #endif
 
 static xSemaphoreHandle dma_rx_sem;
@@ -25,7 +26,6 @@ static StaticSemaphore_t dma_rx_sem_buf;
     static BaseType_t dma_rx_sem_task_woken = pdTRUE;
 #endif
 
-static void tsUartTxDmaCallback();
 static void tsUartRxDmaCallback();
 
 
