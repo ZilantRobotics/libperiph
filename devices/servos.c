@@ -27,10 +27,12 @@ static void uavcanServosSetDefaultValueForChannel(Channel_t tim_channel);
 static void uavcanServosUpdateChannelStateAccordingToSetpoint(Channel_t tim_ch);
 
 int8_t uavcanServosInitChannel(Channel_t tim_channel, const ServoParameters_t* servo_params) {
-    if (!servo_params ||
-            (uint32_t)tim_channel >= SERVO_TIM_CHANNELS_AMOUNT ||
-            servo_params->ch >= SETPOINTS_AMOUNT) {
+    if (!servo_params || (uint32_t)tim_channel >= SERVO_TIM_CHANNELS_AMOUNT) {
         return STATUS_ERROR;
+    }
+
+    if (servo_params->ch < SETPOINTS_AMOUNT) {
+        setpoints[servo_params->ch] = DEFAULT_SETPOINT_VALUE;
     }
 
     uavcanServosUpdateParams(tim_channel, servo_params);
@@ -39,7 +41,6 @@ int8_t uavcanServosInitChannel(Channel_t tim_channel, const ServoParameters_t* s
         return STATUS_OK;
     }
 
-    setpoints[servo_params->ch] = DEFAULT_SETPOINT_VALUE;
     if (uavcanServosInitPwmChannel(tim_channel) == STATUS_ERROR) {
         return STATUS_ERROR;
     }
