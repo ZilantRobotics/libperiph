@@ -1,0 +1,16 @@
+SRC += $(wildcard ${LIBPERIPH_DIR}/platform_specific/hal_adc/${LIBPERIPH_PLATFORM}/*.c)
+SRC += $(wildcard ${LIBPERIPH_DIR}/platform_specific/hal_i2c/${LIBPERIPH_PLATFORM}/*.c)
+SRC += $(wildcard ${LIBPERIPH_DIR}/platform_specific/hal_spi/${LIBPERIPH_PLATFORM}/*.c)
+SRC += $(wildcard ${LIBPERIPH_DIR}/platform_specific/hal_timers/${LIBPERIPH_PLATFORM}/*.c)
+SRC += $(wildcard ${LIBPERIPH_DIR}/platform_specific/hal_uart/${LIBPERIPH_PLATFORM}/*.c)
+SRC += $(wildcard ${LIBPERIPH_DIR}/platform_specific/threadsafe_exti/${LIBPERIPH_PLATFORM}/*.c)
+SRC += $(wildcard ${LIBPERIPH_DIR}/platform_specific/threadsafe_i2c/${LIBPERIPH_PLATFORM}/*.c)
+SRC += $(wildcard ${LIBPERIPH_DIR}/platform_specific/threadsafe_uart/${LIBPERIPH_PLATFORM}/*.c)
+INC += -I${LIBPERIPH_DIR}/platform_specific/hal_adc
+INC += -I${LIBPERIPH_DIR}/platform_specific/hal_i2c
+INC += -I${LIBPERIPH_DIR}/platform_specific/hal_spi
+INC += -I${LIBPERIPH_DIR}/platform_specific/hal_timers
+INC += -I${LIBPERIPH_DIR}/platform_specific/hal_uart
+INC += -I${LIBPERIPH_DIR}/platform_specific/threadsafe_exti
+INC += -I${LIBPERIPH_DIR}/platform_specific/threadsafe_i2c
+INC += -I${LIBPERIPH_DIR}/platform_specific/threadsafe_uart
