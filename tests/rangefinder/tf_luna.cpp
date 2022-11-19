@@ -6,7 +6,7 @@
 
 #include <gtest/gtest.h>
 #include <iostream>
-#include "rangefinder/tf_luna.h"
+#include "rangefinder/tf_luna/tf_luna.h"
 
 uint8_t frame_ok_1[] =   {'Y', 'Y', 53, 0, 25, 0, 3,   16,  19};
 uint8_t frame_ok_2[] =   {'Y', 'Y', 0,  0, 0,  0, 205, 55,  182};

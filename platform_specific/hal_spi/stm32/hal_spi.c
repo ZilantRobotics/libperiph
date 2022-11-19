@@ -8,7 +8,7 @@
 #include <hal_spi.h>
 #include <string.h>
 #include "main.h"
-#include "config.h"
+#include "libperiph_common.h"
 
 
 #define MEASUREMENT_DELAY                   10
