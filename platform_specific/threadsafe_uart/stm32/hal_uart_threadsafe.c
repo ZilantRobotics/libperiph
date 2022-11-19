@@ -16,6 +16,7 @@
     static xSemaphoreHandle dma_tx_sem;
     static StaticSemaphore_t dma_tx_sem_buf;
     static BaseType_t pxHigherPriorityTaskWoken = pdTRUE;
+    static void tsUartTxDmaCallback();
 #endif
 
 static xSemaphoreHandle dma_rx_sem;
@@ -25,7 +26,11 @@ static StaticSemaphore_t dma_rx_sem_buf;
     static BaseType_t dma_rx_sem_task_woken = pdTRUE;
 #endif
 
+static void tsUartRxDmaCallback();
+
+
 int8_t tsUartInitRx(uint8_t buffer[], uint16_t size) {
+    uartRegisterRxCallback(UART_FIRST, &tsUartRxDmaCallback);
     dma_rx_sem = xSemaphoreCreateBinaryStatic(&dma_rx_sem_buf);
     if (dma_rx_sem == NULL) {
         return STATUS_ERROR;
@@ -51,6 +56,7 @@ uint8_t* tsUartPopRxDma() {
 
 int8_t tsUartInitTx() {
 #if defined(HAL_UART_MODULE_ENABLED) && defined(USE_THREAD_SAFE_UART)
+    uartRegisterTxCallback(UART_FIRST, &tsUartTxDmaCallback);
     if (dma_tx_sem != NULL) {
         return STATUS_ERROR;
     }

@@ -10,74 +10,100 @@
 #include "main.h"
 #include "libperiph_common.h"
 
+
 #define MAX_UART_TX_BUF_SIZE    100
 
+typedef enum {
+    NO_FLAGS = 0,
+    HALF_RECEIVED_FLAG,
+    FULL_RECEIVED_FLAG,
+    BOTH_FLAGS,
+} UartRxStatus_t;
 
 #ifdef HAL_UART_MODULE_ENABLED
 
+typedef struct {
+    UART_HandleTypeDef* huart_ptr;
+    uint8_t* buffer;
+    uint16_t size;
+    UartRxStatus_t status;
+    void (*rx_callback)();
+} UartRxConfig_t;
+
+typedef struct {
+    uint8_t buffer[MAX_UART_TX_BUF_SIZE];
+    bool full_transmitted;
+    void (*tx_callback)();
+} UartTxConfig_t;
+
+
 extern UART_HandleTypeDef huart1;
-static uint8_t* rx_buffer1;
-static uint16_t rx_buffer_size1;
-static uint8_t tx_buffer[MAX_UART_TX_BUF_SIZE];
-static uint16_t tx_buffer_max_size = 0;
-static bool uart_full_transmitted = true;
-static bool uart_half_received = false;
-static bool uart_full_received = false;
+#define UART_1_PTR &huart1
+static UartRxConfig_t uart_rx[2];
+static UartTxConfig_t uart_1_tx = {{}, true};
 
 #if defined(SECOND_UART)
     extern UART_HandleTypeDef huart2;
-    static uint8_t* rx_buffer2;
-    static uint16_t rx_buffer_size2;
+    #define UART_2_PTR &huart2
+#else
+    #define UART_2_PTR NULL
 #endif
 
 
 int8_t uartInitRxDma(UartInstance_t instance, uint8_t buffer[], uint16_t size) {
     if (instance == UART_FIRST) {
-        rx_buffer1 = buffer;
-        rx_buffer_size1 = size;
-        HAL_StatusTypeDef status = HAL_UART_Receive_DMA(&huart1, buffer, size);
-        return (status == HAL_OK) ? STATUS_OK : STATUS_ERROR;
+        uart_rx[instance].huart_ptr = UART_1_PTR;
     } else if (instance == UART_SECOND) {
-#if defined(SECOND_UART)
-        rx_buffer2 = buffer;
-        rx_buffer_size2 = size;
-        HAL_StatusTypeDef status = HAL_UART_Receive_DMA(&huart2, buffer, size);
-        return (status == HAL_OK) ? STATUS_OK : STATUS_ERROR;
-#endif
+        uart_rx[instance].huart_ptr = UART_2_PTR;
+    } else {
+        return STATUS_ERROR;
     }
 
-    return STATUS_ERROR;
+    uart_rx[instance].buffer = buffer;
+    uart_rx[instance].size = size;
+    HAL_StatusTypeDef status = HAL_UART_Receive_DMA(uart_rx[instance].huart_ptr, buffer, size);
+    return (status == HAL_OK) ? STATUS_OK : STATUS_ERROR;
+}
+
+void uartRegisterRxCallback(UartInstance_t instance, void (*rx_callback)()) {
+    if (instance > UART_SECOND) {
+        return;
+    }
+
+    uart_rx[instance].rx_callback = rx_callback;
+}
+
+void uartRegisterTxCallback(UartInstance_t instance, void (*tx_callback)()) {
+    if (instance == UART_FIRST) {
+        uart_1_tx.tx_callback = tx_callback;
+    }
 }
 
 size_t uartGetLastReceivedIndex(UartInstance_t instance) {
-    if (instance == UART_FIRST) {
-        if (rx_buffer_size1 == __HAL_DMA_GET_COUNTER(huart1.hdmarx)) {
-            return rx_buffer_size1 - 1;
-        }
-        return rx_buffer_size1 - __HAL_DMA_GET_COUNTER(huart1.hdmarx) - 1;
-    } else if (instance == UART_SECOND) {
-#if defined(SECOND_UART)
-        if (rx_buffer_size2 == __HAL_DMA_GET_COUNTER(huart2.hdmarx)) {
-            return rx_buffer_size2 - 1;
-        }
-        return rx_buffer_size2 - __HAL_DMA_GET_COUNTER(huart2.hdmarx) - 1;
-#endif
+    if (instance > UART_SECOND) {
+        return 0;
     }
 
-    return 0;
+    const UartRxConfig_t* config = &uart_rx[instance];
+    uint16_t dma_counter = __HAL_DMA_GET_COUNTER(config->huart_ptr->hdmarx);
+    if (config->size == dma_counter) {
+        return config->size - 1;
+    }
+    return config->size - dma_counter - 1;
 }
 
 uint8_t* uartRxDmaPop() {
-    if (!uart_half_received && !uart_full_received) {
+    UartRxConfig_t* config = &uart_rx[UART_FIRST];
+
+    if (config->status == NO_FLAGS) {
         return NULL;
     }
 
-    uint8_t* buffer_ptr = rx_buffer1;
-    if (uart_full_received) {
-        buffer_ptr += rx_buffer_size1 / 2;
+    uint8_t* buffer_ptr = config->buffer;
+    if (config->status == FULL_RECEIVED_FLAG || config->status == BOTH_FLAGS) {
+        buffer_ptr += config->size / 2;
     }
-    uart_half_received = false;
-    uart_full_received = false;
+    config->status = NO_FLAGS;
     return buffer_ptr;
 }
 
@@ -86,84 +112,81 @@ int8_t uartTransmit(uint8_t buffer[], size_t size) {
     if (size > MAX_UART_TX_BUF_SIZE) {
         return STATUS_ERROR;
     }
-    memcpy(tx_buffer, buffer, size);
-    return HAL_UART_Transmit(&huart1, tx_buffer, size, 500) == HAL_OK ? 0 : -1;
+    memcpy(uart_1_tx.buffer, buffer, size);
+    return HAL_UART_Transmit(uart_rx[UART_FIRST].huart_ptr, uart_1_tx.buffer, size, 500) == HAL_OK ? 0 : -1;
 }
 
 int8_t uartTransmitDma(uint8_t buffer[], size_t size) {
-    if (size > MAX_UART_TX_BUF_SIZE || !uart_full_transmitted) {
+    if (size > MAX_UART_TX_BUF_SIZE || !uart_1_tx.full_transmitted) {
         return STATUS_ERROR;
     }
-    memcpy(tx_buffer, buffer, size);
-    tx_buffer_max_size = size;
-    uart_full_transmitted = false;
-    return HAL_UART_Transmit_DMA(&huart1, tx_buffer, size) == HAL_OK ? 0 : -1;
+    memcpy(uart_1_tx.buffer, buffer, size);
+    uart_1_tx.full_transmitted = false;
+    return HAL_UART_Transmit_DMA(uart_rx[UART_FIRST].huart_ptr, uart_1_tx.buffer, size) == HAL_OK ? 0 : -1;
 }
 
 bool uartIsTxReady() {
-    HAL_UART_StateTypeDef status = HAL_UART_GetState(&huart1);
-    if (status == HAL_UART_STATE_READY || status == HAL_UART_STATE_BUSY_RX) {
-        return true;
+    HAL_UART_StateTypeDef status = HAL_UART_GetState(uart_rx[UART_FIRST].huart_ptr);
+    return (status == HAL_UART_STATE_READY || status == HAL_UART_STATE_BUSY_RX);
+}
+
+
+void uartEnableTx(bool enable) {
+    GPIO_InitTypeDef GPIO_InitStruct = {0};
+    GPIO_InitStruct.Pin = GPIO_PIN_9;
+
+    if (enable) {
+        GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+        GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+    } else {
+        GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+        GPIO_InitStruct.Pull = GPIO_NOPULL;
     }
-    return false;
-}
 
-
-void uartEnableTx() {
-    GPIO_InitTypeDef GPIO_InitStruct = {0};
-
-    GPIO_InitStruct.Pin = GPIO_PIN_9;
-    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-}
-
-void uartDisableTx() {
-    GPIO_InitTypeDef GPIO_InitStruct = {0};
-
-    GPIO_InitStruct.Pin = GPIO_PIN_9;
-    GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 }
 
 void UartChangeBaudrate(uint16_t rate) {
-    huart1.Init.BaudRate = rate;
-    if (HAL_UART_Init(&huart1) != HAL_OK) {
-        Error_Handler();
-    }
+    uart_rx[UART_FIRST].huart_ptr->Init.BaudRate = rate;
+    HAL_UART_Init(uart_rx[UART_FIRST].huart_ptr);
 }
 
 void HAL_UART_RxHalfCpltCallback(UART_HandleTypeDef *huart) {
-    if (huart == &huart1) {
-        uart_half_received = true;
-        // tsUartRxDmaCallback();
+    if (huart == uart_rx[UART_FIRST].huart_ptr) {
+        uart_rx[UART_FIRST].status |= HALF_RECEIVED_FLAG;
+        (*uart_rx[UART_FIRST].rx_callback)();
     }
 }
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
-    if (huart == &huart1) {
-        uart_full_received = true;
-        // tsUartRxDmaCallback();
+    if (huart == uart_rx[UART_FIRST].huart_ptr) {
+        uart_rx[UART_FIRST].status |= FULL_RECEIVED_FLAG;
+        if (uart_rx[UART_FIRST].rx_callback != NULL) {
+            (*uart_rx[UART_FIRST].rx_callback)();
+        }
     }
 }
 
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
-    if (huart == &huart1) {
-        uart_full_transmitted = true;
-        // tsUartTxDmaCallback();
+    if (huart == uart_rx[UART_FIRST].huart_ptr) {
+        uart_1_tx.full_transmitted = true;
+        if (uart_1_tx.tx_callback != NULL) {
+            (*uart_1_tx.tx_callback)();
+        }
     }
 }
 
 void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart) {
-    if (huart == &huart1) {
-        HAL_UART_Receive_DMA(&huart1, rx_buffer1, rx_buffer_size1);
+    const UartRxConfig_t* config;
+    if (huart == uart_rx[UART_FIRST].huart_ptr) {
+        config = &uart_rx[UART_FIRST];
+    } else if (huart == uart_rx[UART_SECOND].huart_ptr) {
+        config = &uart_rx[UART_SECOND];
+    } else {
+        return;
     }
-#ifdef SECOND_UART
-    if (huart == &huart2) {
-        HAL_UART_Receive_DMA(&huart2, rx_buffer2, rx_buffer_size2);
-    }
-#endif
+
+    HAL_UART_Receive_DMA(config->huart_ptr, config->buffer, config->size);
 }
 
 #endif  // HAL_UART_MODULE_ENABLED

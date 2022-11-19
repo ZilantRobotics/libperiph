@@ -45,9 +45,3 @@ int8_t tsUartInitTx() {
 int8_t tsUartTransmit(uint8_t buffer[], size_t size) {
     return STATUS_OK;
 }
-
-void tsUartTxDmaCallback() {
-}
-
-void tsUartRxDmaCallback() {
-}

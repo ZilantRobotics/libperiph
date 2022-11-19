@@ -31,10 +31,7 @@ bool uartIsTxReady() {
     return false;
 }
 
-void uartEnableTx() {
-}
-
-void uartDisableTx() {
+void uartEnableTx(bool enable) {
 }
 
 void UartChangeBaudrate(uint16_t rate) {
