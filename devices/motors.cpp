@@ -40,24 +40,22 @@ int8_t Motors::MotorRightDutyCycle = 0;
 *      .callback - callback invoked on channel compare event
 *    - Timer direct registers.
 **/
-static PWMConfig PwmConf =
-{
+static PWMConfig PwmConf = {
     .frequency      = 2000000,
     .period         = 10000,
     .callback       = NULL,
     .channels       = {
-                          {.mode = PWM_OUTPUT_ACTIVE_LOW,   .callback = NULL},
-                          {.mode = PWM_OUTPUT_ACTIVE_LOW,   .callback = NULL},
-                          {.mode = PWM_OUTPUT_ACTIVE_LOW,   .callback = NULL},
-                          {.mode = PWM_OUTPUT_ACTIVE_LOW,   .callback = NULL}
-                      },
+        {.mode = PWM_OUTPUT_ACTIVE_LOW,   .callback = NULL},
+        {.mode = PWM_OUTPUT_ACTIVE_LOW,   .callback = NULL},
+        {.mode = PWM_OUTPUT_ACTIVE_LOW,   .callback = NULL},
+        {.mode = PWM_OUTPUT_ACTIVE_LOW,   .callback = NULL}
+    },
     .cr2            = 0,
     .dier           = 0
 };
 
 
-enum
-{
+enum {
     PWM_MOTOR_LEFT_POS_IDX = 0,
     PWM_MOTOR_LEFT_NEG_IDX = 1,
     PWM_MOTOR_RIGHT_POS_IDX = 2,
@@ -72,8 +70,7 @@ enum
 *   2. Calculate coefficient power to pwm
 *   3. Start PWM drivers.
 **/
-void Motors::Init()
-{
+void Motors::Init() {
     palSetPadMode( GPIOD, 12, PAL_MODE_ALTERNATE(2) );  // PWM4/1
     palSetPadMode( GPIOD, 13, PAL_MODE_ALTERNATE(2) );  // PWM4/2
 
@@ -91,11 +88,10 @@ void Motors::Init()
 * @brief Set motor left power from -100 to +100
 * @param power[in] - duty cycle, where negative mean inverse direction.
 **/
-void Motors::SetLeftPower(int8_t power)
-{
-    if(power < -100)
+void Motors::SetLeftPower(int8_t power) {
+    if (power < -100)
         power = -100;
-    else if(power > 100)
+    else if (power > 100)
         power = 100;
 
     MotorLeftDutyCycle = power;
@@ -111,11 +107,10 @@ void Motors::SetLeftPower(int8_t power)
 * @brief Set motor right power from -100 to +100
 * @param power[in] - duty cycle, where negative mean inverse direction.
 **/
-void Motors::SetRightPower(int8_t power)
-{
-    if(power < -100)
+void Motors::SetRightPower(int8_t power) {
+    if (power < -100)
         power = -100;
-    else if(power > 100)
+    else if (power > 100)
         power = 100;
 
     MotorRightDutyCycle = power;
@@ -131,8 +126,7 @@ void Motors::SetRightPower(int8_t power)
 * @brief Get motor left power from -100 to +100
 * @return power - duty cycle, where negative mean inverse direction.
 **/
-int8_t Motors::GetLeftPower()
-{
+int8_t Motors::GetLeftPower() {
     return MotorLeftDutyCycle;
 }
 
@@ -141,7 +135,6 @@ int8_t Motors::GetLeftPower()
 * @brief Get motor right power from -100 to +100
 * @return power - duty cycle, where negative mean inverse direction.
 **/
-int8_t Motors::GetRightPower()
-{
+int8_t Motors::GetRightPower() {
     return MotorRightDutyCycle;
 }

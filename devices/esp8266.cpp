@@ -33,7 +33,7 @@ void WifiEsp8266::Init() {
     uint8_t length;
 
     while (1) {
-        switch(counterOfCommand++) {
+        switch (counterOfCommand++) {
             case 0:
                 Send_AT_CWMODE();
                 waitMs(5000);

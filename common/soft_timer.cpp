@@ -80,7 +80,7 @@ bool SoftTimer::IsTimerEnd() const {
     uint32_t nowCount = hwTimerGetTicks();
     uint8_t NowOverflows = hwTimerGetOverflows();
     if ((EndOverflows < NowOverflows) ||
-        ((EndOverflows == NowOverflows) && (EndCount <= nowCount))) {
+            ((EndOverflows == NowOverflows) && (EndCount <= nowCount))) {
         return true;
     }
     return false;
@@ -94,7 +94,7 @@ bool SoftTimer::IsTimerEnd() const {
 uint32_t SoftTimer::GetElapsedTime() {
     uint32_t nowCount = hwTimerGetTicks();
     uint32_t nowOverflow = hwTimerGetOverflows();
-    if(StartCount > nowCount) {
+    if (StartCount > nowCount) {
         return (StartCount - nowCount) / ONE_S + (nowOverflow - StartOverflows) * PERIOD;
     }
     return (StartCount + nowCount) / ONE_S + (nowOverflow - StartOverflows) * PERIOD;

@@ -22,7 +22,7 @@
  * @brief Work with wi-fi module ESP8266
  */
 class WifiEsp8266 {
- public:
+public:
     void Init();
     void GetResponse(uint8_t* ptrArr, uint8_t length);
 
@@ -31,7 +31,7 @@ class WifiEsp8266 {
      */
     void Transmit(const uint8_t* ptrArr, const uint8_t& length);
 
- private:
+private:
     /**
      * @brief Restart the module
      */
