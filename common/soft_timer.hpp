@@ -21,7 +21,7 @@
 * @brief Software stopwatch/timer
 */
 class SoftTimer {
- public:
+public:
     enum TimerStatus_t {
         CREATED,
         WORKING,
@@ -40,7 +40,7 @@ class SoftTimer {
     uint32_t GetRestTime();
     uint32_t GetElapsedTime();
 
- private:
+private:
     bool IsTimerEnd() const;
 
     uint8_t  StartOverflows;

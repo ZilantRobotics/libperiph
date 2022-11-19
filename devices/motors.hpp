@@ -20,14 +20,14 @@
 
 
 class Motors {
- public:
+public:
     static void Init();
     static void SetLeftPower(int8_t);
     static void SetRightPower(int8_t);
     static int8_t GetLeftPower();
     static int8_t GetRightPower();
 
- private:
+private:
     static PWMDriver* PwmDriverLeft;
     static PWMDriver* PwmDriverRight;
 

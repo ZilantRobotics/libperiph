@@ -37,7 +37,7 @@ enum EncoderPin {
 * - PE_15  - right encoder B
 */
 class Encoder {
- public:
+public:
     static void Reset();
     static int32_t GetLeftValue();
     static int32_t GetRightValue();

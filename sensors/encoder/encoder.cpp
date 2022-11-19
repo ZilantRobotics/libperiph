@@ -36,8 +36,7 @@ __attribute__ ((weak)) bool getEncoderPin(EncoderPin encoder_pin) {
 }
 
 
-void Encoder::Reset()
-{
+void Encoder::Reset() {
     RightEncoderTicks = 0;
     LeftEncoderTicks = 0;
 
@@ -46,26 +45,22 @@ void Encoder::Reset()
 }
 
 
-int32_t Encoder::GetLeftValue()
-{
+int32_t Encoder::GetLeftValue() {
     return LeftEncoderTicks;
 }
 
 
-int32_t Encoder::GetRightValue()
-{
+int32_t Encoder::GetRightValue() {
     return RightEncoderTicks;
 }
 
 
-int32_t Encoder::GetLeftSpeed()
-{
+int32_t Encoder::GetLeftSpeed() {
     return LeftEncoderSpeed;
 }
 
 
-int32_t Encoder::GetRightSpeed()
-{
+int32_t Encoder::GetRightSpeed() {
     return RightEncoderSpeed;
 }
 
@@ -73,8 +68,7 @@ int32_t Encoder::GetRightSpeed()
 /**
 * @brief Calculate and update value of encoders speed static variable
 **/
-static void speed_tmr_cb()
-{
+static void speed_tmr_cb() {
     float right_delta = RightEncoderTicks - RightEncoderTicksCash;
     RightEncoderTicksCash = RightEncoderTicks;
     RightEncoderSpeed = right_delta * TimerCallbacksPerSecond;
@@ -88,8 +82,7 @@ static void speed_tmr_cb()
 /**
 * @brief Increase or decrease value of encoder counter when interrupt occur
 **/
-static void left_wheel_a_cb()
-{
+static void left_wheel_a_cb() {
     if (getEncoderPin(LEFT_ENC_A_CH)) {
         if (getEncoderPin(LEFT_ENC_B_CH))
             LeftEncoderTicks++;
@@ -107,8 +100,7 @@ static void left_wheel_a_cb()
 /**
 * @brief Increase or decrease value of encoder counter when interrupt occur
 **/
-static void right_wheel_a_cb()
-{
+static void right_wheel_a_cb() {
     if (getEncoderPin(RIGHT_ENC_A_CH)) {
         if (getEncoderPin(RIGHT_ENC_B_CH))
             RightEncoderTicks++;
@@ -126,8 +118,7 @@ static void right_wheel_a_cb()
 /**
 * @brief Increase or decrease value of encoder counter when interrupt occur
 **/
-static void left_wheel_b_cb()
-{
+static void left_wheel_b_cb() {
     if (getEncoderPin(LEFT_ENC_B_CH)) {
         if (getEncoderPin(LEFT_ENC_A_CH))
             LeftEncoderTicks--;
@@ -145,8 +136,7 @@ static void left_wheel_b_cb()
 /**
 * @brief Increase or decrease value of encoder counter when interrupt occur
 **/
-static void right_wheel_b_cb()
-{
+static void right_wheel_b_cb() {
     if (getEncoderPin(RIGHT_ENC_B_CH)) {
         if (getEncoderPin(RIGHT_ENC_A_CH))
             RightEncoderTicks--;
