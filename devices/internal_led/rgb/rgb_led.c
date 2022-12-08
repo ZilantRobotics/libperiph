@@ -16,8 +16,8 @@
 #include <stdbool.h>
 #include "main.h"
 
-void redLedSetState(bool red_led_state) {
-    GPIO_PinState pin_state = (red_led_state == true) ? GPIO_PIN_RESET : GPIO_PIN_SET;
+void redLedSetState(bool led_state) {
+    GPIO_PinState pin_state = (led_state == true) ? GPIO_PIN_RESET : GPIO_PIN_SET;
 #ifdef INTERNAL_LED_RED_GPIO_Port
     HAL_GPIO_WritePin(INTERNAL_LED_RED_GPIO_Port, INTERNAL_LED_RED_Pin, pin_state);
 #elif defined(RGB_LED_RED_GPIO_Port)
@@ -27,10 +27,10 @@ void redLedSetState(bool red_led_state) {
 #endif
 }
 
-void greenLedSetState(bool red_led_state) {
-    GPIO_PinState pin_state = (red_led_state == true) ? GPIO_PIN_RESET : GPIO_PIN_SET;
+void greenLedSetState(bool led_state) {
+    GPIO_PinState pin_state = (led_state == true) ? GPIO_PIN_RESET : GPIO_PIN_SET;
 #ifdef INTERNAL_LED_GREEN_GPIO_Port
-    HAL_GPIO_WritePin(INTERNAL_LED_GREEN_GPIO_Port, INTERNAL_GREEN_RED_Pin, pin_state);
+    HAL_GPIO_WritePin(INTERNAL_LED_GREEN_GPIO_Port, INTERNAL_LED_GREEN_Pin, pin_state);
 #elif defined(RGB_LED_GREEN_GPIO_Port)
     HAL_GPIO_WritePin(RGB_LED_GREEN_GPIO_Port, RGB_LED_GREEN_Pin, pin_state);
 #else
@@ -38,10 +38,10 @@ void greenLedSetState(bool red_led_state) {
 #endif
 }
 
-void blueLedSetState(bool red_led_state) {
-    GPIO_PinState pin_state = (red_led_state == true) ? GPIO_PIN_RESET : GPIO_PIN_SET;
+void blueLedSetState(bool led_state) {
+    GPIO_PinState pin_state = (led_state == true) ? GPIO_PIN_RESET : GPIO_PIN_SET;
 #ifdef INTERNAL_LED_BLUE_GPIO_Port
-    HAL_GPIO_WritePin(INTERNAL_LED_BLUE_GPIO_Port, INTERNAL_BLUE_RED_Pin, pin_state);
+    HAL_GPIO_WritePin(INTERNAL_LED_BLUE_GPIO_Port, INTERNAL_LED_BLUE_Pin, pin_state);
 #elif defined(RGB_LED_BLUE_GPIO_Port)
     HAL_GPIO_WritePin(RGB_LED_BLUE_GPIO_Port, RGB_LED_BLUE_Pin, pin_state);
 #else
@@ -72,9 +72,9 @@ void rgbLedUpdateState(RgbLedState_t rgb_led_state, uint32_t crnt_time_ms) {
         blueLedSetState(false);
         break;
     case RGB_LED_BLINKING_YELLOW:
-        redLedSetState(false);
+        redLedSetState(crnt_time_ms % 1000 > 500);
         greenLedSetState(crnt_time_ms % 1000 > 500);
-        blueLedSetState(crnt_time_ms % 1000 > 500);
+        blueLedSetState(false);
         break;
     case RGB_LED_BLINKING_RED:
         redLedSetState(crnt_time_ms % 1000 > 500);
