@@ -154,7 +154,9 @@ void UartChangeBaudrate(uint16_t rate) {
 void HAL_UART_RxHalfCpltCallback(UART_HandleTypeDef *huart) {
     if (huart == uart_rx[UART_FIRST].huart_ptr) {
         uart_rx[UART_FIRST].status |= HALF_RECEIVED_FLAG;
-        (*uart_rx[UART_FIRST].rx_callback)();
+        if (uart_rx[UART_FIRST].rx_callback != NULL) {
+            (*uart_rx[UART_FIRST].rx_callback)();
+        }
     }
 }
 
