@@ -56,7 +56,7 @@ typedef struct {
     int16_t magDec;
     uint16_t magAcc;
 } UbxNavPvt_t;
-static_assert(sizeof(UbxNavPvt_t) == 92);
+static_assert(sizeof(UbxNavPvt_t) == 92, "Wrong UbxNavPvt_t size");
 
 typedef enum {
     STATE_SYNC_CHAR_1 = 0,

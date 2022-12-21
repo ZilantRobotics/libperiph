@@ -28,7 +28,7 @@ typedef struct __attribute__((__packed__)) {
     uint16_t temp;
     uint8_t check_sum;
 } TfLunaSerialFrame_t;
-static_assert(sizeof(TfLunaSerialFrame_t) == TF_LUNA_SERIAL_FRAME_SIZE);
+static_assert(sizeof(TfLunaSerialFrame_t) == TF_LUNA_SERIAL_FRAME_SIZE, "Wrong type size");
 
 /**
  * @return STATUS_OK if there is no error, otherwise STATUS_ERROR
