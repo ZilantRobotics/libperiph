@@ -18,14 +18,14 @@ uint8_t ubloxConfigure(bool DMA)
 
     int8_t (*Transmit)(uint8_t[], size_t) = DMA ? &uartTransmitDma : &uartTransmit;
 
-    UartChangeBaudrate((uint16_t)115200);
+    UartChangeBaudrate(115200);
     if (Transmit(uBloxConfigFactoryReset,
                   sizeof(uBloxConfigFactoryReset) / sizeof(*uBloxConfigFactoryReset)) == STATUS_ERROR)
     {
         return STATUS_ERROR;
     };
 
-    UartChangeBaudrate((uint16_t)9600);
+    UartChangeBaudrate(9600);
     if (Transmit(uBloxConfigFactoryReset,
                   sizeof(uBloxConfigFactoryReset) / sizeof(*uBloxConfigFactoryReset)) == STATUS_ERROR)
     {
@@ -37,7 +37,7 @@ uint8_t ubloxConfigure(bool DMA)
         return STATUS_ERROR;
     };
 
-    UartChangeBaudrate((uint16_t)115200);
+    UartChangeBaudrate(115200);
     if (Transmit(uBloxMessagesNavPvtDisable,
                   sizeof(uBloxMessagesNavPvtDisable) / sizeof(*uBloxMessagesNavPvtDisable)) == STATUS_ERROR)
     {
