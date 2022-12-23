@@ -18,7 +18,25 @@ int8_t adcGetAll(uint16_t* adc_measurements) {
 }
 
 uint16_t adcGet(uint8_t rank) {
-    return STATUS_OK;
+    uint16_t adc_value;
+    switch (rank) {
+        case 0:
+            adc_value = 5.0 / (3.3 * 17.0 / 4095.0);
+            break;
+        
+        case 1:
+            adc_value = 5.0 / (3.3 * 2.0 / 4095.0);
+            break;
+
+        case 2:
+            adc_value = 400;
+            break;
+
+        default:
+            adc_value = 1750;
+            break;
+    }
+    return adc_value;
 }
 
 int8_t adcInitWithoutDma(uint8_t num_of_channels) {
