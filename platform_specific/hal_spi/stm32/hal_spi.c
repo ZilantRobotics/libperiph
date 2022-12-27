@@ -14,7 +14,10 @@
 #define MEASUREMENT_DELAY                   10
 
 
-#ifdef HAL_SPI_MODULE_ENABLED
+#if defined(HAL_SPI_2_MODULE_ENABLED)
+    extern SPI_HandleTypeDef hspi2;
+    SPI_HandleTypeDef* hspi_ptr = &hspi2;
+#elif defined(HAL_SPI_MODULE_ENABLED)
     extern SPI_HandleTypeDef hspi1;
     SPI_HandleTypeDef* hspi_ptr = &hspi1;
 #else
