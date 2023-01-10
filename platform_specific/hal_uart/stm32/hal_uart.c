@@ -113,7 +113,8 @@ int8_t uartTransmit(uint8_t buffer[], size_t size) {
         return STATUS_ERROR;
     }
     memcpy(uart_1_tx.buffer, buffer, size);
-    return HAL_UART_Transmit(uart_rx[UART_FIRST].huart_ptr, uart_1_tx.buffer, size, 500) == HAL_OK ? 0 : -1;
+    HAL_StatusTypeDef res = HAL_UART_Transmit(UART_1_PTR, uart_1_tx.buffer, size, 500);
+    return -res;
 }
 
 int8_t uartTransmitDma(uint8_t buffer[], size_t size) {
@@ -122,11 +123,11 @@ int8_t uartTransmitDma(uint8_t buffer[], size_t size) {
     }
     memcpy(uart_1_tx.buffer, buffer, size);
     uart_1_tx.full_transmitted = false;
-    return HAL_UART_Transmit_DMA(uart_rx[UART_FIRST].huart_ptr, uart_1_tx.buffer, size) == HAL_OK ? 0 : -1;
+    return HAL_UART_Transmit_DMA(UART_1_PTR, uart_1_tx.buffer, size) == HAL_OK ? 0 : -1;
 }
 
 bool uartIsTxReady() {
-    HAL_UART_StateTypeDef status = HAL_UART_GetState(uart_rx[UART_FIRST].huart_ptr);
+    HAL_UART_StateTypeDef status = HAL_UART_GetState(UART_1_PTR);
     return (status == HAL_UART_STATE_READY || status == HAL_UART_STATE_BUSY_RX);
 }
 
@@ -147,8 +148,8 @@ void uartEnableTx(bool enable) {
 }
 
 void UartChangeBaudrate(uint32_t rate) {
-    uart_rx[UART_FIRST].huart_ptr->Init.BaudRate = rate;
-    HAL_UART_Init(uart_rx[UART_FIRST].huart_ptr);
+    huart1.Init.BaudRate = rate;
+    HAL_UART_Init(UART_1_PTR);
 }
 
 void HAL_UART_RxHalfCpltCallback(UART_HandleTypeDef *huart) {
