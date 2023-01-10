@@ -10,8 +10,15 @@
 #include "main.h"
 #include "libperiph_common.h"
 
+extern UART_HandleTypeDef huart1;
+#define UART_1_PTR &huart1
 
-#define MAX_UART_TX_BUF_SIZE    100
+#if defined(SECOND_UART)
+    extern UART_HandleTypeDef huart2;
+    #define UART_2_PTR &huart2
+#else
+    #define UART_2_PTR NULL
+#endif
 
 typedef enum {
     NO_FLAGS = 0,
@@ -19,8 +26,6 @@ typedef enum {
     FULL_RECEIVED_FLAG,
     BOTH_FLAGS,
 } UartRxStatus_t;
-
-#ifdef HAL_UART_MODULE_ENABLED
 
 typedef struct {
     UART_HandleTypeDef* huart_ptr;
@@ -30,24 +35,7 @@ typedef struct {
     void (*rx_callback)();
 } UartRxConfig_t;
 
-typedef struct {
-    uint8_t buffer[MAX_UART_TX_BUF_SIZE];
-    bool full_transmitted;
-    void (*tx_callback)();
-} UartTxConfig_t;
-
-
-extern UART_HandleTypeDef huart1;
-#define UART_1_PTR &huart1
 static UartRxConfig_t uart_rx[2];
-static UartTxConfig_t uart_1_tx = {{}, true};
-
-#if defined(SECOND_UART)
-    extern UART_HandleTypeDef huart2;
-    #define UART_2_PTR &huart2
-#else
-    #define UART_2_PTR NULL
-#endif
 
 
 int8_t uartInitRxDma(UartInstance_t instance, uint8_t buffer[], uint16_t size) {
@@ -73,11 +61,6 @@ void uartRegisterRxCallback(UartInstance_t instance, void (*rx_callback)()) {
     uart_rx[instance].rx_callback = rx_callback;
 }
 
-void uartRegisterTxCallback(UartInstance_t instance, void (*tx_callback)()) {
-    if (instance == UART_FIRST) {
-        uart_1_tx.tx_callback = tx_callback;
-    }
-}
 
 size_t uartGetLastReceivedIndex(UartInstance_t instance) {
     if (instance > UART_SECOND) {
@@ -107,51 +90,6 @@ uint8_t* uartRxDmaPop() {
     return buffer_ptr;
 }
 
-
-int8_t uartTransmit(uint8_t buffer[], size_t size) {
-    if (size > MAX_UART_TX_BUF_SIZE) {
-        return STATUS_ERROR;
-    }
-    memcpy(uart_1_tx.buffer, buffer, size);
-    HAL_StatusTypeDef res = HAL_UART_Transmit(UART_1_PTR, uart_1_tx.buffer, size, 500);
-    return -res;
-}
-
-int8_t uartTransmitDma(uint8_t buffer[], size_t size) {
-    if (size > MAX_UART_TX_BUF_SIZE || !uart_1_tx.full_transmitted) {
-        return STATUS_ERROR;
-    }
-    memcpy(uart_1_tx.buffer, buffer, size);
-    uart_1_tx.full_transmitted = false;
-    return HAL_UART_Transmit_DMA(UART_1_PTR, uart_1_tx.buffer, size) == HAL_OK ? 0 : -1;
-}
-
-bool uartIsTxReady() {
-    HAL_UART_StateTypeDef status = HAL_UART_GetState(UART_1_PTR);
-    return (status == HAL_UART_STATE_READY || status == HAL_UART_STATE_BUSY_RX);
-}
-
-
-void uartEnableTx(bool enable) {
-    GPIO_InitTypeDef GPIO_InitStruct = {0};
-    GPIO_InitStruct.Pin = GPIO_PIN_9;
-
-    if (enable) {
-        GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-        GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-    } else {
-        GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-        GPIO_InitStruct.Pull = GPIO_NOPULL;
-    }
-
-    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-}
-
-void UartChangeBaudrate(uint32_t rate) {
-    huart1.Init.BaudRate = rate;
-    HAL_UART_Init(UART_1_PTR);
-}
-
 void HAL_UART_RxHalfCpltCallback(UART_HandleTypeDef *huart) {
     if (huart == uart_rx[UART_FIRST].huart_ptr) {
         uart_rx[UART_FIRST].status |= HALF_RECEIVED_FLAG;
@@ -170,15 +108,6 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     }
 }
 
-void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
-    if (huart == uart_rx[UART_FIRST].huart_ptr) {
-        uart_1_tx.full_transmitted = true;
-        if (uart_1_tx.tx_callback != NULL) {
-            (*uart_1_tx.tx_callback)();
-        }
-    }
-}
-
 void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart) {
     const UartRxConfig_t* config;
     if (huart == uart_rx[UART_FIRST].huart_ptr) {
@@ -191,5 +120,3 @@ void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart) {
 
     HAL_UART_Receive_DMA(config->huart_ptr, config->buffer, config->size);
 }
-
-#endif  // HAL_UART_MODULE_ENABLED

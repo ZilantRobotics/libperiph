@@ -18,11 +18,16 @@ typedef enum {
 } UartInstance_t;
 
 /**
+ * @brief Common
+ */
+void UartChangeBaudrate(uint32_t rate);
+bool uartIsReady();
+
+/**
  * @brief UART RX
  */
 int8_t uartInitRxDma(UartInstance_t instance, uint8_t buffer[], uint16_t size);
 void uartRegisterRxCallback(UartInstance_t instance, void (*rx_callback)());
-void uartRegisterTxCallback(UartInstance_t instance, void (*tx_callback)());
 size_t uartGetLastReceivedIndex(UartInstance_t instance);
 uint8_t* uartRxDmaPop();
 
@@ -32,9 +37,7 @@ uint8_t* uartRxDmaPop();
  */
 int8_t uartTransmit(uint8_t buffer[], size_t size);
 int8_t uartTransmitDma(uint8_t buffer[], size_t size);
-bool uartIsTxReady();
-
+void uartRegisterTxCallback(UartInstance_t instance, void (*tx_callback)());
 void uartEnableTx(bool enable);
-void UartChangeBaudrate(uint32_t rate);
 
 #endif  // PLATFORM_SPECIFIC_HAL_UART_H_
