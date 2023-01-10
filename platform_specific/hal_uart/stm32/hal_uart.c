@@ -146,7 +146,7 @@ void uartEnableTx(bool enable) {
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 }
 
-void UartChangeBaudrate(uint16_t rate) {
+void UartChangeBaudrate(uint32_t rate) {
     uart_rx[UART_FIRST].huart_ptr->Init.BaudRate = rate;
     HAL_UART_Init(uart_rx[UART_FIRST].huart_ptr);
 }

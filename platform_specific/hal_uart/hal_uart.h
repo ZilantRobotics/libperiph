@@ -35,6 +35,6 @@ int8_t uartTransmitDma(uint8_t buffer[], size_t size);
 bool uartIsTxReady();
 
 void uartEnableTx(bool enable);
-void UartChangeBaudrate(uint16_t rate);
+void UartChangeBaudrate(uint32_t rate);
 
 #endif  // PLATFORM_SPECIFIC_HAL_UART_H_
