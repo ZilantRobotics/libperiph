@@ -27,7 +27,7 @@ int8_t uartTransmit(uint8_t buffer[], size_t size) {
 int8_t uartTransmitDma(uint8_t buffer[], size_t size) {
     return STATUS_OK;
 }
-bool uartIsTxReady() {
+bool uartIsReady() {
     return false;
 }
 
