@@ -13,6 +13,15 @@
  *
  *  PS. each uBlox Package starts with two bytes 0xB5, 0x62  and ends with checksum
  *      refer to user manual.
+ *  * 
+ * @note  the naming snakeCase convention is as follows:
+ * - static  uint8_t <Protocol><PacketType><ContentProfile> [] ={bytes,...};
+ *  e.g,
+ *     static  uint8_t uBloxPortPoll[] = {0xB5, 0x62, 0x06, 0x00, 0x01, 0x00, 0x01, 0x08, 0x22};
+ *       protocol -> uBlox
+ *       PacketType -> Port
+ *       ContentProfile -> Poll
+ * 
  */
 static uint8_t uBloxConfigFactoryReset[] = {
     0xB5, 0x62, 0x06, 0x09, 0x0D, 0x00, 0xFF, 0xFF, 0x00, 0x00,
