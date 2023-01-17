@@ -1,8 +1,8 @@
-name: tests
+name: unit_tests
 
 on: [push]
 jobs:
-  test:
+  unit_tests:
     runs-on: ubuntu-20.04
     steps:
       - name: Install GIT

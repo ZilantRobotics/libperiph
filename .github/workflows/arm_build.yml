@@ -1,8 +1,8 @@
-name: tests
+name: arm_build
 
 on: [push]
 jobs:
-  test:
+  arm_build:
     runs-on: ubuntu-20.04
     steps:
       - name: Install GIT
