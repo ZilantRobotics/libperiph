@@ -15,7 +15,7 @@ COMMON_LIBS=-lpthread -pthread -lgtest
 COMMON_LIBS += $(wildcard ../platform_specific/hal_i2c/dummy/*.c)
 COMMON_LIBS += $(wildcard ../platform_specific/hal_spi/dummy/*.c)
 COMMON_LIBS += $(wildcard ../platform_specific/hal_timers/dummy/*.c)
-FLAGS=-Wall -std=c++11
+FLAGS=-Wall -std=c++17
 GXX_COMPILE=g++ $(COMMON_INCLUDES) $(FLAGS)  -o shell 
 
 SRC_UBLOX_TEST=test_ublox.cpp                   		../sensors/gps/ublox.c ../sensors/gps/ublox_emulation.c

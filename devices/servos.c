@@ -26,6 +26,10 @@ static int8_t uavcanServosInitPwmChannel(Channel_t tim_channel_idx);
 static void uavcanServosSetDefaultValueForChannel(Channel_t tim_channel);
 static void uavcanServosUpdateChannelStateAccordingToSetpoint(Channel_t tim_ch);
 
+static float clampFloat(float value, float first, float second);
+static float maxFloat(float value, float first, float second);
+static float minFloat(float value, float first, float second);
+
 int8_t uavcanServosInitChannel(Channel_t tim_channel, const ServoParameters_t* servo_params) {
     if (!servo_params || (uint32_t)tim_channel >= SERVO_TIM_CHANNELS_AMOUNT) {
         return STATUS_ERROR;
@@ -105,7 +109,7 @@ int8_t uavcanServosGetPwmPercent(Channel_t tim_ch) {
     int32_t percent;
     if (tim_ch < SERVO_TIM_CHANNELS_AMOUNT && timerGetMode(tim_ch) == TIMER_MODE_PWM) {
         uint32_t pwm_duration = (uint32_t)timerGetPwmDuration(tim_ch);
-        percent = mapU32(pwm_duration, params[tim_ch].min, params[tim_ch].max, 0, 100);
+        percent = mapFloat(pwm_duration, params[tim_ch].min, params[tim_ch].max, 0, 100);
     } else {
         percent = STATUS_ERROR;
     }
@@ -165,32 +169,61 @@ void uavcanServosSetDefaultValueForChannel(Channel_t tim_ch) {
 
 void uavcanServosUpdateChannelStateAccordingToSetpoint(Channel_t tim_ch) {
     uint8_t sp_idx = uavcanServosGetTimerSetpoint(tim_ch);
-    int32_t val = uavcanServosGetSetpoint(sp_idx);
-    uint32_t min = params[tim_ch].min;
-    uint32_t max = params[tim_ch].max;
-    uint32_t def = params[tim_ch].def;
+    RawCommand_t val = uavcanServosGetSetpoint(sp_idx);
+    PwmDurationMillisecond_t min = params[tim_ch].min;
+    PwmDurationMillisecond_t max = params[tim_ch].max;
+    PwmDurationMillisecond_t def = params[tim_ch].def;
 
-    int32_t pwm = mapRawCommandToPwm(val, min, max, def);
-    if (pwm >= 0) {
-        timerSetPwmDuration(tim_ch, pwm);
-    }
+    timerSetPwmDuration(tim_ch, mapRawCommandToPwm(val, min, max, def));
 }
 
-int32_t mapRawCommandToPwm(int32_t value, int32_t min_pwm, int32_t max_pwm, int32_t def_pwm) {
-    const int32_t RC_MIN = 0;
-    const int32_t RC_MAX = 8191;
-    int32_t pwm;
-    if (value < RC_MIN || value > RC_MAX) {
+static const RawCommand_t RC_MIN = 0;
+static const RawCommand_t RC_MAX = 8191;
+PwmDurationMillisecond_t mapRawCommandToPwm(RawCommand_t rc_value,
+                                            PwmDurationMillisecond_t min_pwm,
+                                            PwmDurationMillisecond_t max_pwm,
+                                            PwmDurationMillisecond_t def_pwm) {
+    PwmDurationMillisecond_t pwm;
+    if (rc_value < RC_MIN || rc_value > RC_MAX) {
         pwm = def_pwm;
     } else {
-        pwm = mapU32(value, RC_MIN, RC_MAX, min_pwm, max_pwm);
+        pwm = mapFloat(rc_value, RC_MIN, RC_MAX, min_pwm, max_pwm);
     }
     return pwm;
 }
 
-uint32_t mapU32(uint32_t x, uint32_t in_min, uint32_t in_max, uint32_t out_min, uint32_t out_max) {
-    if (in_min == in_max) {
-        return out_min;
+float minFloat(float value, float first, float second) {
+    return (first < second) ? first : second;
+}
+
+float maxFloat(float value, float first, float second) {
+    return (first > second) ? first : second;
+}
+
+float clampFloat(float value, float first, float second) {
+    float min_value = minFloat(value, first, second);
+    float max_value = maxFloat(value, first, second);
+
+    if (value <= min_value) {
+        return min_value;
+    } else if (value >= max_value) {
+        return max_value;
+    } else {
+        return value;
     }
-    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
+float mapFloat(float value, float in_min, float in_max, float out_min, float out_max) {
+    float output;
+    if (value <= in_min && in_min <= in_max) {
+        output = out_min;
+    } else if (value >= in_max && in_min <= in_max) {
+        output = out_max;
+    } else if (out_min == out_max) {
+        output = out_min;
+    } else {
+        output = out_min + (value - in_min) / (in_max - in_min) * (out_max - out_min);
+        output = clampFloat(output, out_min, out_max);
+    }
+    return output;
 }
