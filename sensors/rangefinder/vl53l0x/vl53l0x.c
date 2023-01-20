@@ -174,14 +174,14 @@ bool vl53l0xPerformSingleRefCalibration(Calibration_type_t calib_type) {
     uint8_t interrupt_status = 0;
     bool success = false;
 
-    uint_fast16_t try;
-    for (try = 0; try <= 5000; try++) {
+    uint_fast16_t attempt;
+    for (attempt = 0; attempt <= 5000; attempt++) {
         success = i2c_read_addr8_data8(REG_RESULT_INTERRUPT_STATUS, &interrupt_status);
         if (!(success && ((interrupt_status & 0x07) == 0))) {
             break;
         }
     }
-    if (try > 5000) {
+    if (attempt > 5000) {
         return false;
     }
 
@@ -283,16 +283,16 @@ bool vl53l0xRequestMeasurement() {
 
 bool vl53l0xWaitForResult(uint16_t max_tries) {
     uint8_t sysrange_start = 0;
-    uint_fast16_t try;
+    uint_fast16_t attempt;
     bool success = false;
-    for (try = 0; try <= max_tries; try++) {
+    for (attempt = 0; attempt <= max_tries; attempt++) {
         success = i2c_read_addr8_data8(REG_SYSRANGE_START, &sysrange_start);
         if (!(success && (sysrange_start & 0x01))) {
             break;
         }
     }
 
-    if (try > max_tries) {
+    if (attempt > max_tries) {
         return false;
     }
 
@@ -302,14 +302,14 @@ bool vl53l0xWaitForResult(uint16_t max_tries) {
 
     uint8_t interrupt_status = 0;
 
-    for (try = 0; try <= max_tries; try++) {
+    for (attempt = 0; attempt <= max_tries; attempt++) {
         success = i2c_read_addr8_data8(REG_RESULT_INTERRUPT_STATUS, &interrupt_status);
         if (!(success && ((interrupt_status & 0x07) == 0))) {
             break;
         }
     }
 
-    if (try > max_tries) {
+    if (attempt > max_tries) {
         return false;
     }
 
