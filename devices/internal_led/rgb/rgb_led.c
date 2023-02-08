@@ -20,10 +20,15 @@ void redLedSetState(bool led_state) {
     GPIO_PinState pin_state = (led_state == true) ? GPIO_PIN_RESET : GPIO_PIN_SET;
 #ifdef INTERNAL_LED_RED_GPIO_Port
     HAL_GPIO_WritePin(INTERNAL_LED_RED_GPIO_Port, INTERNAL_LED_RED_Pin, pin_state);
-#elif defined(RGB_LED_RED_GPIO_Port)
+#endif
+#ifdef RGB_LED_RED_GPIO_Port
     HAL_GPIO_WritePin(RGB_LED_RED_GPIO_Port, RGB_LED_RED_Pin, pin_state);
-#else
-    (void)pin_state;
+#endif
+#ifdef INT_RGB_LED_RED_GPIO_Port
+    HAL_GPIO_WritePin(INT_RGB_LED_RED_GPIO_Port, INT_RGB_LED_RED_Pin, pin_state);
+#endif
+#ifdef EXT_RGB_LED_RED_GPIO_Port
+    HAL_GPIO_WritePin(EXT_RGB_LED_RED_GPIO_Port, EXT_RGB_LED_RED_Pin, pin_state);
 #endif
 }
 
@@ -31,10 +36,15 @@ void greenLedSetState(bool led_state) {
     GPIO_PinState pin_state = (led_state == true) ? GPIO_PIN_RESET : GPIO_PIN_SET;
 #ifdef INTERNAL_LED_GREEN_GPIO_Port
     HAL_GPIO_WritePin(INTERNAL_LED_GREEN_GPIO_Port, INTERNAL_LED_GREEN_Pin, pin_state);
-#elif defined(RGB_LED_GREEN_GPIO_Port)
+#endif
+#ifdef RGB_LED_GREEN_GPIO_Port
     HAL_GPIO_WritePin(RGB_LED_GREEN_GPIO_Port, RGB_LED_GREEN_Pin, pin_state);
-#else
-    (void)pin_state;
+#endif
+#ifdef INT_RGB_LED_GREEN_GPIO_Port
+    HAL_GPIO_WritePin(INT_RGB_LED_GREEN_GPIO_Port, INT_RGB_LED_GREEN_Pin, pin_state);
+#endif
+#ifdef EXT_RGB_LED_GREEN_GPIO_Port
+    HAL_GPIO_WritePin(EXT_RGB_LED_GREEN_GPIO_Port, EXT_RGB_LED_GREEN_Pin, pin_state);
 #endif
 }
 
@@ -42,10 +52,15 @@ void blueLedSetState(bool led_state) {
     GPIO_PinState pin_state = (led_state == true) ? GPIO_PIN_RESET : GPIO_PIN_SET;
 #ifdef INTERNAL_LED_BLUE_GPIO_Port
     HAL_GPIO_WritePin(INTERNAL_LED_BLUE_GPIO_Port, INTERNAL_LED_BLUE_Pin, pin_state);
-#elif defined(RGB_LED_BLUE_GPIO_Port)
+#endif
+#ifdef RGB_LED_BLUE_GPIO_Port
     HAL_GPIO_WritePin(RGB_LED_BLUE_GPIO_Port, RGB_LED_BLUE_Pin, pin_state);
-#else
-    (void)pin_state;
+#endif
+#ifdef INT_RGB_LED_BLUE_GPIO_Port
+    HAL_GPIO_WritePin(INT_RGB_LED_BLUE_GPIO_Port, INT_RGB_LED_BLUE_Pin, pin_state);
+#endif
+#ifdef EXT_RGB_LED_BLUE_GPIO_Port
+    HAL_GPIO_WritePin(EXT_RGB_LED_BLUE_GPIO_Port, EXT_RGB_LED_BLUE_Pin, pin_state);
 #endif
 }
 
