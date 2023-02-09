@@ -10,7 +10,7 @@
 #include "libperiph_common.h"
 
 
-#if defined(CAN_PWM_C_CHANNELS)
+#if defined(PIN_A10_SET_TIM1_CH2) || defined(PIN_A9_SET_TIM1_CH3)
     extern TIM_HandleTypeDef htim1;
 #endif
 
@@ -54,7 +54,7 @@ static volatile TimChannel_t channels[TIM_CH_AMOUNT] = {
     {NULL,          NULL,   TIM_CHANNEL_3,  TIMER_NOT_CONFIGURED},
 #endif
 
-#if defined(CAN_PWM_C_CHANNELS)
+#if defined(PIN_A10_SET_TIM1_CH2) || defined(PIN_A9_SET_TIM1_CH3)
     {&TIM1->CCR2,   &htim1, TIM_CHANNEL_2,  TIMER_NOT_CONFIGURED},  // PA9  TIM1_CH2
     {&TIM1->CCR1,   &htim1, TIM_CHANNEL_1,  TIMER_NOT_CONFIGURED},  // PA8  TIM1_CH1
     {&TIM1->CCR3,   &htim1, TIM_CHANNEL_3,  TIMER_NOT_CONFIGURED},  // PA10
@@ -77,26 +77,27 @@ static volatile TimChannel_t channels[TIM_CH_AMOUNT] = {
 
 
 int8_t timerInit(Channel_t ch, TimerMode_t mode) {
-    if (mode >= TIMER_MODES_AMOUNT ||
-            ch >= TIM_CH_AMOUNT ||
-            channels[ch].ccr == NULL ||
-            channels[ch].htim == NULL ||
-            timerGetMode(ch) != TIMER_NOT_CONFIGURED) {
-        return STATUS_ERROR;
+    if (mode >= TIMER_MODES_AMOUNT || ch >= TIM_CH_AMOUNT) {
+        return -HAL_TIMERS_WRONG_ARG;
+    } else if (channels[ch].ccr == NULL || channels[ch].htim == NULL) {
+        return -HAL_TIMERS_WRONG_CONFIG;
+    } else if (timerGetMode(ch) != TIMER_NOT_CONFIGURED) {
+        return -HAL_TIMERS_ALREADY_CONFIGURED;
     }
 
     if (mode == TIMER_MODE_CAPTURE) {
         if (HAL_TIM_IC_Start_IT(channels[ch].htim, channels[ch].tim_channel) != HAL_OK ||
                 HAL_TIM_Base_Start_IT(channels[ch].htim) != HAL_OK) {
-            return STATUS_ERROR;
+            return -HAL_TIMERS_INTERNAL_HAL_ERROR;
         }
     } else if (mode == TIMER_MODE_PWM) {
         if (HAL_TIM_PWM_Start(channels[ch].htim, channels[ch].tim_channel) == HAL_OK) {
             channels[ch].mode = mode;
         } else {
-            return STATUS_ERROR;
+            return -HAL_TIMERS_INTERNAL_HAL_ERROR;
         }
     }
+
     channels[ch].mode = mode;
     return STATUS_OK;
 }

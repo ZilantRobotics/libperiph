@@ -24,9 +24,9 @@
 
 
 int8_t ledRgbInit() {
-    if (timerInit(PIN_PB4_TIM3_CH1, TIMER_MODE_PWM) == STATUS_ERROR ||
-            timerInit(PIN_PB5_TIM3_CH2, TIMER_MODE_PWM) == STATUS_ERROR ||
-            timerInit(PIN_PB0_TIM3_CH3, TIMER_MODE_PWM) == STATUS_ERROR) {
+    if (timerInit(PIN_PB4_TIM3_CH1, TIMER_MODE_PWM) != STATUS_OK ||
+            timerInit(PIN_PB5_TIM3_CH2, TIMER_MODE_PWM) != STATUS_OK ||
+            timerInit(PIN_PB0_TIM3_CH3, TIMER_MODE_PWM) != STATUS_OK) {
         return STATUS_ERROR;
     }
     return STATUS_OK;

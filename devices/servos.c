@@ -154,7 +154,7 @@ bool uavcanServosGetEstimatedArmStatus(uint32_t crnt_time_ms) {
  */
 int8_t uavcanServosInitPwmChannel(Channel_t tim_channel_idx) {
     int8_t status;
-    if (timerInit(tim_channel_idx, TIMER_MODE_PWM) == STATUS_ERROR) {
+    if (timerInit(tim_channel_idx, TIMER_MODE_PWM) != STATUS_OK) {
         status = STATUS_ERROR;
     } else {
         uavcanServosSetDefaultValueForChannel(tim_channel_idx);
