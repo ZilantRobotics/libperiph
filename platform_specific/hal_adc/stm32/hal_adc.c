@@ -15,8 +15,8 @@
 #define MAX_CHANNELS_NUM    8
 
 #ifdef HAL_ADC_MODULE_ENABLED
-extern ADC_HandleTypeDef hadc1;
-#define ADC_PTR &hadc1
+    extern ADC_HandleTypeDef hadc1;
+    #define ADC_PTR &hadc1
 #endif
 
 
@@ -81,7 +81,7 @@ int8_t adcMeasureWithoutDma(uint16_t values[]) {
         return STATUS_ERROR;
     }
 
-    #ifdef HAL_ADC_MODULE_ENABLED
+#ifdef HAL_ADC_MODULE_ENABLED
     {
         HAL_ADC_Start(ADC_PTR);
         for (size_t ch_idx = 0; ch_idx < number_of_channels; ch_idx++) {
@@ -89,7 +89,7 @@ int8_t adcMeasureWithoutDma(uint16_t values[]) {
         }
         return STATUS_OK;
     }
-    #endif
+#endif
 
     return STATUS_ERROR;
 }

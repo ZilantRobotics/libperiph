@@ -66,38 +66,38 @@ void blueLedSetState(bool led_state) {
 
 void rgbLedUpdateState(RgbLedState_t rgb_led_state, uint32_t crnt_time_ms) {
     switch (rgb_led_state) {
-    case RGB_LED_SOLID_BLUE:
-        redLedSetState(false);
-        greenLedSetState(false);
-        blueLedSetState(true);
-        break;
-    case RGB_LED_SOLID_GREEN:
-        redLedSetState(false);
-        greenLedSetState(true);
-        blueLedSetState(false);
-        break;
-    case RGB_LED_BLINKING_BLUE:
-        redLedSetState(false);
-        greenLedSetState(false);
-        blueLedSetState(crnt_time_ms % 1000 > 500);
-        break;
-    case RGB_LED_BLINKING_GREEN:
-        redLedSetState(false);
-        greenLedSetState(crnt_time_ms % 1000 > 500);
-        blueLedSetState(false);
-        break;
-    case RGB_LED_BLINKING_YELLOW:
-        redLedSetState(crnt_time_ms % 1000 > 500);
-        greenLedSetState(crnt_time_ms % 1000 > 500);
-        blueLedSetState(false);
-        break;
-    case RGB_LED_BLINKING_RED:
-        redLedSetState(crnt_time_ms % 1000 > 500);
-        greenLedSetState(false);
-        blueLedSetState(false);
-        break;
+        case RGB_LED_SOLID_BLUE:
+            redLedSetState(false);
+            greenLedSetState(false);
+            blueLedSetState(true);
+            break;
+        case RGB_LED_SOLID_GREEN:
+            redLedSetState(false);
+            greenLedSetState(true);
+            blueLedSetState(false);
+            break;
+        case RGB_LED_BLINKING_BLUE:
+            redLedSetState(false);
+            greenLedSetState(false);
+            blueLedSetState(crnt_time_ms % 1000 > 500);
+            break;
+        case RGB_LED_BLINKING_GREEN:
+            redLedSetState(false);
+            greenLedSetState(crnt_time_ms % 1000 > 500);
+            blueLedSetState(false);
+            break;
+        case RGB_LED_BLINKING_YELLOW:
+            redLedSetState(crnt_time_ms % 1000 > 500);
+            greenLedSetState(crnt_time_ms % 1000 > 500);
+            blueLedSetState(false);
+            break;
+        case RGB_LED_BLINKING_RED:
+            redLedSetState(crnt_time_ms % 1000 > 500);
+            greenLedSetState(false);
+            blueLedSetState(false);
+            break;
 
-    default:
-        break;
+        default:
+            break;
     }
 }

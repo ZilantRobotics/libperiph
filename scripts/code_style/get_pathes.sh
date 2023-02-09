@@ -7,8 +7,10 @@ FOLDERS=(
    "$REPO_DIR/common/*"
    "$REPO_DIR/devices/*"
    "$REPO_DIR/devices/*/*"
+   "$REPO_DIR/devices/*/*/*"
    "$REPO_DIR/platform_specific/*"
    "$REPO_DIR/platform_specific/*/*"
+   "$REPO_DIR/platform_specific/*/*/*"
    "$REPO_DIR/sensors/*/*"
 )
 
