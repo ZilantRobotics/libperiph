@@ -34,31 +34,40 @@ typedef struct {
     uint16_t verify_code;       // 22-23    OK  0x????
 } EscFrame_t;
 
+static uint8_t auxiliary_buf[ESC_FLAME_PACKAGE_SIZE];
 
 static uint16_t swap_bytes_order_u16(uint16_t u16);
 
 
 bool escFlameIsItPackageStart(const uint8_t* raw_package_buffer) {
+    if (raw_package_buffer == NULL) {
+        return false;
+    }
     return raw_package_buffer[0] == FIRST_BYTE && raw_package_buffer[1] == SECOND_BYTE;
 }
 
 void escFlameParse(const uint8_t* raw_package_buffer, EscFlameStatus_t* esc_status) {
+    if (raw_package_buffer == NULL || esc_status == NULL) {
+        return;
+    }
+
     const EscFrame_t* esc_frame = (const EscFrame_t*)raw_package_buffer;
     esc_status->rpm = swap_bytes_order_u16(esc_frame->rpm) * 60.0 / 3.27;
     esc_status->voltage = swap_bytes_order_u16(esc_frame->voltage) / 59.0;
     esc_status->power_rating_pct = swap_bytes_order_u16(esc_frame->rx_pct) * 100.0 / 1024.0;
 }
 
-bool escFlameParseDma(uint8_t last_recv_idx,
+bool escFlameParseDma(size_t last_recv_idx,
                       UartDmaParser_t* parser,
                       EscFlameStatus_t* esc_status) {
-    static uint8_t auxiliary_buf[ESC_FLAME_PACKAGE_SIZE];
+    if (last_recv_idx >= UART_BUFFER_SIZE || parser == NULL || esc_status == NULL) {
+        return false;
+    }
+
     bool res = false;
-    parser->prev_idx = parser->crnt_idx;
-    parser->crnt_idx = last_recv_idx;
-    if (parser->prev_idx == parser->crnt_idx && parser->prev_idx != parser->saved_idx) {
+    if (last_recv_idx != parser->saved_idx) {
         uint8_t* package;
-        parser->saved_idx = parser->prev_idx;
+        parser->saved_idx = last_recv_idx;
         if (last_recv_idx < ESC_FLAME_PACKAGE_SIZE - 1) {
             uint16_t first_idx = UART_BUFFER_SIZE - ESC_FLAME_PACKAGE_SIZE + last_recv_idx + 1;
             uint16_t first_package_part_size = ESC_FLAME_PACKAGE_SIZE - last_recv_idx - 1;
@@ -69,6 +78,7 @@ bool escFlameParseDma(uint8_t last_recv_idx,
             uint16_t first_idx = last_recv_idx - ESC_FLAME_PACKAGE_SIZE + 1;
             package = &parser->buf[first_idx];
         }
+
         if (escFlameIsItPackageStart(package)) {
             escFlameParse(package, esc_status);
             res = true;

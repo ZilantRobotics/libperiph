@@ -40,13 +40,11 @@ typedef struct {
 #define UART_BUFFER_SIZE 96
 typedef struct {
     uint8_t buf[UART_BUFFER_SIZE];
-    size_t prev_idx;
-    size_t crnt_idx;
     size_t saved_idx;
 } UartDmaParser_t;
 
 
-bool escFlameParseDma(uint8_t last_recv_idx, UartDmaParser_t* parser, EscFlameStatus_t* esc_status);
+bool escFlameParseDma(size_t last_recv_idx, UartDmaParser_t* parser, EscFlameStatus_t* esc_status);
 
 
 /**
