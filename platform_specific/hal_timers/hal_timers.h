@@ -10,20 +10,26 @@
 
 #include <stdint.h>
 
+#define HAL_TIMERS_ERROR                1
+#define HAL_TIMERS_WRONG_ARG            2
+#define HAL_TIMERS_WRONG_CONFIG         3
+#define HAL_TIMERS_ALREADY_CONFIGURED   4
+#define HAL_TIMERS_INTERNAL_HAL_ERROR   5
+
 typedef enum {
-    PIN_PB7_TIM4_CH2 = 0,   // I2C1_SDA
-    PIN_PB6_TIM4_CH1,       // I2C1_SCL
+    PIN_PB7_TIM4_CH2 = 0,
+    PIN_PB6_TIM4_CH1,
 
-    PIN_A3_TIM2_CH4,        // ADC12_IN3    USART2_RX
-    PIN_A2_TIM2_CH3,        // ADC12_IN2    USART2_TX
+    PIN_A3_TIM2_CH4,
+    PIN_A2_TIM2_CH3,
 
-    PIN_A9_TIM1_CH2,        // USART1_TX
-    PIN_A8_TIM1_CH1,        // USART1_CK
-    PIN_A10_TIM1_CH3,       //                          starter_throttle
+    PIN_A9_TIM1_CH2,
+    PIN_A8_TIM1_CH1,
+    PIN_A10_TIM1_CH3,
 
-    PIN_PB4_TIM3_CH1,       //                          rgb led
-    PIN_PB5_TIM3_CH2,       //                          rgb led
-    PIN_PB0_TIM3_CH3,       //                          rgb led
+    PIN_PB4_TIM3_CH1,
+    PIN_PB5_TIM3_CH2,
+    PIN_PB0_TIM3_CH3,
 
     // TIM4_CH3
     // TIM4_CH4
@@ -42,20 +48,19 @@ typedef enum {
 
 /**
   * @brief Perform channel initialization into desired mode
-  * @return STATUS_ERROR if channel already has been initialized, else return STATUS_OK
-  * @note It is highly reccomended to set default pwm as soon as possible after initialization!
+  * @return STATUS_OK if ok, otherwise negative error code
+  * @note It is highly recommended to set default pwm as soon as possible after initialization!
   */
 int8_t timerInit(Channel_t channel, TimerMode_t mode);
 TimerMode_t timerGetMode(Channel_t channel);
 
-
-void timerSetPwmFrequency(Channel_t ch, uint16_t frequency_hz);
 
 /**
   * @brief PWM features
   */
 void timerSetPwmDuration(Channel_t channel, uint32_t pwm);
 int32_t timerGetPwmDuration(Channel_t channel);
+void timerSetPwmFrequency(Channel_t ch, uint16_t frequency_hz);
 
 
 /**

@@ -23,7 +23,7 @@ uint16_t adcGet(uint8_t rank) {
         case 0:
             adc_value = 5.0 / (3.3 * 17.0 / 4095.0);
             break;
-        
+
         case 1:
             adc_value = 5.0 / (3.3 * 2.0 / 4095.0);
             break;
