@@ -17,6 +17,10 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /// TTL timeout
 void ttlSetTimeout(uint32_t ttl_ms);
 uint32_t ttlGetTimeout();
@@ -28,5 +32,9 @@ uint32_t ttlGetBestTimestamp();
 
 bool ttlIsSetpointAlive(uint8_t sp_idx, uint32_t crnt_time_ms);
 bool ttlIsBestSetpointAlive(uint32_t crnt_time_ms);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif  // SRC_DRIVERS_INC_TTL_H_

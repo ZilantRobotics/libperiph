@@ -13,6 +13,10 @@
 #ifndef BMP280_H_
 #define BMP280_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define BMP280_MAX_MEASUREMENT_FREQUENCY 50
 
 void bmp280Init();
@@ -22,5 +26,9 @@ void bmp280ParseData();
 
 float bmp280GetStaticPressure();
 float bmp280GetStaticTemperature();
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif  // BMP280_H_

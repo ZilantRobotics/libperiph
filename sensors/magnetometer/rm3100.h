@@ -15,8 +15,16 @@
 
 #define RM3100_MEASUREMENT_FREQUENCY    75
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 int8_t rm3100Init();
 int8_t rm3100Measure();
 void rm310GetMeasurement(float* x, float* y, float* z);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif  // SENSORS_MAGNETOMERE_RM3100_H_

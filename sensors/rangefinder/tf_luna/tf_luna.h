@@ -30,6 +30,10 @@ typedef struct __attribute__((__packed__)) {
 } TfLunaSerialFrame_t;
 static_assert(sizeof(TfLunaSerialFrame_t) == TF_LUNA_SERIAL_FRAME_SIZE, "Wrong type size");
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * @return STATUS_OK if there is no error, otherwise STATUS_ERROR
  */
@@ -41,5 +45,9 @@ int8_t tfLunaInit();
  * @return true if frame appear, otherwise false
  */
 float tfParseRange(const TfLunaSerialFrame_t* frame);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif  // SENSORS_RANGESENSOR_TF_LUNA_H_

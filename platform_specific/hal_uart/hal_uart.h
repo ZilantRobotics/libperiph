@@ -17,6 +17,10 @@ typedef enum {
     UART_SECOND,
 } UartInstance_t;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * @brief UART RX
  */
@@ -36,5 +40,9 @@ bool uartIsTxReady();
 
 void uartEnableTx(bool enable);
 void UartChangeBaudrate(uint16_t rate);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif  // PLATFORM_SPECIFIC_HAL_UART_H_

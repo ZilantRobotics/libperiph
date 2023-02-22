@@ -49,6 +49,9 @@ typedef struct {
     float pdop;
 } GnssUblox_t;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @brief Parse raw ublox buffer and save data to uavcan fix2 buffer in success.
@@ -59,5 +62,9 @@ typedef struct {
  * @note parser is statefull
  */
 bool ubloxParse(const uint8_t gns_buffer[], size_t gns_buffer_size, GnssUblox_t* uavcan_fix2);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif  // SENSORS_GPS_UBLOX_H_

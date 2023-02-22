@@ -16,10 +16,18 @@
 
 #include "stdint.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
 * @brief Get temperature value
 * @return temperature value in degree celsius
 */
 uint16_t stm32TemperatureParse(uint16_t raw_adc_value);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif  // SENSORS_TEMPERATURE_SENSOR_STM32_TEMPERATURE_H_

@@ -13,6 +13,10 @@
 #ifndef MS4525DO_PARSER_H_
 #define MS4525DO_PARSER_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdint.h>
 
 int8_t ms4525doInit();
@@ -23,5 +27,9 @@ void ms4525doParse(float* raw_temperature, float* raw_diff_press);
   * @brief  Only for test usage
   */
 void ms4525doFillBuffer(const uint8_t new_buffer[]);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif  // MS4525DO_PARSER_H_
