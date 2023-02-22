@@ -18,6 +18,9 @@
 
 #define HMC5883L_MEASUREMENT_FREQUENCY    30
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 int8_t hmc5883Init();
 
@@ -27,5 +30,9 @@ void hmc5883GetMeasurement(float* x, float* y, float* z);
 
 // For tests only:
 void hmc5883lFillRxBuffer(uint8_t new_buf[6]);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif  // SENSORS_HMC5883L_H_

@@ -17,6 +17,10 @@ typedef enum {
     UART_SECOND,
 } UartInstance_t;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * @brief Common
  */
@@ -39,5 +43,9 @@ int8_t uartTransmit(uint8_t buffer[], size_t size);
 int8_t uartTransmitDma(uint8_t buffer[], size_t size);
 void uartRegisterTxCallback(UartInstance_t instance, void (*tx_callback)());
 void uartEnableTx(bool enable);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif  // PLATFORM_SPECIFIC_HAL_UART_H_
