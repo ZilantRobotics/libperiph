@@ -1,21 +1,23 @@
 /*
- * Copyright (C) 2022 Dmitry Ponomarev <ponomarevda96@gmail.com>
+ * Copyright (C) 2021 Dmitry Ponomarev <ponomarevda96@gmail.com>
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-/**
- * @file test_rm3100.cpp
- * @author d.ponomarev
- */
-
 #include <iostream>
 #include <gtest/gtest.h>
-#include "magnetometer/rm3100.h"
+#include "rgb_leds/ws2812.h"
 
-TEST(rm3100, rm3100Init) {
-    ASSERT_EQ(rm3100Init(), -1);
+int8_t HAL_TIM_PWM_Start_DMA(TIM_HandleTypeDef*, uint8_t, uint32_t*, uint32_t) {
+    return 0;
+}
+int8_t HAL_TIM_PWM_Stop_DMA(TIM_HandleTypeDef*, uint8_t) {
+    return 0;
+}
+
+TEST(ws2812, ws2812) {
+    ws2812bInit(4, NULL, 0);
 }
 
 int main (int argc, char *argv[]) {

@@ -8,60 +8,43 @@ It was tested on:
 - stm32f767 nucleo board,
 - stm32f103.
 
-| Periphery                         | Required HAL | tests |
-| --------------------------------- | ------------ | ----- |
-| devices/esp8266                   | uart         | build |
-| devices/motors                    | chibios      | -     |
-| devices/servos                    | pwm          | build + unit tests |
-| devices/seven_segments_indicators | gpio         | build |
-| devices/ws2812                    | pwm dma      | -     |
-| sensors/acs712                    | -            | build |
-| sensors/baro_bmp280               | i2c          | build |
-| sensors/encoder                   | gpio         | build |
-| sensors/esc_flame                 | -            | build + unit tests |
-| sensors/mag_hmc5883l              | i2c          | build |
-| sensors/mag_rm3100                | spi          | build |
-| sensors/mpu9250                   | i2c          | build |
-| sensors/ms4252do                  | -            | build + unit tests |
-| sensors/rangefinder/garmin_lite   | i2c          | build |
-| sensors/rangefinder/srf_05        | refactor me  | build |
-| sensors/rangesensor/sf1xx         | refactor me  | build |
-| sensors/rangesensor/tf_luna       | -            | build + unit tests |
-| sensors/rangesensor/vl53l0x       | -            |  |
-| sensors/temperature_sensor        | -            | build + unit tests |
-| sensors/ublox                     | -            | build + unit tests |
+**Part 1.**
 
+| Periphery                                 | Required HAL | Arm build | Test coverage |
+| ----------------------------------------- | ------------ | --------- | ------------- |
+| sensors/baro_bmp280                       | i2c          | +         | 41.43% of 70  |
+| sensors/ublox                             | -            | +         | 94.29% of 105 |
+| sensors/mag_hmc5883l                      | i2c          | +         | 50.00% of 34  |
+| sensors/mag_rm3100                        | spi          | +         | 57.97% of 69  |
+| sensors/temperature_sensor                | -            | +         | 100.00% of 3  |
+| devices/servos                            | pwm          | +         | 46.09% of 115 |
+| [platform_specific](platform_specific)    |              |
 
-## HAL requirements
+Summary: Lines executed:65.71% of 452
 
-Some drivers do not require any HAL specific functions, but other expected to have an outside implementation of few function prototypes.
+**Part 2.**
 
-**hal_i2c**
+| Periphery                                 | Required HAL | Arm build | Test coverage |
+| ----------------------------------------- | ------------ | --------- | ------------- |
+| sensors/acs712                            | -            | +         | 
+| sensors/ms4252do                          | -            | +         | 78.26% of 23 |
+| sensors/rangefinder/garmin_lite           | i2c          | -         |
+| sensors/rangesensor/sf1xx                 | refactor me  | -         |
+| sensors/rangesensor/tf_luna               | -            | +         | 88.00% of 25 |
+| sensors/rangesensor/vl53l0x               | -            | +         |
 
-```c++
-int8_t i2cTransmit(uint8_t id, const uint8_t tx[], uint8_t len);
-int8_t i2cReceive(uint8_t id, uint8_t* rx, uint8_t len);
-```
+**Auxiliary**
 
-**hal_spi**
-
-```c++
-int8_t spiPerformTransaction(uint8_t* tx, uint8_t* rx, uint8_t size);
-```
-
-**hal_uart**
-
-```c++
-int8_t uartInitRx(UartInstance_t instance, UartType_t, uint8_t buffer[], uint16_t size);
-size_t uartGetLastReceivedIndex(UartInstance_t instance);
-uint8_t* uartRxDmaPop(UartInstance_t instance);
-
-int8_t uartTransmit(UartInstance_t instance, uint8_t buffer[], size_t size);
-```
-
-**hal_tim**
-
-> in process
+| Periphery                                 | Required HAL | Arm build | Test coverage |
+| ----------------------------------------- | ------------ | --------- | ------------- |
+| devices/esp8266                           | uart         | +         |
+| devices/motors                            | chibios      | -         |
+| devices/seven_segments_indicators         | gpio         | +         |
+| [devices/ws2812](devices/ws2812)          | pwm dma      | -         | 17.86% of 28 |
+| sensors/encoder                           | gpio         | -         |
+| sensors/esc_flame                         | -            | +         | 100.00% of 31|
+| sensors/mpu9250                           | i2c          | +         |
+| sensors/rangefinder/srf_05                | refactor me  | +         |
 
 ## LICENSE
 

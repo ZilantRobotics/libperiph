@@ -17,7 +17,7 @@
 
 #define DEFAULT_SETPOINT_VALUE -1
 
-ServoParameters_t params[SERVO_TIM_CHANNELS_AMOUNT];
+static ServoParameters_t params[SERVO_TIM_CHANNELS_AMOUNT];
 static bool inited_channels[SERVO_TIM_CHANNELS_AMOUNT] = {};
 static int16_t setpoints[SETPOINTS_AMOUNT] = {};  ///< the same as RawCommand
 static uint32_t arm_ts_ms = 0;

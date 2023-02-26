@@ -82,7 +82,7 @@ PwmDurationMillisecond_t mapRawCommandToPwm(RawCommand_t rc_value,
 
 float mapFloat(float value, float in_min, float in_max, float out_min, float out_max);
 
-extern ServoParameters_t params[SERVO_TIM_CHANNELS_AMOUNT];
+
 #ifdef __cplusplus
 }
 #endif

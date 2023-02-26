@@ -16,6 +16,9 @@
 #include "main.h"
 #include "rgb_color.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @brief Initialize module
@@ -40,5 +43,9 @@ void ws2812bSetColors(const Leds_Color_t* leds_color);
  * @return STATUS_ERROR if error occured, otherwise STATUS_OK
  */
 int8_t ws2812bStartOnce();
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif  // DEVICES_RGB_LEDS_WS2812_H_

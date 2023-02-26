@@ -15,9 +15,9 @@
 #include "barometer/bmp280.h"
 
 
-// TEST(BMP280, bmp280ParseData) {
-
-// }
+TEST(BMP280, bmp280ParseData) {
+    bmp280Init();
+}
 
 int main (int argc, char *argv[]) {
     testing::InitGoogleTest(&argc, argv);
