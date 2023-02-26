@@ -121,9 +121,17 @@ typedef struct {
 } UbxNavPvtRaw_t;
 #pragma pack(pop)
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * @brief Private functions. For tests only
  */
 uint16_t ubloxCrc16(const uint8_t* buf, size_t size);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif  // SENSORS_GPS_UBLOX_INTERNAL_H_

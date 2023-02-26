@@ -19,10 +19,17 @@
 #include "ublox.h"
 #include "ublox_internal.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @brief Ublox emulation
  */
 void ubloxCreateRawDataFromPackage(UbxNavPvtRaw_t* buffer, const GnssUblox_t* uavcan_fix2);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif  // SENSORS_GPS_UBLOX_EMULATION_H_

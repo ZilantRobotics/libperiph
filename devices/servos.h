@@ -35,6 +35,10 @@ typedef struct {
     uint32_t def;
 } ServoParameters_t;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
   * @brief  Initialize the given timer channel in PWM mode.
   * @return either STATUS_OK or STATUS_ERROR depending on success of initialization.
@@ -79,5 +83,8 @@ PwmDurationMillisecond_t mapRawCommandToPwm(RawCommand_t rc_value,
 float mapFloat(float value, float in_min, float in_max, float out_min, float out_max);
 
 extern ServoParameters_t params[SERVO_TIM_CHANNELS_AMOUNT];
+#ifdef __cplusplus
+}
+#endif
 
 #endif  // SRC_DRIVERS_INC_SERVOS_H_

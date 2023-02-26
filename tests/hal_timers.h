@@ -22,10 +22,17 @@ typedef enum {
     TIMER_NOT_CONFIGURED = 0xFF
 } TimerMode_t;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 int8_t timerInit(Channel_t channel, TimerMode_t mode);
 TimerMode_t timerGetMode(Channel_t channel);
 void timerSetPwmDuration(Channel_t channel, uint32_t pwm);
 int32_t timerGetPwmDuration(Channel_t channel);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif  // TESTS_MOCK_HAL_TIMERS_H_

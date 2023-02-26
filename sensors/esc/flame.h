@@ -14,6 +14,10 @@
 #ifndef SENSORS_ESC_FLAME_H_
 #define SENSORS_ESC_FLAME_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -58,5 +62,9 @@ bool escFlameIsItPackageStart(const uint8_t* raw_package_buffer);
   * @param[out] esc_status - struct with parsed package
   */
 void escFlameParse(const uint8_t* raw_package_buffer, EscFlameStatus_t* esc_status);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif  // SENSORS_ESC_FLAME_H_
