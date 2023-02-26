@@ -5,23 +5,6 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-/**
- * @file ws2812.c
- * @author d.ponomarev
- * @note
- * WS2812B datasheet: https://cdn-shop.adafruit.com/datasheets/WS2812B.pdf
- * Required config for timer:
- * - timer freq = 72 000 000
- * - timer prescaller = 0
- * - pwm period or 1 bit = 90 timer ticks = 1.25 us:
- * -    transfer bit=1 => T1H = 0.8 us => 57.6 ticks
- * -    transfer bit=0 => T0H = 0.4 us => 28.8 ticks
- * - 1 led      = 24 bits   = 30 us
- * - 3 leds     = 72 bits   = 90 us
- * - 10 leds    = 230 bits  = 0.3 ms
- * - 15 leds    = 345 bits  = 0.45 ms
- */
-
 #include "ws2812.h"
 #include <stdbool.h>
 #include <stddef.h>
@@ -37,7 +20,7 @@
 
 static TIM_HandleTypeDef* timer = NULL;
 static uint32_t timer_channel = 0;
-static uint16_t crc_values[MAX_BUF_SIZE] = {0x00};
+static uint16_t ccr_values[MAX_BUF_SIZE] = {0x00};
 static uint16_t BUF_SIZE = 0;
 static uint8_t LEDS_NUM = 0;
 
@@ -68,8 +51,8 @@ void ws2812bSetColors(const Leds_Color_t* ledsColor) {
     for (size_t shade_num = 0; shade_num < SHADES_AMOUNT; shade_num++) {
         for (size_t bit_num = 0; bit_num < BITS_PER_SHADE; bit_num++) {
             bool is_bit_high = ledsColor->shades[shade_num] >> (7 - bit_num) & 0x01;
-            uint16_t crc_value = (is_bit_high) ? PWM_PERIOD_HIGH : PWM_PERIOD_LOW;
-            crc_values[BUF_OFFSET + shade_num * BITS_PER_SHADE + bit_num] =  crc_value;
+            uint16_t ccr_value = (is_bit_high) ? PWM_PERIOD_HIGH : PWM_PERIOD_LOW;
+            ccr_values[BUF_OFFSET + shade_num * BITS_PER_SHADE + bit_num] =  ccr_value;
         }
     }
 }
@@ -78,7 +61,7 @@ int8_t ws2812bStartOnce() {
     if (timer == NULL) {
         return STATUS_ERROR;
     }
-    if (HAL_TIM_PWM_Start_DMA(timer, timer_channel, (uint32_t*)crc_values, BUF_SIZE) != HAL_OK) {
+    if (HAL_TIM_PWM_Start_DMA(timer, timer_channel, (uint32_t*)ccr_values, BUF_SIZE) != HAL_OK) {
         return STATUS_ERROR;
     }
     return STATUS_OK;
