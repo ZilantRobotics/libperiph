@@ -17,6 +17,13 @@
 #include "i2c_manager.h"
 #include "params.h"
 
+#ifndef STATUS_ERROR
+    #define STATUS_ERROR -1
+#endif
+#ifndef STATUS_OK
+    #define STATUS_OK 0
+#endif
+
 
 #define I2C_ID                  (0x68 << 1)
 #define I2C_RESPONSE_SIZE       2

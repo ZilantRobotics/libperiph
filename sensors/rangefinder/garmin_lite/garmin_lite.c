@@ -16,6 +16,12 @@
 #include "i2c_manager.h"
 #include "params.h"
 
+#ifndef STATUS_ERROR
+    #define STATUS_ERROR -1
+#endif
+#ifndef STATUS_OK
+    #define STATUS_OK 0
+#endif
 
 #define REG_ACQ_COMMAND                     0x00    ///< Device command
 #define REG_STATUS                          0x01    ///< System status
