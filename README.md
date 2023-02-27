@@ -40,7 +40,7 @@ Summary: Lines executed:65.71% of 452
 | devices/esp8266                           | uart         | +         |
 | devices/motors                            | chibios      | -         |
 | devices/seven_segments_indicators         | gpio         | +         |
-| [devices/ws2812](devices/ws2812)          | pwm dma      | -         | 17.86% of 28 |
+| [devices/rgb_leds](devices/rgb_leds)      | pwm dma      | -         | 17.86% of 28 |
 | sensors/encoder                           | gpio         | -         |
 | sensors/esc_flame                         | -            | +         | 100.00% of 31|
 | sensors/mpu9250                           | i2c          | +         |
