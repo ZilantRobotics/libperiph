@@ -34,7 +34,7 @@ function(gen_test app_name src_files)
 	target_link_libraries(${app_name} gtest pthread gtest_main)
 endfunction()
 
-gen_test(bmp280				"test_bmp280.cpp;../sensors/barometer/bmp280.c;../platform_specific/hal_i2c/dummy/hal_i2c.c")
+gen_test(bmp280				"sensors/test_bmp280.cpp;../sensors/barometer/bmp280.c;../platform_specific/hal_i2c/dummy/hal_i2c.c")
 gen_test(esc_flame			"test_esc_flame.cpp;../sensors/esc/flame.c")
 gen_test(ublox				"test_ublox.cpp;../sensors/gps/ublox.c;../sensors/gps/ublox_emulation.c")
 gen_test(ms4525do			"test_ms4525do.cpp;../sensors/differential_pressure/ms4525do.c;../platform_specific/hal_i2c/dummy/hal_i2c.c")

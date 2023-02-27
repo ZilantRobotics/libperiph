@@ -5,12 +5,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-/**
- * @file bmp280.c
- * @author d.ponomarev
- */
-
-#include "barometer/bmp280.h"
+#include "bmp280.h"
 #include <stdint.h>
 #include <stdbool.h>
 #include <math.h>
@@ -89,26 +84,19 @@ static void bmp280GetCalibration();
 
 
 static bool dev_id_confirmed = false;
-static bool error_during_initialization_flag = false;
 static BMP280_stored_calib_param_t stored_calib;
 static BMP280_processed_calib_param_t processed_calib;
 static BMP280_t bmp280;
 
 
 void bmp280Init() {
-    error_during_initialization_flag = false;
-
     bmp280CheckDeviceId();
     bmp280SetCtrlMeas();
     bmp280GetCalibration();
 }
 
-float bmp280GetStaticPressure() {
-    return bmp280.static_pressure;
-}
-
-float bmp280GetStaticTemperature() {
-    return bmp280.static_temperature;
+bool bmp280IsInitialized() {
+    return dev_id_confirmed;
 }
 
 void bmp280Calibrate() {
@@ -137,11 +125,6 @@ void bmp280CollectData() {
 
     bmp280.static_pressure = data.p_msb << 12 | data.p_lsb << 4 | data.p_xlsb >> 4;
     bmp280.static_temperature = data.t_msb << 12 | data.t_lsb << 4 | data.t_xlsb >> 4;
-
-    if (bmp280.static_pressure == 0x080000 || bmp280.static_temperature  == 0x080000) {
-        // it's a reset state
-        asm("NOP");
-    }
 }
 
 
@@ -162,13 +145,21 @@ void bmp280ParseData() {
     bmp280.static_pressure = static_pressure;
 }
 
+float bmp280GetStaticPressure() {
+    return bmp280.static_pressure;
+}
+
+float bmp280GetStaticTemperature() {
+    return bmp280.static_temperature;
+}
+
 void bmp280CheckDeviceId() {
     uint8_t tx[1] = {ID_REG};
     uint8_t rx[1] = {0};
-    if (i2cTransmit(I2C_ID, tx, 1) == STATUS_ERROR ||
-            i2cReceive(I2C_ID, rx, 1) == STATUS_ERROR) {
-        error_during_initialization_flag = true;
-    }
+
+    i2cTransmit(I2C_ID, tx, 1);
+    i2cReceive(I2C_ID, rx, 1);
+
     dev_id_confirmed = (rx[0] == DEVICE_ID) ? true : false;
 }
 
@@ -176,23 +167,12 @@ void bmp280CheckDeviceId() {
 void bmp280SetCtrlMeas() {
     uint8_t tx[2] = {CTRL_MEAS_REG, CTRL_MEAS_SETTINGS};
     uint8_t rx[1] = {0};
-    if (i2cTransmit(I2C_ID, tx, 2) == STATUS_ERROR) {
-        error_during_initialization_flag = true;
-    }
-    if (i2cReceive(I2C_ID, rx, 1) == STATUS_ERROR) {
-        error_during_initialization_flag = true;
-    }
-    if (rx[0] != tx[1]) {
-        error_during_initialization_flag = true;
-    }
+    i2cTransmit(I2C_ID, tx, 2);
+    i2cReceive(I2C_ID, rx, 1);
 }
 
 void bmp280GetCalibration() {
     uint8_t tx[1] = {0x88};
-    if (i2cTransmit(I2C_ID, tx, 1) == STATUS_ERROR) {
-        error_during_initialization_flag = true;
-    }
-    if (i2cReceive(I2C_ID, (uint8_t*)(&stored_calib), 24) == STATUS_ERROR) {
-        error_during_initialization_flag = true;
-    }
+    i2cTransmit(I2C_ID, tx, 1);
+    i2cReceive(I2C_ID, (uint8_t*)(&stored_calib), 24);
 }

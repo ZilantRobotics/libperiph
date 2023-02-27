@@ -12,15 +12,16 @@ It was tested on:
 
 | Periphery                                 | Required HAL | Arm build | Test coverage |
 | ----------------------------------------- | ------------ | --------- | ------------- |
-| sensors/baro_bmp280                       | i2c          | +         | 41.43% of 70  |
+| [sensors/bmp280](sensors/barometer)       | i2c          | +         | 96.77% of 62  |
 | sensors/ublox                             | -            | +         | 94.29% of 105 |
 | sensors/mag_hmc5883l                      | i2c          | +         | 50.00% of 34  |
 | sensors/mag_rm3100                        | spi          | +         | 57.97% of 69  |
 | sensors/temperature_sensor                | -            | +         | 100.00% of 3  |
 | devices/servos                            | pwm          | +         | 46.09% of 115 |
+| common/ttl                                |              | +         | 46.09% of 115 |
 | [platform_specific](platform_specific)    |              |
 
-Summary: Lines executed:65.71% of 452
+Summary: Lines executed:73.87% of 444
 
 **Part 2.**
 

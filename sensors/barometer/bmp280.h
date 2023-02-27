@@ -5,13 +5,10 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-/**
- * @file bmp280.h
- * @author d.ponomarev
- */
+#ifndef BAROMETER_BMP280_H_
+#define BAROMETER_BMP280_H_
 
-#ifndef BMP280_H_
-#define BMP280_H_
+#include <stdbool.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -20,6 +17,7 @@ extern "C" {
 #define BMP280_MAX_MEASUREMENT_FREQUENCY 50
 
 void bmp280Init();
+bool bmp280IsInitialized();
 void bmp280Calibrate();
 void bmp280CollectData();
 void bmp280ParseData();
@@ -31,4 +29,4 @@ float bmp280GetStaticTemperature();
 }
 #endif
 
-#endif  // BMP280_H_
+#endif  // BAROMETER_BMP280_H_

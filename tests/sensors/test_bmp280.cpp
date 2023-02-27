@@ -17,6 +17,16 @@
 
 TEST(BMP280, bmp280ParseData) {
     bmp280Init();
+    bmp280Calibrate();
+
+    bmp280CollectData();
+    bmp280ParseData();
+
+    float pressure = bmp280GetStaticPressure();
+    float temperature = bmp280GetStaticTemperature();
+    std::cout << "pressure: " << pressure << std::endl;
+    std::cout << "temperature: " << temperature << std::endl;
+
 }
 
 int main (int argc, char *argv[]) {
