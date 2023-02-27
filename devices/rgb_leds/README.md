@@ -1,4 +1,4 @@
-# ws2812
+# ws2812 driver
 
 ## Prerequisites
 
@@ -13,9 +13,11 @@ Expected STM32CubeMX configuration:
 ![](https://github.com/PonomarevDA/libperiph/blob/docs/assets/ws2812/tim_config_parameters.png?raw=true)
 
 3. Enable DMA memory to peripheral:
+
 ![](https://github.com/PonomarevDA/libperiph/blob/docs/assets/ws2812/tim_config_dma.png?raw=true)
 
 4. Enable global interrupt.
+
 ![](https://github.com/PonomarevDA/libperiph/blob/docs/assets/ws2812/tim_config_nvic.png?raw=true)
 
 ## Usage example:

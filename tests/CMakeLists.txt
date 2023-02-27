@@ -8,13 +8,16 @@ project(tests)
 
 if(COVERAGE)
 	message(STATUS "Code coverage enabled!")
-	add_compile_options(-g -O0 --coverage)
+	add_compile_options(-g -O0 --coverage )
 	add_link_options(--coverage)
 endif()
 
 enable_testing()
 find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIR})
+
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
 
 include_directories(.)
 include_directories(../common/)
@@ -28,7 +31,7 @@ include_directories(../platform_specific/hal_uart)
 
 function(gen_test app_name src_files)
 	add_executable(${app_name} ${src_files})
-	target_link_libraries(${app_name} gtest gtest_main)
+	target_link_libraries(${app_name} gtest pthread gtest_main)
 endfunction()
 
 gen_test(bmp280				"test_bmp280.cpp;../sensors/barometer/bmp280.c;../platform_specific/hal_i2c/dummy/hal_i2c.c")
