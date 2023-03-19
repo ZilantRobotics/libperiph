@@ -12,14 +12,16 @@ make
 
 $BUILD_DIR/bmp280
 $BUILD_DIR/esc_flame
-$BUILD_DIR/hmc5883l
-$BUILD_DIR/ms4525do
-$BUILD_DIR/rm3100
-$BUILD_DIR/servo
-$BUILD_DIR/stm32_temp
 $BUILD_DIR/ublox
-$BUILD_DIR/ws2812
+$BUILD_DIR/ms4525do
+$BUILD_DIR/stm32_temp
+$BUILD_DIR/hmc5883l
+$BUILD_DIR/rm3100
+$BUILD_DIR/ttl
+$BUILD_DIR/servo
+$BUILD_DIR/servo_common
 $BUILD_DIR/tf_luna
+$BUILD_DIR/ws2812
 
 echo "Part 1:--------------------------------------------------"
 gcov $BUILD_DIR/CMakeFiles/bmp280.dir$REPO_DIR/sensors/barometer/*.gcda \
@@ -27,8 +29,10 @@ gcov $BUILD_DIR/CMakeFiles/bmp280.dir$REPO_DIR/sensors/barometer/*.gcda \
      $BUILD_DIR/CMakeFiles/esc_flame.dir$REPO_DIR/sensors/esc/*.gcda \
      $BUILD_DIR/CMakeFiles/hmc5883l.dir$REPO_DIR/sensors/magnetometer/hmc5883l*.gcda \
      $BUILD_DIR/CMakeFiles/rm3100.dir$REPO_DIR/sensors/magnetometer/rm3100*.gcda \
-     $BUILD_DIR/CMakeFiles/stm32_temperature.dir$REPO_DIR/sensors/temperature_sensor/*.gcda \
-     $BUILD_DIR/CMakeFiles/servo.dir$REPO_DIR/devices/servo*.gcda
+     $BUILD_DIR/CMakeFiles/stm32_temp.dir$REPO_DIR/sensors/temperature_sensor/*.gcda \
+     $BUILD_DIR/CMakeFiles/ttl.dir$REPO_DIR/devices/servos/ttl*.gcda \
+     $BUILD_DIR/CMakeFiles/servo.dir$REPO_DIR/devices/servos/servo*.gcda \
+     $BUILD_DIR/CMakeFiles/servo_common.dir$REPO_DIR/devices/servos/common*.gcda
 
 echo ""
 echo "Part 2:--------------------------------------------------"

@@ -17,6 +17,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include "hal_timers.h"
+#include "common.h"
 
 
 #define SERVO_TIM_CHANNELS_AMOUNT   9
@@ -66,23 +67,6 @@ Channel_t servosGetTimerChannelBySetpointChannel(uint32_t sp_ch);
 int16_t servosGetSetpoint(uint8_t sp_idx);
 bool servosGetArmingState(uint32_t crnt_time_ms);
 bool servosGetEstimatedArmStatus(uint32_t crnt_time_ms);
-
-
-typedef uint16_t PwmDurationMillisecond_t;
-typedef int16_t RawCommand_t;
-/**
-  * @brief  Map raw command value (in interval from 0 to 8191)
-  *         to PWM duration (in interval from min to max)
-  * @return pwm_duration if input is correct,
-  *         def_pwm if raw_command value is less than min or higher than max
-  */
-PwmDurationMillisecond_t mapRawCommandToPwm(RawCommand_t rc_value,
-                                            PwmDurationMillisecond_t min_pwm,
-                                            PwmDurationMillisecond_t max_pwm,
-                                            PwmDurationMillisecond_t def_pwm);
-
-float mapFloat(float value, float in_min, float in_max, float out_min, float out_max);
-
 
 #ifdef __cplusplus
 }

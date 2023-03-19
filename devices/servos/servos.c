@@ -27,10 +27,6 @@ static void servosSetDefaultValueForChannel(Channel_t tim_channel);
 static void servosUpdateChannelStateAccordingToSetpoint(Channel_t tim_ch);
 static void servosProcessTimeToLiveChecks(uint32_t crnt_ts_ms);
 
-static float clampFloat(float value, float first, float second);
-static float maxFloat(float value, float first, float second);
-static float minFloat(float value, float first, float second);
-
 int8_t servosInitChannel(Channel_t tim_channel, const ServoParameters_t* servo_params) {
     if (!servo_params || (uint32_t)tim_channel >= SERVO_TIM_CHANNELS_AMOUNT) {
         return STATUS_ERROR;
@@ -84,7 +80,7 @@ void servosApplyPwm(uint32_t crnt_ts_ms) {
     for (uint_fast8_t tim_idx = 0; tim_idx < SERVO_TIM_CHANNELS_AMOUNT; tim_idx++) {
         Channel_t tim_ch = (Channel_t)tim_idx;
 
-        if (arm_ts_ms + 500 < crnt_ts_ms) {
+        if (arm_ts_ms + ttlGetTimeout() < crnt_ts_ms) {
             servosSetDefaultValueForChannel(tim_ch);
         } else {
             servosUpdateChannelStateAccordingToSetpoint(tim_ch);
@@ -129,7 +125,7 @@ int16_t servosGetSetpoint(uint8_t sp_idx) {
 }
 
 bool servosGetArmingState(uint32_t crnt_time_ms) {
-    return ttlIsBestSetpointAlive(crnt_time_ms);
+    return arm_ts_ms != 0 && arm_ts_ms + ttlGetTimeout() >= crnt_time_ms;
 }
 
 
@@ -186,55 +182,4 @@ void servosProcessTimeToLiveChecks(uint32_t crnt_ts_ms) {
             setpoints[sp_idx] = DEFAULT_SETPOINT_VALUE;
         }
     }
-}
-
-static const RawCommand_t RC_MIN = 0;
-static const RawCommand_t RC_MAX = 8191;
-PwmDurationMillisecond_t mapRawCommandToPwm(RawCommand_t rc_value,
-                                            PwmDurationMillisecond_t min_pwm,
-                                            PwmDurationMillisecond_t max_pwm,
-                                            PwmDurationMillisecond_t def_pwm) {
-    PwmDurationMillisecond_t pwm;
-    if (rc_value < RC_MIN || rc_value > RC_MAX) {
-        pwm = def_pwm;
-    } else {
-        pwm = mapFloat(rc_value, RC_MIN, RC_MAX, min_pwm, max_pwm);
-    }
-    return pwm;
-}
-
-float minFloat(float value, float first, float second) {
-    return (first < second) ? first : second;
-}
-
-float maxFloat(float value, float first, float second) {
-    return (first > second) ? first : second;
-}
-
-float clampFloat(float value, float first, float second) {
-    float min_value = minFloat(value, first, second);
-    float max_value = maxFloat(value, first, second);
-
-    if (value <= min_value) {
-        return min_value;
-    } else if (value >= max_value) {
-        return max_value;
-    } else {
-        return value;
-    }
-}
-
-float mapFloat(float value, float in_min, float in_max, float out_min, float out_max) {
-    float output;
-    if (value <= in_min && in_min <= in_max) {
-        output = out_min;
-    } else if (value >= in_max && in_min <= in_max) {
-        output = out_max;
-    } else if (out_min == out_max) {
-        output = out_min;
-    } else {
-        output = out_min + (value - in_min) / (in_max - in_min) * (out_max - out_min);
-        output = clampFloat(output, out_min, out_max);
-    }
-    return output;
 }
