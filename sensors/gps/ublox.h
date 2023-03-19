@@ -1,13 +1,8 @@
 /*
- * Copyright (C) 2019 Dmitry Ponomarev <ponomarevda96@gmail.com>
+ * Copyright (C) 2019-2023 Dmitry Ponomarev <ponomarevda96@gmail.com>
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
- */
-
-/**
- * @file ublox.h
- * @author d.ponomarev
  */
 
 #ifndef SENSORS_GPS_UBLOX_H_
@@ -17,6 +12,12 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+typedef enum {
+    UBX_UNKNOWN_PKG = 0,
+    UBX_NAV_PVT_PKG,
+    UBX_NAV_COV_PKG,
+    UBX_NAV_RELPOSNED_PKG,
+} UbloxPackageType_t;
 
 /**
  * @brief uavcan.equipment.gnss.Fix2
@@ -59,9 +60,9 @@ extern "C" {
  * @param gns_buffer_size is a size of this buffer
  * @param uavcan_fix2 is an output buffer
  * @return true, if package successfully has been parsed
- * @note parser is statefull
+ * @note parser is stateful
  */
-bool ubloxParse(const uint8_t gns_buffer[], size_t gns_buffer_size, GnssUblox_t* uavcan_fix2);
+UbloxPackageType_t ubloxParse(const uint8_t buffer[], size_t size, GnssUblox_t* uavcan_fix2);
 
 #ifdef __cplusplus
 }

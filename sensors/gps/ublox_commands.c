@@ -22,7 +22,7 @@
 #define UBLOX_RATE_10_SIZE      22
 
 
-/***
+/**
  *  @brief: uBlox configuration: Restore the factory configuration
  *
  *  PS. each uBlox Package starts with two bytes 0xB5, 0x62  and ends with checksum
@@ -33,7 +33,8 @@ static uint8_t uBloxConfigFactoryReset[] = {
     0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0x00, 0x00, 0x03, 0x1B,
     0x9A
 };
-/***
+
+/**
  * @brief: sets the Port configuration as following:
  * Target : UART 1
  * Protocol in : 0+1+2-UBX+NMEA+RTCM
@@ -46,7 +47,7 @@ static uint8_t uBloxPortProfile0[] = {
     0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0xC0, 0x7E
 };
 
-/***
+/**
  *  @brief: configures the GPS rate to 10Hz
  *  PS. this command contains two packages RATE+CFG
  *
@@ -57,7 +58,7 @@ static uint8_t uBloxRates10Hz[] = {
     0x0E, 0x30
 };
 
-/***
+/**
  *  @brief: configures Messages 01-07 NAV-PVT on UART 1
  *  PS. this command contains two packages MSG+CFG
  */
@@ -67,7 +68,7 @@ static uint8_t uBloxMessagesNavPvtEnable[] = {
     0x02, 0x00, 0x01, 0x07, 0x11, 0x3A
 };
 
-/***
+/**
  *  @brief: deconfigures Messages 01-07 NAV-PVT on UART 1
  *  PS. this command contains two packages MSG+CFG
  */

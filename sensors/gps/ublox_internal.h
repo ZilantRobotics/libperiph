@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Dmitry Ponomarev <ponomarevda96@gmail.com>
+ * Copyright (C) 2019-2023 Dmitry Ponomarev <ponomarevda96@gmail.com>
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -22,29 +22,29 @@
 #define GPS_UBLOX_SYNC_CHAR_2_CODE        0x62    // 98
 
 typedef struct {
-    uint32_t time_ms;
-    uint16_t year;
-    uint8_t month;
-    uint8_t day;
-    uint8_t hour;
-    uint8_t min;
-    uint8_t sec;
+    uint32_t time_of_week_ms;   ///< iTOW Timestamp
+    uint16_t year_utc;
+    uint8_t month_utc;
+    uint8_t day_utc;
+    uint8_t hour_utc;
+    uint8_t min_utc;
+    uint8_t sec_utc;
     uint8_t valid;
-    uint32_t tAcc;
-    int32_t nano;
+    uint32_t tAcc;              ///< Time accuracy estimate (UTC), ns
+    int32_t nano;               ///< Fraction of second, range -1e9 .. 1e9 (UTC)
     uint8_t fixType;
     uint8_t flags;
     uint8_t flags2;
-    uint8_t numSV;
-    int32_t lon;
-    int32_t lat;
-    int32_t height;
-    int32_t hMSL;
-    uint32_t gAcc;
-    uint32_t vAcc;
-    int32_t velN;
-    int32_t velE;
-    int32_t velD;
+    uint8_t numSV;              ///< Number of satellites used in Nav Solution
+    int32_t lon;                ///< deg, 1e-7
+    int32_t lat;                ///< deg, 1e-7
+    int32_t height;             ///< Height above ellipsoid, mm
+    int32_t hMSL;               ///< Height above mean sea level, mm
+    uint32_t gAcc;              ///< Horizontal accuracy estimate, mm
+    uint32_t vAcc;              ///< Vertical accuracy estimate, mm
+    int32_t velN;               ///< mm/s
+    int32_t velE;               ///< mm/s
+    int32_t velD;               ///< mm/s
     int32_t gSpeed;
     int32_t headMot;
     uint32_t sAcc;

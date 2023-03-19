@@ -5,11 +5,6 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-/**
- * @file ublox_emulation.h
- * @author d.ponomarev
- */
-
 #ifndef SENSORS_GPS_UBLOX_EMULATION_H_
 #define SENSORS_GPS_UBLOX_EMULATION_H_
 

@@ -5,12 +5,6 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-/**
- * @file ublox_emulation.c
- * @author d.ponomarev
- * @date 2022.08.20
- */
-
 #include "ublox_emulation.h"
 
 void ubloxCreateRawDataFromPackage(UbxNavPvtRaw_t* buffer, const GnssUblox_t* uavcan_fix2) {
@@ -20,15 +14,15 @@ void ubloxCreateRawDataFromPackage(UbxNavPvtRaw_t* buffer, const GnssUblox_t* ua
     buffer->id_nav_pvt = ID_NAV_PVT;
     buffer->payload_length = sizeof(UbxNavPvt_t);
 
-    buffer->payload.time_ms = uavcan_fix2->timestamp / 1000;
+    buffer->payload.time_of_week_ms = uavcan_fix2->timestamp / 1000;
 
     ///< @todo reverse dayToUnixTimestamp() should be here
-    buffer->payload.year = 0;
-    buffer->payload.month = 0;
-    buffer->payload.day = 0;
-    buffer->payload.hour = 0;
-    buffer->payload.min = 0;
-    buffer->payload.sec = 0;
+    buffer->payload.year_utc = 0;
+    buffer->payload.month_utc = 0;
+    buffer->payload.day_utc = 0;
+    buffer->payload.hour_utc = 0;
+    buffer->payload.min_utc = 0;
+    buffer->payload.sec_utc = 0;
 
     buffer->payload.lon = uavcan_fix2->longitude_deg_1e8 / 10;
     buffer->payload.lat = uavcan_fix2->latitude_deg_1e8 / 10;

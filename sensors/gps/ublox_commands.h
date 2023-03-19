@@ -6,10 +6,10 @@
  */
 
 /**
- * @file ublox.h
+ * @file ublox_commands.h
  * @author ehsan shaghaei
  * @date Dec 16, 2022
- * @brief This header file contains uBlox  commands.
+ * @brief This header file contains uBlox commands.
  */
 
 #ifndef SENSORS_GPS_UBLOX_COMMANDS_H
