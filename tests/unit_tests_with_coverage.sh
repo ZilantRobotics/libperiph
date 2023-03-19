@@ -16,7 +16,7 @@ $BUILD_DIR/hmc5883l
 $BUILD_DIR/ms4525do
 $BUILD_DIR/rm3100
 $BUILD_DIR/servo
-$BUILD_DIR/stm32_temperature
+$BUILD_DIR/stm32_temp
 $BUILD_DIR/ublox
 $BUILD_DIR/ws2812
 $BUILD_DIR/tf_luna
