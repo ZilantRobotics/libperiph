@@ -37,9 +37,6 @@ Summary: Lines executed:73.87% of 444
 
 | Periphery                                 | Required HAL | Arm build | Test coverage |
 | ----------------------------------------- | ------------ | --------- | ------------- |
-| devices/esp8266                           | uart         | +         |
-| devices/motors                            | chibios      | -         |
-| devices/seven_segments_indicators         | gpio         | +         |
 | [devices/rgb_leds](devices/rgb_leds)      | pwm dma      | -         | 17.86% of 28 |
 | sensors/encoder                           | gpio         | -         |
 | sensors/esc_flame                         | -            | +         | 100.00% of 31|
