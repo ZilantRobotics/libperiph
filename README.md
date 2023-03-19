@@ -13,7 +13,7 @@ It was tested on:
 | Periphery                                 | Required HAL | Arm build | Test coverage |
 | ----------------------------------------- | ------------ | --------- | ------------- |
 | [sensors/bmp280](sensors/barometer)       | i2c          | +         | 96.77% of 62  |
-| sensors/ublox                             | -            | +         | 94.29% of 105 |
+| [sensors/gps](sensors/gps)                | -            | +         | 94.29% of 105 |
 | sensors/mag_hmc5883l                      | i2c          | +         | 50.00% of 34  |
 | sensors/mag_rm3100                        | spi          | +         | 57.97% of 69  |
 | sensors/temperature_sensor                | -            | +         | 100.00% of 3  |

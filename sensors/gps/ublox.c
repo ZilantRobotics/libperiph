@@ -5,12 +5,6 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-/**
- * @file ublox.c
- * @author d.ponomarev
- */
-
-
 #include "ublox.h"
 #include <stddef.h>
 #include <stdbool.h>
@@ -39,25 +33,27 @@ uint64_t dayToUnixTimestamp(uint16_t y, uint8_t mo, uint8_t d, uint8_t h, uint8_
     return (uint64_t)utc_time;
 }
 
-bool ubloxParse(const uint8_t gns_buffer[], size_t gns_buffer_size, GnssUblox_t* uavcan_fix2) {
-    if (gns_buffer == NULL || gns_buffer_size > 256 || uavcan_fix2 == NULL) {
-        return false;
+UbloxPackageType_t ubloxParse(const uint8_t buffer[], size_t size, GnssUblox_t* uavcan_fix2) {
+    if (buffer == NULL || size > 256 || uavcan_fix2 == NULL) {
+        return UBX_UNKNOWN_PKG;
     }
 
-    bool is_package_parsed = false;
-    for (uint32_t idx = 0; idx < gns_buffer_size; idx++) {
-        if (ubloxNextByte(gns_buffer[idx])) {
-            if (ubloxCheckCrc()) {
-                if (package.id == ID_NAV_PVT) {
-                    ubloxDeserializeFix2(uavcan_fix2);
-                    is_package_parsed = true;
-                }
+    UbloxPackageType_t received_package = UBX_UNKNOWN_PKG;
+    for (uint32_t idx = 0; idx < size; idx++) {
+        if (ubloxNextByte(buffer[idx]) && ubloxCheckCrc()) {
+            if (package.id == ID_NAV_PVT) {
+                ubloxDeserializeFix2(uavcan_fix2);
+                received_package = UBX_NAV_PVT_PKG;
             }
         }
     }
-    return is_package_parsed;
+
+    return received_package;
 }
 
+/**
+ * @return true when package is finished, otherwise false
+ */
 bool ubloxNextByte(uint8_t byte) {
     switch (package.state) {
         case STATE_SYNC_CHAR_1:
@@ -119,13 +115,13 @@ void ubloxDeserializeFix2(GnssUblox_t* uavcan_fix2) {
         return;
     }
     UbxNavPvt_t* ubx_nav_pvt = (UbxNavPvt_t*)(void*)package.payload;
-    uavcan_fix2->timestamp = (uint64_t)(ubx_nav_pvt->time_ms) * 1000;
-    uavcan_fix2->gnss_timestamp = dayToUnixTimestamp(ubx_nav_pvt->year,
-                                                     ubx_nav_pvt->month,
-                                                     ubx_nav_pvt->day,
-                                                     ubx_nav_pvt->hour,
-                                                     ubx_nav_pvt->min,
-                                                     ubx_nav_pvt->sec) * 1000000;
+    uavcan_fix2->timestamp = (uint64_t)(ubx_nav_pvt->time_of_week_ms) * 1000;
+    uavcan_fix2->gnss_timestamp = dayToUnixTimestamp(ubx_nav_pvt->year_utc,
+                                                     ubx_nav_pvt->month_utc,
+                                                     ubx_nav_pvt->day_utc,
+                                                     ubx_nav_pvt->hour_utc,
+                                                     ubx_nav_pvt->min_utc,
+                                                     ubx_nav_pvt->sec_utc) * 1000000;
     uavcan_fix2->gnss_time_standard = 0;
     uavcan_fix2->num_leap_seconds = 0;
     uavcan_fix2->longitude_deg_1e8 = ((int64_t)ubx_nav_pvt->lon) * 10;
