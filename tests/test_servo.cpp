@@ -17,12 +17,12 @@ TEST(Servo, test_init) {
         .def = 1000
     };
 
-    ASSERT_EQ(0, uavcanServosInitChannel((Channel_t)0, &servo_params));
-    ASSERT_EQ(0, uavcanServosInitChannel((Channel_t)0, &servo_params));
+    ASSERT_EQ(0, servosInitChannel((Channel_t)0, &servo_params));
+    ASSERT_EQ(0, servosInitChannel((Channel_t)0, &servo_params));
 
     // bad arguments
-    ASSERT_EQ(-1, uavcanServosInitChannel((Channel_t)20, &servo_params));
-    ASSERT_EQ(-1, uavcanServosInitChannel((Channel_t)0, nullptr));
+    ASSERT_EQ(-1, servosInitChannel((Channel_t)20, &servo_params));
+    ASSERT_EQ(-1, servosInitChannel((Channel_t)0, nullptr));
 }
 
 TEST(Servo, test_update_params) {
@@ -34,8 +34,8 @@ TEST(Servo, test_update_params) {
     };
 
     // bad arguments
-    uavcanServosUpdateParams((Channel_t)20, &servo_params);
-    uavcanServosUpdateParams((Channel_t)0, nullptr);
+    servosUpdateParams((Channel_t)20, &servo_params);
+    servosUpdateParams((Channel_t)0, nullptr);
 }
 
 TEST(Servo, map_0_same_output_values) {

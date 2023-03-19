@@ -22,15 +22,16 @@ static bool inited_channels[SERVO_TIM_CHANNELS_AMOUNT] = {};
 static int16_t setpoints[SETPOINTS_AMOUNT] = {};  ///< the same as RawCommand
 static uint32_t arm_ts_ms = 0;
 
-static int8_t uavcanServosInitPwmChannel(Channel_t tim_channel_idx);
-static void uavcanServosSetDefaultValueForChannel(Channel_t tim_channel);
-static void uavcanServosUpdateChannelStateAccordingToSetpoint(Channel_t tim_ch);
+static int8_t servosInitPwmChannel(Channel_t tim_channel_idx);
+static void servosSetDefaultValueForChannel(Channel_t tim_channel);
+static void servosUpdateChannelStateAccordingToSetpoint(Channel_t tim_ch);
+static void servosProcessTimeToLiveChecks(uint32_t crnt_ts_ms);
 
 static float clampFloat(float value, float first, float second);
 static float maxFloat(float value, float first, float second);
 static float minFloat(float value, float first, float second);
 
-int8_t uavcanServosInitChannel(Channel_t tim_channel, const ServoParameters_t* servo_params) {
+int8_t servosInitChannel(Channel_t tim_channel, const ServoParameters_t* servo_params) {
     if (!servo_params || (uint32_t)tim_channel >= SERVO_TIM_CHANNELS_AMOUNT) {
         return STATUS_ERROR;
     }
@@ -39,13 +40,13 @@ int8_t uavcanServosInitChannel(Channel_t tim_channel, const ServoParameters_t* s
         setpoints[servo_params->ch] = DEFAULT_SETPOINT_VALUE;
     }
 
-    uavcanServosUpdateParams(tim_channel, servo_params);
+    servosUpdateParams(tim_channel, servo_params);
 
     if (inited_channels[tim_channel]) {
         return STATUS_OK;
     }
 
-    if (uavcanServosInitPwmChannel(tim_channel) == STATUS_ERROR) {
+    if (servosInitPwmChannel(tim_channel) == STATUS_ERROR) {
         return STATUS_ERROR;
     }
     inited_channels[tim_channel] = true;
@@ -53,7 +54,7 @@ int8_t uavcanServosInitChannel(Channel_t tim_channel, const ServoParameters_t* s
     return STATUS_OK;
 }
 
-void uavcanServosUpdateParams(Channel_t tim_ch_idx, const ServoParameters_t* new_params) {
+void servosUpdateParams(Channel_t tim_ch_idx, const ServoParameters_t* new_params) {
     if (!new_params || tim_ch_idx >= SERVO_TIM_CHANNELS_AMOUNT) {
         return;
     }
@@ -63,18 +64,18 @@ void uavcanServosUpdateParams(Channel_t tim_ch_idx, const ServoParameters_t* new
     params[tim_ch_idx].def = new_params->def;
 }
 
-void uavcanServosSetArmingStatus(bool arm, uint32_t crnt_time_ms) {
+void servosSetArmingState(bool arm, uint32_t crnt_time_ms) {
     arm_ts_ms = (arm) ? crnt_time_ms : 0;
 }
 
-void uavcanServosSetSetpoint(uint8_t sp_idx, int16_t value, uint32_t crnt_time_ms) {
+void servosSetSetpoint(uint8_t sp_idx, int16_t value, uint32_t crnt_time_ms) {
     if (sp_idx < SETPOINTS_AMOUNT) {
         setpoints[sp_idx] = value;
         ttlSetSetpointTimestamp(sp_idx, crnt_time_ms);
     }
 }
 
-void uavcanServosProcessTimeToLiveChecks(uint32_t crnt_ts_ms) {
+void servosProcessTimeToLiveChecks(uint32_t crnt_ts_ms) {
     for (uint_fast8_t tim_idx = 0; tim_idx < SERVO_TIM_CHANNELS_AMOUNT; tim_idx++) {
         uint8_t sp_idx = params[tim_idx].ch;
         if (sp_idx >= SETPOINTS_AMOUNT) {
@@ -86,27 +87,27 @@ void uavcanServosProcessTimeToLiveChecks(uint32_t crnt_ts_ms) {
     }
 }
 
-void uavcanServosUpdateAllChannelsPwm(uint32_t crnt_ts_ms) {
-    uavcanServosProcessTimeToLiveChecks(crnt_ts_ms);
+void servosApplyPwm(uint32_t crnt_ts_ms) {
+    servosProcessTimeToLiveChecks(crnt_ts_ms);
     for (uint_fast8_t tim_idx = 0; tim_idx < SERVO_TIM_CHANNELS_AMOUNT; tim_idx++) {
         Channel_t tim_ch = (Channel_t)tim_idx;
 
         if (arm_ts_ms + 500 < crnt_ts_ms) {
-            uavcanServosSetDefaultValueForChannel(tim_ch);
+            servosSetDefaultValueForChannel(tim_ch);
         } else {
-            uavcanServosUpdateChannelStateAccordingToSetpoint(tim_ch);
+            servosUpdateChannelStateAccordingToSetpoint(tim_ch);
         }
     }
 }
 
-bool uavcanServosIsChannelInited(Channel_t tim_ch) {
+bool servosIsChannelInited(Channel_t tim_ch) {
     bool is_tim_idx_ok = tim_ch < SERVO_TIM_CHANNELS_AMOUNT;
     bool is_sp_idx_ok = params[tim_ch].ch < SETPOINTS_AMOUNT;
     bool is_mode_ok = timerGetMode(tim_ch) == TIMER_MODE_PWM;
     return is_tim_idx_ok && is_sp_idx_ok && inited_channels[tim_ch] && is_mode_ok;
 }
 
-int8_t uavcanServosGetPwmPercent(Channel_t tim_ch) {
+int8_t servosGetPwmPercent(Channel_t tim_ch) {
     int32_t percent;
     if (tim_ch < SERVO_TIM_CHANNELS_AMOUNT && timerGetMode(tim_ch) == TIMER_MODE_PWM) {
         uint32_t pwm_duration = (uint32_t)timerGetPwmDuration(tim_ch);
@@ -117,11 +118,11 @@ int8_t uavcanServosGetPwmPercent(Channel_t tim_ch) {
     return percent;
 }
 
-uint32_t uavcanServosGetTimerSetpoint(Channel_t tim_ch) {
+uint32_t servosGetTimerSetpoint(Channel_t tim_ch) {
     return params[tim_ch].ch;
 }
 
-Channel_t uavcanServosGetTimerChannelBySetpointChannel(uint32_t sp_ch) {
+Channel_t servosGetTimerChannelBySetpointChannel(uint32_t sp_ch) {
     for (uint_fast8_t tim_idx = 0; tim_idx < SERVO_TIM_CHANNELS_AMOUNT; tim_idx++) {
         Channel_t tim_ch = (Channel_t)tim_idx;
         if (params[tim_ch].ch == sp_ch) {
@@ -131,18 +132,18 @@ Channel_t uavcanServosGetTimerChannelBySetpointChannel(uint32_t sp_ch) {
     return TIM_CH_AMOUNT;
 }
 
-int16_t uavcanServosGetSetpoint(uint8_t sp_idx) {
+int16_t servosGetSetpoint(uint8_t sp_idx) {
     return (sp_idx < SETPOINTS_AMOUNT) ? setpoints[sp_idx] : 0;
 }
 
 
-bool uavcanServosGetEstimatedArmStatus(uint32_t crnt_time_ms) {
+bool servosGetEstimatedArmStatus(uint32_t crnt_time_ms) {
     uint32_t ttl_ms = ttlGetTimeout();
     if (ttlGetBestTimestamp() + ttl_ms < crnt_time_ms) {
         return false;
     }
     for (uint_fast8_t sp_idx = 0; sp_idx < SETPOINTS_AMOUNT; sp_idx++) {
-        if (uavcanServosGetSetpoint(sp_idx) > 0) {
+        if (servosGetSetpoint(sp_idx) > 0) {
             return true;
         }
     }
@@ -153,24 +154,24 @@ bool uavcanServosGetEstimatedArmStatus(uint32_t crnt_time_ms) {
 /**
  * @note All args checks must be done out of here scope
  */
-int8_t uavcanServosInitPwmChannel(Channel_t tim_channel_idx) {
+int8_t servosInitPwmChannel(Channel_t tim_channel_idx) {
     int8_t status;
     if (timerInit(tim_channel_idx, TIMER_MODE_PWM) != STATUS_OK) {
         status = STATUS_ERROR;
     } else {
-        uavcanServosSetDefaultValueForChannel(tim_channel_idx);
+        servosSetDefaultValueForChannel(tim_channel_idx);
         status = STATUS_OK;
     }
     return status;
 }
 
-void uavcanServosSetDefaultValueForChannel(Channel_t tim_ch) {
+void servosSetDefaultValueForChannel(Channel_t tim_ch) {
     timerSetPwmDuration(tim_ch, params[tim_ch].def);
 }
 
-void uavcanServosUpdateChannelStateAccordingToSetpoint(Channel_t tim_ch) {
-    uint8_t sp_idx = uavcanServosGetTimerSetpoint(tim_ch);
-    RawCommand_t val = uavcanServosGetSetpoint(sp_idx);
+void servosUpdateChannelStateAccordingToSetpoint(Channel_t tim_ch) {
+    uint8_t sp_idx = servosGetTimerSetpoint(tim_ch);
+    RawCommand_t val = servosGetSetpoint(sp_idx);
     PwmDurationMillisecond_t min = params[tim_ch].min;
     PwmDurationMillisecond_t max = params[tim_ch].max;
     PwmDurationMillisecond_t def = params[tim_ch].def;

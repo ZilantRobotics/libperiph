@@ -43,28 +43,27 @@ extern "C" {
   * @brief  Initialize the given timer channel in PWM mode.
   * @return either STATUS_OK or STATUS_ERROR depending on success of initialization.
   */
-int8_t uavcanServosInitChannel(Channel_t tim_channel, const ServoParameters_t* servo_params);
-void uavcanServosUpdateParams(Channel_t tim_ch, const ServoParameters_t* new_params);
+int8_t servosInitChannel(Channel_t tim_channel, const ServoParameters_t* servo_params);
+void servosUpdateParams(Channel_t tim_ch, const ServoParameters_t* new_params);
 
 /**
   * @brief You should periodically call this function to set default values to `dead` setpoints.
-  * uavcanServosSetSetpoint and uavcanServosProcessTimeToLiveChecks do not actually update the output
-  * uavcanServosUpdateAllChannelsPwm updates the actual output pin state
+  * servosSetSetpoint and servosProcessTimeToLiveChecks do not actually update the output
+  * servosApplyPwm updates the actual output pin state
   */
-void uavcanServosSetArmingStatus(bool arm, uint32_t crnt_time_ms);
-void uavcanServosSetSetpoint(uint8_t sp_idx, int16_t value, uint32_t crnt_time_ms);
-void uavcanServosProcessTimeToLiveChecks(uint32_t crnt_ts_ms);
-void uavcanServosUpdateAllChannelsPwm(uint32_t crnt_ts_ms);
+void servosSetArmingState(bool arm, uint32_t crnt_time_ms);
+void servosSetSetpoint(uint8_t sp_idx, int16_t value, uint32_t crnt_time_ms);
+void servosApplyPwm(uint32_t crnt_ts_ms);
 
 /**
   * @return Auxillary getters
   */
-bool uavcanServosIsChannelInited(Channel_t tim_ch);
-int8_t uavcanServosGetPwmPercent(Channel_t tim_ch);
-uint32_t uavcanServosGetTimerSetpoint(Channel_t tim_ch);
-Channel_t uavcanServosGetTimerChannelBySetpointChannel(uint32_t sp_ch);
-int16_t uavcanServosGetSetpoint(uint8_t sp_idx);
-bool uavcanServosGetEstimatedArmStatus(uint32_t crnt_time_ms);
+bool servosIsChannelInited(Channel_t tim_ch);
+int8_t servosGetPwmPercent(Channel_t tim_ch);
+uint32_t servosGetTimerSetpoint(Channel_t tim_ch);
+Channel_t servosGetTimerChannelBySetpointChannel(uint32_t sp_ch);
+int16_t servosGetSetpoint(uint8_t sp_idx);
+bool servosGetEstimatedArmStatus(uint32_t crnt_time_ms);
 
 
 typedef uint16_t PwmDurationMillisecond_t;
