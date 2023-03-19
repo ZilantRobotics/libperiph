@@ -64,6 +64,10 @@ void servosUpdateParams(Channel_t tim_ch_idx, const ServoParameters_t* new_param
     params[tim_ch_idx].def = new_params->def;
 }
 
+void servosSetTimeout(uint32_t ttl_ms) {
+    ttlSetTimeout(ttl_ms);
+}
+
 void servosSetArmingState(bool arm, uint32_t crnt_time_ms) {
     arm_ts_ms = (arm) ? crnt_time_ms : 0;
 }
@@ -72,18 +76,6 @@ void servosSetSetpoint(uint8_t sp_idx, int16_t value, uint32_t crnt_time_ms) {
     if (sp_idx < SETPOINTS_AMOUNT) {
         setpoints[sp_idx] = value;
         ttlSetSetpointTimestamp(sp_idx, crnt_time_ms);
-    }
-}
-
-void servosProcessTimeToLiveChecks(uint32_t crnt_ts_ms) {
-    for (uint_fast8_t tim_idx = 0; tim_idx < SERVO_TIM_CHANNELS_AMOUNT; tim_idx++) {
-        uint8_t sp_idx = params[tim_idx].ch;
-        if (sp_idx >= SETPOINTS_AMOUNT) {
-            continue;
-        }
-        if (!ttlIsSetpointAlive(sp_idx, crnt_ts_ms)) {
-            setpoints[sp_idx] = DEFAULT_SETPOINT_VALUE;
-        }
     }
 }
 
@@ -136,6 +128,10 @@ int16_t servosGetSetpoint(uint8_t sp_idx) {
     return (sp_idx < SETPOINTS_AMOUNT) ? setpoints[sp_idx] : 0;
 }
 
+bool servosGetArmingState(uint32_t crnt_time_ms) {
+    return ttlIsBestSetpointAlive(crnt_time_ms);
+}
+
 
 bool servosGetEstimatedArmStatus(uint32_t crnt_time_ms) {
     uint32_t ttl_ms = ttlGetTimeout();
@@ -177,6 +173,19 @@ void servosUpdateChannelStateAccordingToSetpoint(Channel_t tim_ch) {
     PwmDurationMillisecond_t def = params[tim_ch].def;
 
     timerSetPwmDuration(tim_ch, mapRawCommandToPwm(val, min, max, def));
+}
+
+
+void servosProcessTimeToLiveChecks(uint32_t crnt_ts_ms) {
+    for (uint_fast8_t tim_idx = 0; tim_idx < SERVO_TIM_CHANNELS_AMOUNT; tim_idx++) {
+        uint8_t sp_idx = params[tim_idx].ch;
+        if (sp_idx >= SETPOINTS_AMOUNT) {
+            continue;
+        }
+        if (!ttlIsSetpointAlive(sp_idx, crnt_ts_ms)) {
+            setpoints[sp_idx] = DEFAULT_SETPOINT_VALUE;
+        }
+    }
 }
 
 static const RawCommand_t RC_MIN = 0;
