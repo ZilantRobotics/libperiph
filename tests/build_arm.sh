@@ -26,10 +26,7 @@ $CC $FLAGS sensors/rangefinder/tf_luna/tf_luna.c    $INC -o build/tf_luna.o
 
 # Auxiliary
 $CXX $FLAGS common/soft_timer.cpp                   $INC -o build/soft_timer.o
-$CXX $FLAGS devices/esp8266.cpp                     $INC -o build/esp8266.o
-# $CC -c devices/motors.cpp                       $INC -o build/motors.o
 # $CC $FLAGS devices/ws2812.c                         $INC -o build/ws2812.o
-$CXX $FLAGS devices/seven_segments_indicators.cpp   $INC -o build/seven_segments_indicators.o
 $CXX $FLAGS sensors/encoder/encoder.cpp             $INC -o build/encoder.o
 $CC $FLAGS sensors/esc/flame.c                      $INC -o build/esc_flame.o
 $CC $FLAGS sensors/imu/mpu9250.c                    $INC -o build/mpu9250.o

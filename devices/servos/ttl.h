@@ -11,8 +11,8 @@
  * @date Aug 10, 2022
  */
 
-#ifndef SRC_DRIVERS_INC_TTL_H_
-#define SRC_DRIVERS_INC_TTL_H_
+#ifndef DEVICES_SERVOS_TTL_H_
+#define DEVICES_SERVOS_TTL_H_
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -37,4 +37,4 @@ bool ttlIsBestSetpointAlive(uint32_t crnt_time_ms);
 }
 #endif
 
-#endif  // SRC_DRIVERS_INC_TTL_H_
+#endif  // DEVICES_SERVOS_TTL_H_

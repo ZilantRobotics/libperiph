@@ -87,6 +87,7 @@ void uavcanServosProcessTimeToLiveChecks(uint32_t crnt_ts_ms) {
 }
 
 void uavcanServosUpdateAllChannelsPwm(uint32_t crnt_ts_ms) {
+    uavcanServosProcessTimeToLiveChecks(crnt_ts_ms);
     for (uint_fast8_t tim_idx = 0; tim_idx < SERVO_TIM_CHANNELS_AMOUNT; tim_idx++) {
         Channel_t tim_ch = (Channel_t)tim_idx;
 

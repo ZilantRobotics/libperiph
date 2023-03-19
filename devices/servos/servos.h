@@ -11,8 +11,8 @@
  * @date Aug 11, 2022
  */
 
-#ifndef SRC_DRIVERS_INC_SERVOS_H_
-#define SRC_DRIVERS_INC_SERVOS_H_
+#ifndef DEVICES_SERVOS_SERVOS_H_
+#define DEVICES_SERVOS_SERVOS_H_
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -87,4 +87,4 @@ float mapFloat(float value, float in_min, float in_max, float out_min, float out
 }
 #endif
 
-#endif  // SRC_DRIVERS_INC_SERVOS_H_
+#endif  // DEVICES_SERVOS_SERVOS_H_
