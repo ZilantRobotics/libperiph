@@ -1,6 +1,6 @@
-# servo driver
+# Servo driver
 
-## Requirements
+## Requirements for the driver
 
 The physical channel should be in 2 states:
 - default (when disarmed or there is no command for a specific period of time)
@@ -19,7 +19,7 @@ Actual timer driver should be implemented outside.
 
 ## Usage example:
 
-Typically you need to write 3 function for setpoint and readiness callback and for periodical process.
+Typically you need to write 3 functions for setpoint and readiness callback and for periodical process.
 
 ```c++
 #include "servo.h"
@@ -35,6 +35,7 @@ void application_init() {
     };
 
     servosInitChannel(tim_ch, &params);
+    servosSetTimeout(500);
     ...
 }
 

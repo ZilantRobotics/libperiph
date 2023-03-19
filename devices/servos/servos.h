@@ -45,6 +45,7 @@ extern "C" {
   */
 int8_t servosInitChannel(Channel_t tim_channel, const ServoParameters_t* servo_params);
 void servosUpdateParams(Channel_t tim_ch, const ServoParameters_t* new_params);
+void servosSetTimeout(uint32_t ttl_ms);
 
 /**
   * @brief You should periodically call this function to set default values to `dead` setpoints.
@@ -63,6 +64,7 @@ int8_t servosGetPwmPercent(Channel_t tim_ch);
 uint32_t servosGetTimerSetpoint(Channel_t tim_ch);
 Channel_t servosGetTimerChannelBySetpointChannel(uint32_t sp_ch);
 int16_t servosGetSetpoint(uint8_t sp_idx);
+bool servosGetArmingState(uint32_t crnt_time_ms);
 bool servosGetEstimatedArmStatus(uint32_t crnt_time_ms);
 
 
