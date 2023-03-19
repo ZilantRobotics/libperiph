@@ -6,37 +6,7 @@
 
 #include <gtest/gtest.h>
 #include <iostream>
-#include "servos.h"
-
-
-TEST(Servo, test_init) {
-    ServoParameters_t servo_params = {
-        .ch = 0,
-        .min = 1000,
-        .max = 2000,
-        .def = 1000
-    };
-
-    ASSERT_EQ(0, servosInitChannel((Channel_t)0, &servo_params));
-    ASSERT_EQ(0, servosInitChannel((Channel_t)0, &servo_params));
-
-    // bad arguments
-    ASSERT_EQ(-1, servosInitChannel((Channel_t)20, &servo_params));
-    ASSERT_EQ(-1, servosInitChannel((Channel_t)0, nullptr));
-}
-
-TEST(Servo, test_update_params) {
-    ServoParameters_t servo_params = {
-        .ch = 0,
-        .min = 1000,
-        .max = 2000,
-        .def = 1000
-    };
-
-    // bad arguments
-    servosUpdateParams((Channel_t)20, &servo_params);
-    servosUpdateParams((Channel_t)0, nullptr);
-}
+#include "common.h"
 
 TEST(Servo, map_0_same_output_values) {
     auto map_with_same_output_values = [](auto x) {

@@ -1,4 +1,5 @@
 list(APPEND DRIVERS_SOURCE
+    ${CMAKE_CURRENT_LIST_DIR}/common.c
     ${CMAKE_CURRENT_LIST_DIR}/servos.c
     ${CMAKE_CURRENT_LIST_DIR}/ttl.c
 )
