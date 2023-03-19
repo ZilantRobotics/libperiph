@@ -10,7 +10,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-uint8_t ubloxStartup(bool DMA);
 uint8_t ubloxConfigure(bool DMA);
 
 #endif // __UBLOX_COMMANDS_H
