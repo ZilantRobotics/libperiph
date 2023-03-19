@@ -14,8 +14,8 @@ $CC $FLAGS sensors/gps/ublox.c                      $INC -o build/ublox.o
 $CC $FLAGS sensors/magnetometer/hmc5883l.c          $INC -o build/mag_hmc5883l.o
 $CC $FLAGS sensors/magnetometer/rm3100.c            $INC -o build/mag_rm3100.o
 $CC $FLAGS sensors/temperature_sensor/stm32_temperature.c $INC -o build/stm32_temperature.o
-$CC $FLAGS devices/servos.c                         $INC -o build/servo.o
-$CC $FLAGS common/ttl.c                             $INC -o build/ttl.o
+$CC $FLAGS devices/servos/servos.c                  $INC -o build/servo.o
+$CC $FLAGS devices/servos/ttl.c                     $INC -o build/ttl.o
 
 # Part 2.
 $CC $FLAGS sensors/current_sensor/acs712.c          $INC -o build/acs712.o

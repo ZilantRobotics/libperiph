@@ -17,8 +17,7 @@ It was tested on:
 | sensors/mag_hmc5883l                      | i2c          | +         | 50.00% of 34  |
 | sensors/mag_rm3100                        | spi          | +         | 57.97% of 69  |
 | sensors/temperature_sensor                | -            | +         | 100.00% of 3  |
-| devices/servos                            | pwm          | +         | 46.09% of 115 |
-| common/ttl                                |              | +         | 46.09% of 115 |
+| [devices/servos](devices/servos)          | pwm          | +         | 46.09% of 230 |
 | [platform_specific](platform_specific)    |              |
 
 Summary: Lines executed:73.87% of 444
