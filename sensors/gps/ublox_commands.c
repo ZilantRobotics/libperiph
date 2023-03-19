@@ -1,3 +1,10 @@
+/*
+ * Copyright (C) 2022-2023 Dmitry Ponomarev <ponomarevda96@gmail.com>
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 /***
  * @file ublox_commands.c
  * @author ehsan shaghaei
@@ -20,13 +27,6 @@
  *
  *  PS. each uBlox Package starts with two bytes 0xB5, 0x62  and ends with checksum
  *      refer to user manual.
- * @note  the naming snakeCase convention is as follows:
- * - static  uint8_t <Protocol><PacketType><ContentProfile> [] ={bytes,...};
- *  e.g,
- *     static  uint8_t uBloxPortPoll[] = {0xB5, 0x62, 0x06, 0x00, 0x01, 0x00, 0x01, 0x08, 0x22};
- *       protocol -> uBlox
- *       PacketType -> Port
- *       ContentProfile -> Poll
  */
 static uint8_t uBloxConfigFactoryReset[] = {
     0xB5, 0x62, 0x06, 0x09, 0x0D, 0x00, 0xFF, 0xFF, 0x00, 0x00,
@@ -45,16 +45,10 @@ static uint8_t uBloxPortProfile0[] = {
     0xD0, 0x08, 0x00, 0x00, 0x00, 0xC2, 0x01, 0x00, 0x07, 0x00,
     0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0xC0, 0x7E
 };
-/***
- *  @brief: polls for current Port configuration on uBlox Module
- */
-static uint8_t uBloxPortPoll[] = {
-    0xB5, 0x62, 0x06, 0x00, 0x01, 0x00, 0x01, 0x08, 0x22
-};
 
 /***
  *  @brief: configures the GPS rate to 10Hz
- *  PS. this command contains two pakcages RATE+CFG
+ *  PS. this command contains two packages RATE+CFG
  *
  */
 static uint8_t uBloxRates10Hz[] = {
@@ -65,7 +59,7 @@ static uint8_t uBloxRates10Hz[] = {
 
 /***
  *  @brief: configures Messages 01-07 NAV-PVT on UART 1
- *  PS. this command contains two pakcages MSG+CFG
+ *  PS. this command contains two packages MSG+CFG
  */
 static uint8_t uBloxMessagesNavPvtEnable[] = {
     0xB5, 0x62, 0x06, 0x01, 0x08, 0x00, 0x01, 0x07, 0x00, 0x01,
@@ -75,7 +69,7 @@ static uint8_t uBloxMessagesNavPvtEnable[] = {
 
 /***
  *  @brief: deconfigures Messages 01-07 NAV-PVT on UART 1
- *  PS. this command contains two pakcages MSG+CFG
+ *  PS. this command contains two packages MSG+CFG
  */
 static uint8_t uBloxMessagesNavPvtDisable[NAVPVT_DISABLE_SIZE] = {
     0xB5, 0x62, 0x06, 0x01, 0x08, 0x00, 0x01, 0x07, 0x00, 0x00,
@@ -83,10 +77,6 @@ static uint8_t uBloxMessagesNavPvtDisable[NAVPVT_DISABLE_SIZE] = {
     0x02, 0x00, 0x01, 0x07, 0x11, 0x3A
 };
 
-/**
- * @brief configures the ublox interface
- * @param DMA boolean flag to send configuration by DMA or Polling mode
- */
 uint8_t ubloxConfigure(bool DMA) {
     int8_t (*Transmit)(uint8_t[], size_t) = DMA ? &uartTransmitDma : &uartTransmit;
 
@@ -94,31 +84,31 @@ uint8_t ubloxConfigure(bool DMA) {
 
     if (Transmit(uBloxConfigFactoryReset, FACTORY_RESET_SIZE) == STATUS_ERROR) {
         return STATUS_ERROR;
-    };
+    }
 
     UartChangeBaudrate(9600);
 
     if (Transmit(uBloxConfigFactoryReset, FACTORY_RESET_SIZE) == STATUS_ERROR) {
         return STATUS_ERROR;
-    };
+    }
 
     if (Transmit(uBloxPortProfile0, PROFILE_0_SIZE) == STATUS_ERROR) {
         return STATUS_ERROR;
-    };
+    }
 
     UartChangeBaudrate(115200);
 
     if (Transmit(uBloxMessagesNavPvtDisable, NAVPVT_DISABLE_SIZE) == STATUS_ERROR) {
         return STATUS_ERROR;
-    };
+    }
 
     if (Transmit(uBloxRates10Hz, UBLOX_RATE_10_SIZE) == STATUS_ERROR) {
         return STATUS_ERROR;
-    };
+    }
 
     if (Transmit(uBloxMessagesNavPvtEnable, NAVPVT_ENABLE_SIZE) == STATUS_ERROR) {
         return STATUS_ERROR;
-    };
+    }
 
     return STATUS_OK;
 }
