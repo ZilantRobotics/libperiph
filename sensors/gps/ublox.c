@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Dmitry Ponomarev <ponomarevda96@gmail.com>
+ * Copyright (C) 2019-2023 Dmitry Ponomarev <ponomarevda96@gmail.com>
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -33,8 +33,8 @@ uint64_t dayToUnixTimestamp(uint16_t y, uint8_t mo, uint8_t d, uint8_t h, uint8_
     return (uint64_t)utc_time;
 }
 
-UbloxPackageType_t ubloxParse(const uint8_t buffer[], size_t size, GnssUblox_t* uavcan_fix2) {
-    if (buffer == NULL || size > 256 || uavcan_fix2 == NULL) {
+UbloxPackageType_t ubloxParse(const uint8_t buffer[], size_t size) {
+    if (buffer == NULL || size > 256) {
         return UBX_UNKNOWN_PKG;
     }
 
@@ -42,13 +42,30 @@ UbloxPackageType_t ubloxParse(const uint8_t buffer[], size_t size, GnssUblox_t* 
     for (uint32_t idx = 0; idx < size; idx++) {
         if (ubloxNextByte(buffer[idx]) && ubloxCheckCrc()) {
             if (package.id == ID_NAV_PVT) {
-                ubloxDeserializeFix2(uavcan_fix2);
                 received_package = UBX_NAV_PVT_PKG;
+            } else if (package.id == ID_NAV_STATUS) {
+                received_package = UBX_NAV_STATUS_PKG;
             }
         }
     }
 
     return received_package;
+}
+
+void ubloxGetDroneCanFix2(GnssUblox_t* uavcan_fix2) {
+    if (uavcan_fix2 == NULL) {
+        return;
+    }
+
+    ubloxDeserializeFix2(uavcan_fix2);
+}
+
+void ubloxGetUbxNavStatus(UbxNavStatus_t* ubx_nav_status) {
+    if (ubx_nav_status == NULL || sizeof(UbxNavStatus_t) != package.length) {
+        return;
+    }
+
+    memcpy(ubx_nav_status, (const void*)package.payload, sizeof(UbxNavStatus_t));
 }
 
 /**
@@ -70,11 +87,16 @@ bool ubloxNextByte(uint8_t byte) {
             break;
         case STATE_ID:
             package.id = (UbloxId_t)byte;
-            package.state = (package.id == ID_NAV_PVT) ? STATE_LENGTH_1 : STATE_SYNC_CHAR_1;
+            if (package.id == ID_NAV_PVT || package.id == ID_NAV_STATUS) {
+                package.state = STATE_LENGTH_1;
+            } else {
+                package.state = STATE_SYNC_CHAR_1;
+            }
             break;
         case STATE_LENGTH_1:
             package.length = byte;
-            if (package.length == sizeof(UbxNavPvt_t)) {
+            if ((package.id == ID_NAV_PVT && package.length == sizeof(UbxNavPvt_t)) ||
+                (package.id == ID_NAV_STATUS && package.length == sizeof(UbxNavStatus_t))) {
                 package.state = STATE_LENGTH_2;
             } else {
                 package.state = STATE_SYNC_CHAR_1;

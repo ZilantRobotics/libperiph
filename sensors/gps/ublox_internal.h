@@ -17,46 +17,11 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <assert.h>
+#include "ubx_nav_pvt.h"
+#include "ubx_nav_status.h"
 
 #define GPS_UBLOX_SYNC_CHAR_1_CODE        0xB5    // 181
 #define GPS_UBLOX_SYNC_CHAR_2_CODE        0x62    // 98
-
-typedef struct {
-    uint32_t time_of_week_ms;   ///< iTOW Timestamp
-    uint16_t year_utc;
-    uint8_t month_utc;
-    uint8_t day_utc;
-    uint8_t hour_utc;
-    uint8_t min_utc;
-    uint8_t sec_utc;
-    uint8_t valid;
-    uint32_t tAcc;              ///< Time accuracy estimate (UTC), ns
-    int32_t nano;               ///< Fraction of second, range -1e9 .. 1e9 (UTC)
-    uint8_t fixType;
-    uint8_t flags;
-    uint8_t flags2;
-    uint8_t numSV;              ///< Number of satellites used in Nav Solution
-    int32_t lon;                ///< deg, 1e-7
-    int32_t lat;                ///< deg, 1e-7
-    int32_t height;             ///< Height above ellipsoid, mm
-    int32_t hMSL;               ///< Height above mean sea level, mm
-    uint32_t gAcc;              ///< Horizontal accuracy estimate, mm
-    uint32_t vAcc;              ///< Vertical accuracy estimate, mm
-    int32_t velN;               ///< mm/s
-    int32_t velE;               ///< mm/s
-    int32_t velD;               ///< mm/s
-    int32_t gSpeed;
-    int32_t headMot;
-    uint32_t sAcc;
-    uint32_t headAcc;
-    uint16_t pDOP;
-    uint8_t flags3;
-    uint8_t reserved1[5];
-    int32_t headVeh;
-    int16_t magDec;
-    uint16_t magAcc;
-} UbxNavPvt_t;
-static_assert(sizeof(UbxNavPvt_t) == 92, "Wrong UbxNavPvt_t size");
 
 typedef enum {
     STATE_SYNC_CHAR_1 = 0,
@@ -71,7 +36,7 @@ typedef enum {
 } UbloxState_t;
 
 ///< use compile attribute otherwise a value of this type will be 4 bytes in size
-///< it should be packed to correctly perform crc calculatation
+///< it should be packed to correctly perform crc calculation
 // *INDENT-OFF*
 typedef enum __attribute__((__packed__)) {
     CLASS_NAV = 0x01
@@ -79,9 +44,10 @@ typedef enum __attribute__((__packed__)) {
 // *INDENT-ON*
 
 ///< use compile attribute otherwise a value of this type will be 4 bytes in size
-///< it should be packed to correctly perform crc calculatation
+///< it should be packed to correctly perform crc calculation
 // *INDENT-OFF*
 typedef enum __attribute__((__packed__)) {
+    ID_NAV_STATUS = 0x03,
     ID_NAV_PVT = 0x07,
 } UbloxId_t;
 // *INDENT-ON*
@@ -107,18 +73,6 @@ typedef struct {
     uint8_t payload_counter;
     UbloxCrcCheckerUnion_t crc_checker;
 } UbloxPackage_t;
-#pragma pack(pop)
-
-#pragma pack(push, 1)
-typedef struct {
-    uint8_t sync_char_1;
-    uint8_t sync_char_2;
-    uint8_t class_nav;
-    uint8_t id_nav_pvt;
-    uint16_t payload_length;
-    UbxNavPvt_t payload;
-    uint16_t crc;
-} UbxNavPvtRaw_t;
 #pragma pack(pop)
 
 #ifdef __cplusplus
