@@ -20,6 +20,8 @@ static bool ubloxCheckCrc();
 static void ubloxClearCrc();
 static bool ubloxNextByte(uint8_t byte);
 static void ubloxDeserializeFix2(GnssUblox_t* uavcan_fix2);
+static bool ubloxIsPackageTypeSupported();
+static bool ubloxIsPackageLengthCorrect();
 
 uint64_t dayToUnixTimestamp(uint16_t y, uint8_t mo, uint8_t d, uint8_t h, uint8_t mi, uint8_t s) {
     struct tm time;
@@ -68,6 +70,28 @@ void ubloxGetUbxNavStatus(UbxNavStatus_t* ubx_nav_status) {
     memcpy(ubx_nav_status, (const void*)package.payload, sizeof(UbxNavStatus_t));
 }
 
+bool ubloxIsPackageTypeSupported() {
+    if (package.id == ID_NAV_PVT || package.id == ID_NAV_STATUS) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool ubloxIsPackageLengthCorrect() {
+    if (package.ubx_class != CLASS_NAV) {
+        return false;
+    }
+
+    if ((package.id == ID_NAV_PVT && package.length == sizeof(UbxNavPvt_t))) {
+        return true;
+    } else if ((package.id == ID_NAV_STATUS && package.length == sizeof(UbxNavStatus_t))) {
+        return true;
+    } else {
+        return false;
+    }
+} 
+
 /**
  * @return true when package is finished, otherwise false
  */
@@ -87,20 +111,11 @@ bool ubloxNextByte(uint8_t byte) {
             break;
         case STATE_ID:
             package.id = (UbloxId_t)byte;
-            if (package.id == ID_NAV_PVT || package.id == ID_NAV_STATUS) {
-                package.state = STATE_LENGTH_1;
-            } else {
-                package.state = STATE_SYNC_CHAR_1;
-            }
+            package.state = ubloxIsPackageTypeSupported() ? STATE_LENGTH_1 : STATE_SYNC_CHAR_1;
             break;
         case STATE_LENGTH_1:
             package.length = byte;
-            if ((package.id == ID_NAV_PVT && package.length == sizeof(UbxNavPvt_t)) ||
-                (package.id == ID_NAV_STATUS && package.length == sizeof(UbxNavStatus_t))) {
-                package.state = STATE_LENGTH_2;
-            } else {
-                package.state = STATE_SYNC_CHAR_1;
-            }
+            package.state = ubloxIsPackageLengthCorrect() ? STATE_LENGTH_2 : STATE_SYNC_CHAR_1;
             break;
         case STATE_LENGTH_2:
             package.length += (byte << 8);
