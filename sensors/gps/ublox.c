@@ -47,6 +47,8 @@ UbloxPackageType_t ubloxParse(const uint8_t buffer[], size_t size) {
                 received_package = UBX_NAV_PVT_PKG;
             } else if (package.id == ID_NAV_STATUS) {
                 received_package = UBX_NAV_STATUS_PKG;
+            } else if (package.id == ID_NAV_COV) {
+                received_package = UBX_NAV_COV_PKG;
             }
         }
     }
@@ -62,6 +64,14 @@ void ubloxGetDroneCanFix2(GnssUblox_t* uavcan_fix2) {
     ubloxDeserializeFix2(uavcan_fix2);
 }
 
+void ubloxGetUbxNavPvt(UbxNavPvt_t* ubx_nav_pvt) {
+    if (ubx_nav_pvt == NULL || sizeof(UbxNavPvt_t) != package.length) {
+        return;
+    }
+
+    memcpy(ubx_nav_pvt, (const void*)package.payload, sizeof(UbxNavPvt_t));
+}
+
 void ubloxGetUbxNavStatus(UbxNavStatus_t* ubx_nav_status) {
     if (ubx_nav_status == NULL || sizeof(UbxNavStatus_t) != package.length) {
         return;
@@ -70,8 +80,16 @@ void ubloxGetUbxNavStatus(UbxNavStatus_t* ubx_nav_status) {
     memcpy(ubx_nav_status, (const void*)package.payload, sizeof(UbxNavStatus_t));
 }
 
+void ubloxGetUbxNavCov(UbxNavCov_t* ubloxGetUbxNavCov) {
+    if (ubloxGetUbxNavCov == NULL || sizeof(UbxNavCov_t) != package.length) {
+        return;
+    }
+
+    memcpy(ubloxGetUbxNavCov, (const void*)package.payload, sizeof(UbxNavCov_t));
+}
+
 bool ubloxIsPackageTypeSupported() {
-    if (package.id == ID_NAV_PVT || package.id == ID_NAV_STATUS) {
+    if (package.id == ID_NAV_PVT || package.id == ID_NAV_STATUS || package.id == ID_NAV_COV) {
         return true;
     } else {
         return false;
@@ -83,13 +101,18 @@ bool ubloxIsPackageLengthCorrect() {
         return false;
     }
 
+    bool is_correct;
     if ((package.id == ID_NAV_PVT && package.length == sizeof(UbxNavPvt_t))) {
-        return true;
+        is_correct = true;
     } else if ((package.id == ID_NAV_STATUS && package.length == sizeof(UbxNavStatus_t))) {
-        return true;
+        is_correct = true;
+    } else if ((package.id == ID_NAV_COV && package.length == sizeof(UbxNavCov_t))) {
+        is_correct = true;
     } else {
-        return false;
+        is_correct = false;
     }
+
+    return is_correct;
 } 
 
 /**
@@ -151,15 +174,16 @@ void ubloxDeserializeFix2(GnssUblox_t* uavcan_fix2) {
     if (sizeof(UbxNavPvt_t) != package.length) {
         return;
     }
+
     UbxNavPvt_t* ubx_nav_pvt = (UbxNavPvt_t*)(void*)package.payload;
-    uavcan_fix2->timestamp = (uint64_t)(ubx_nav_pvt->time_of_week_ms) * 1000;
-    uavcan_fix2->gnss_timestamp = dayToUnixTimestamp(ubx_nav_pvt->year_utc,
-                                                     ubx_nav_pvt->month_utc,
-                                                     ubx_nav_pvt->day_utc,
-                                                     ubx_nav_pvt->hour_utc,
-                                                     ubx_nav_pvt->min_utc,
-                                                     ubx_nav_pvt->sec_utc) * 1000000;
-    uavcan_fix2->gnss_time_standard = 0;
+    uavcan_fix2->gnss_timestamp = (uint64_t)(ubx_nav_pvt->time_of_week_ms) * 1000;
+    uavcan_fix2->timestamp = dayToUnixTimestamp(ubx_nav_pvt->year_utc,
+                                                ubx_nav_pvt->month_utc,
+                                                ubx_nav_pvt->day_utc,
+                                                ubx_nav_pvt->hour_utc,
+                                                ubx_nav_pvt->min_utc,
+                                                ubx_nav_pvt->sec_utc) * 1000000;
+    uavcan_fix2->gnss_time_standard = 2;  ///< GNSS_TIME_STANDARD_UTC
     uavcan_fix2->num_leap_seconds = 0;
     uavcan_fix2->longitude_deg_1e8 = ((int64_t)ubx_nav_pvt->lon) * 10;
     uavcan_fix2->latitude_deg_1e8 = ((int64_t)ubx_nav_pvt->lat) * 10;
