@@ -16,9 +16,9 @@ The driver should be stateful (keep previous parsed buffer state) and tolerate t
 ```c++
 #include "ublox.h"
 
-static UbloxDronecanFix2_t dronecan_fix2;
-static UbloxCyphalGnss cyphal_gnss;
-static UbloxCyphalCov cyphal_cov;
+static UbxNavPvt_t ubx_nav_pvt;
+static UbxNavStatus_t ubx_nav_status;
+static UbxNavCov_t ubx_nav_cov;
 ...
 
 void application_init() {
@@ -29,10 +29,11 @@ void application_parse_serial_buffer(const uint8_t serial_buffer[], size_t seria
     auto ubx_package_type = ubloxParse(serial_buffer, serial_buffer_size);
 
     if (ubx_package_type == UBX_NAV_PVT) {
-        ubloxGetDroneCanFix2(dronecan_fix2);
-        ubloxGetCyphalGnss(cyphal_gnss);
-    } else if (ubx_package_type == UBX_NAV2_COV) {
-        ubloxGetCyphalCov(cyphal_cov);
+        ubloxGetNavPvt(ubx_nav_pvt);
+    } else if (ubx_package_type == UBX_NAV_STATUS) {
+        ubloxGetNavStatus(ubx_nav_status);
+    } else if (ubx_package_type == UBX_NAV_COV) {
+        ubloxGetNavCov(ubx_nav_cov);
     } else {
         ...
     }

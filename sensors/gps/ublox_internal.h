@@ -49,6 +49,7 @@ typedef enum __attribute__((__packed__)) {
 typedef enum __attribute__((__packed__)) {
     ID_NAV_STATUS = 0x03,
     ID_NAV_PVT = 0x07,
+    ID_NAV_COV = 0x36,
 } UbloxId_t;
 // *INDENT-ON*
 
