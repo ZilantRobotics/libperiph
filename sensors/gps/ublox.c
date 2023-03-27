@@ -12,6 +12,7 @@
 #include <time.h>
 #include "ublox_internal.h"
 
+uint16_t ubx_package_counters[UBX_PACKAGE_TYPES_AMOUNT] = {};
 
 static UbloxPackage_t package = {};
 
@@ -42,14 +43,20 @@ UbloxPackageType_t ubloxParse(const uint8_t buffer[], size_t size) {
 
     UbloxPackageType_t received_package = UBX_UNKNOWN_PKG;
     for (uint32_t idx = 0; idx < size; idx++) {
-        if (ubloxNextByte(buffer[idx]) && ubloxCheckCrc()) {
+        bool package_is_finished = ubloxNextByte(buffer[idx]);
+        if (package_is_finished && ubloxCheckCrc()) {
             if (package.id == ID_NAV_PVT) {
                 received_package = UBX_NAV_PVT_PKG;
+                ubx_package_counters[UBX_NAV_PVT_PKG]++;
             } else if (package.id == ID_NAV_STATUS) {
                 received_package = UBX_NAV_STATUS_PKG;
+                ubx_package_counters[UBX_NAV_STATUS_PKG]++;
             } else if (package.id == ID_NAV_COV) {
                 received_package = UBX_NAV_COV_PKG;
+                ubx_package_counters[UBX_NAV_COV_PKG]++;
             }
+        } else if (package_is_finished) {
+            ubx_package_counters[UBX_UNKNOWN_PKG]++;
         }
     }
 
@@ -113,7 +120,7 @@ bool ubloxIsPackageLengthCorrect() {
     }
 
     return is_correct;
-} 
+}
 
 /**
  * @return true when package is finished, otherwise false

@@ -17,8 +17,8 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <assert.h>
-#include "ubx_nav_pvt.h"
-#include "ubx_nav_status.h"
+#include "ubx/nav_pvt.h"
+#include "ubx/nav_status.h"
 
 #define GPS_UBLOX_SYNC_CHAR_1_CODE        0xB5    // 181
 #define GPS_UBLOX_SYNC_CHAR_2_CODE        0x62    // 98
