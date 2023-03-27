@@ -11,9 +11,9 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stddef.h>
-#include "ubx_nav_pvt.h"
-#include "ubx_nav_status.h"
-#include "ubx_nav_cov.h"
+#include "ubx/nav_pvt.h"
+#include "ubx/nav_status.h"
+#include "ubx/nav_cov.h"
 
 typedef enum {
     UBX_UNKNOWN_PKG = 0,
@@ -21,6 +21,8 @@ typedef enum {
     UBX_NAV_STATUS_PKG,
     UBX_NAV_COV_PKG,
     UBX_NAV_RELPOSNED_PKG,
+
+    UBX_PACKAGE_TYPES_AMOUNT,
 } UbloxPackageType_t;
 
 /**
