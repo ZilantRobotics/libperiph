@@ -36,29 +36,35 @@ uint64_t dayToUnixTimestamp(uint16_t y, uint8_t mo, uint8_t d, uint8_t h, uint8_
     return (uint64_t)utc_time;
 }
 
-UbloxPackageType_t ubloxParse(const uint8_t buffer[], size_t size) {
-    if (buffer == NULL || size > 256) {
+UbloxPackageType_t ubloxParse(const uint8_t buffer[], size_t size, size_t* num_of_parsed_bytes) {
+    if (buffer == NULL || size > 256 || num_of_parsed_bytes == NULL) {
         return UBX_UNKNOWN_PKG;
     }
 
     UbloxPackageType_t received_package = UBX_UNKNOWN_PKG;
-    for (uint32_t idx = 0; idx < size; idx++) {
+    uint32_t idx;
+    for (idx = 0; idx < size; idx++) {
         bool package_is_finished = ubloxNextByte(buffer[idx]);
         if (package_is_finished && ubloxCheckCrc()) {
             if (package.id == ID_NAV_PVT) {
                 received_package = UBX_NAV_PVT_PKG;
                 ubx_package_counters[UBX_NAV_PVT_PKG]++;
+                break;
             } else if (package.id == ID_NAV_STATUS) {
                 received_package = UBX_NAV_STATUS_PKG;
                 ubx_package_counters[UBX_NAV_STATUS_PKG]++;
+                break;
             } else if (package.id == ID_NAV_COV) {
                 received_package = UBX_NAV_COV_PKG;
                 ubx_package_counters[UBX_NAV_COV_PKG]++;
+                break;
             }
         } else if (package_is_finished) {
             ubx_package_counters[UBX_UNKNOWN_PKG]++;
         }
     }
+
+    *num_of_parsed_bytes = idx;
 
     return received_package;
 }

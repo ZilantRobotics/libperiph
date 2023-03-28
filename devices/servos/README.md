@@ -48,10 +48,10 @@ void setpoint_callback() {
     servosApplyPwm(crnt_time_ms);
 }
 
-void readiness_callback() {
+void readiness_callback(bool arm) {
     uint32_t crnt_time_ms = HAL_GetTick();
 
-    servosProcessTimeToLiveChecks(crnt_time_ms);
+    servosSetArmingState(arm, crnt_time_ms);
     servosApplyPwm(crnt_time_ms);
 }
 

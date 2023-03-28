@@ -51,6 +51,7 @@ typedef struct {
 
     uint8_t mode;
     uint8_t sub_mode;
+    uint8_t covariance_len;
     uint16_t covariance[36];
 
     float pdop;
@@ -68,13 +69,14 @@ extern "C" {
  * @return package type, if package successfully has been parsed
  * @note parser is stateful
  */
-UbloxPackageType_t ubloxParse(const uint8_t buffer[], size_t size);
+UbloxPackageType_t ubloxParse(const uint8_t buffer[], size_t size, size_t* num_of_parsed_bytes);
 
-void ubloxGetDroneCanFix2(GnssUblox_t* uavcan_fix2);
 
 void ubloxGetUbxNavPvt(UbxNavPvt_t* ubx_nav_pvt);
 void ubloxGetUbxNavStatus(UbxNavStatus_t* ubx_nav_status);
 void ubloxGetUbxNavCov(UbxNavCov_t* ubloxGetUbxNavCov);
+
+void ubloxGetDroneCanFix2(GnssUblox_t* uavcan_fix2);
 
 #ifdef __cplusplus
 }

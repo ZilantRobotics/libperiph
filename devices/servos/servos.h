@@ -50,7 +50,7 @@ void servosSetTimeout(uint32_t ttl_ms);
 
 /**
   * @brief You should periodically call this function to set default values to `dead` setpoints.
-  * servosSetSetpoint and servosProcessTimeToLiveChecks do not actually update the output
+  * servosSetSetpoint and servosSetArmingState do not actually update the output
   * servosApplyPwm updates the actual output pin state
   */
 void servosSetArmingState(bool arm, uint32_t crnt_time_ms);
