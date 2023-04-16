@@ -1,11 +1,12 @@
-/**
- * @file encoder_AS5600.h
- * @author sainquake@gmail.com (ko.burdinov)
- * @date 01.09.2022
+/*
+ * Copyright (C) 2018-2019 Dmitry Ponomarev <ponomarevda96@gmail.com>
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-#ifndef SRC_DRIVERS_INC_SQ_AS5600_H_
-#define SRC_DRIVERS_INC_SQ_AS5600_H_
+#ifndef LIBPERIPH_SENSORS_ENCODER_AS5600_H_
+#define LIBPERIPH_SENSORS_ENCODER_AS5600_H_
 
 // stolen from https://github.com/nicholasmorrow/AS5600/blob/master/inc/as5600.h
 /**************    CONSTANTS, MACROS, & DATA STRUCTURES    ***************/
@@ -100,4 +101,4 @@ float AS5600Parse();
   */
 void AS5600FillBuffer(const uint8_t new_buffer[]);
 
-#endif  // SRC_DRIVERS_INC_SQ_AS5600_H_
+#endif  // LIBPERIPH_SENSORS_ENCODER_AS5600_H_

@@ -1,7 +1,12 @@
+/*
+ * Copyright (C) 2018-2023 Dmitry Ponomarev <ponomarevda96@gmail.com>
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
 /**
- * @file encoder_AS5600.c
  * @author sainquake@gmail.com (ko.burdinov)
- * @date 01.09.2022
  * @note https://ams.com/documents/20143/36005/AS5600_DS000365_5-00.pdf
  * @note https://github.com/nicholasmorrow/AS5600
  * @note https://github.com/Seeed-Studio/Seeed_Arduino_AS5600
