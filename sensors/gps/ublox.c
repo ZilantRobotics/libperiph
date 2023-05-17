@@ -207,7 +207,7 @@ void ubloxDeserializeFix2(GnssUblox_t* uavcan_fix2) {
     uavcan_fix2->ned_velocity[2] = ubx_nav_pvt->velD / 1e3F;
     uavcan_fix2->sats_used = ubx_nav_pvt->numSV;
     uavcan_fix2->status = (GnssUbloxStatus_t)ubx_nav_pvt->fixType;
-    uavcan_fix2->pdop = ubx_nav_pvt->pDOP / 100;
+    uavcan_fix2->pdop = ubx_nav_pvt->pDOP * 0.01;
 }
 
 bool ubloxCheckCrc() {
