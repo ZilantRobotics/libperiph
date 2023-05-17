@@ -52,7 +52,7 @@ typedef struct {
     uint8_t mode;
     uint8_t sub_mode;
     uint8_t covariance_len;
-    uint16_t covariance[36];
+    float covariance[36];
 
     float pdop;
 } GnssUblox_t;
