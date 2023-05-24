@@ -103,9 +103,7 @@ int8_t timerInit(Channel_t ch, TimerMode_t mode) {
 }
 
 void timerSetPwmFrequency(Channel_t ch, uint16_t frequency_hz) {
-    if (frequency_hz < 50 || frequency_hz > 400 ||
-            ch >= TIM_CH_AMOUNT ||
-            channels[ch].mode != TIMER_MODE_PWM) {
+    if (frequency_hz == 0 || ch >= TIM_CH_AMOUNT || channels[ch].mode != TIMER_MODE_PWM) {
         return;
     }
 
