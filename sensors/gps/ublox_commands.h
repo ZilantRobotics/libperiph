@@ -9,19 +9,34 @@
  * @file ublox_commands.h
  * @author ehsan shaghaei
  * @date Dec 16, 2022
- * @brief This header file contains uBlox commands.
  */
 
 #ifndef SENSORS_GPS_UBLOX_COMMANDS_H
 #define SENSORS_GPS_UBLOX_COMMANDS_H
 
 #include <stdint.h>
-#include <stdbool.h>
+
+typedef enum {
+    UBX_CMD_FACTORY_RESET,
+    UBX_CMD_BAUDRATE_921600,
+
+    UBX_MON_HW,
+    UBX_NAV_COV,
+    UBX_NAV_PVT,
+    UBX_NAV_STATUS,
+    UBX_TIM_TIM2,
+
+    UBX_CMD_RATE_10_HZ,
+    UBX_CMD_SAVE_CONFIG,
+} UbloxCommand;
+
+
+
+void ubloxConfigureCommandToDma();
 
 /**
  * @brief configures the ublox interface
- * @param DMA boolean flag to send configuration by DMA or Polling mode
  */
-uint8_t ubloxConfigure(bool DMA);
+int8_t ubloxSendCommand(UbloxCommand command);
 
 #endif  // SENSORS_GPS_UBLOX_COMMANDS_H

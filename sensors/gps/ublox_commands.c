@@ -5,7 +5,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-/***
+/**
  * @file ublox_commands.c
  * @author ehsan shaghaei
  * @date Dec 21, 2022
@@ -15,101 +15,79 @@
 #include "libperiph_common.h"
 #include "hal_uart.h"
 
-#define FACTORY_RESET_SIZE      21
-#define PROFILE_0_SIZE          28
-#define NAVPVT_DISABLE_SIZE     26
-#define NAVPVT_ENABLE_SIZE      26
-#define UBLOX_RATE_10_SIZE      22
+static int8_t (*Transmit)(uint8_t[], size_t) = &uartTransmit;
 
-
-/**
- *  @brief: uBlox configuration: Restore the factory configuration
- *
- *  PS. each uBlox Package starts with two bytes 0xB5, 0x62  and ends with checksum
- *      refer to user manual.
- */
 static uint8_t uBloxConfigFactoryReset[] = {
     0xB5, 0x62, 0x06, 0x09, 0x0D, 0x00, 0xFF, 0xFF, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0x00, 0x00, 0x03, 0x1B,
     0x9A
 };
 
-/**
- * @brief: sets the Port configuration as following:
- * Target : UART 1
- * Protocol in : 0+1+2-UBX+NMEA+RTCM
- * Protocol out : 0+1-UBX+NMEA
- * BaudRate: 1152000
- */
-static uint8_t uBloxPortProfile0[] = {
-    0xB5, 0x62, 0x06, 0x00, 0x14, 0x00, 0x01, 0x00, 0x00, 0x00,
-    0xD0, 0x08, 0x00, 0x00, 0x00, 0xC2, 0x01, 0x00, 0x07, 0x00,
-    0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0xC0, 0x7E
+static uint8_t ubxBaudRate921600[] = {
+    181,98,6,0,20,0,1,0,0,0,192,8,0,0,0,16,14,0,35,0,35,0,0,0,0,0,71,250
 };
 
-/**
- *  @brief: configures the GPS rate to 10Hz
- *  PS. this command contains two packages RATE+CFG
- *
- */
-static uint8_t uBloxRates10Hz[] = {
+static uint8_t ubxRates10Hz[] = {
     0xB5, 0x62, 0x06, 0x08, 0x06, 0x00, 0x64, 0x00, 0x01, 0x00,
     0x01, 0x00, 0x7A, 0x12, 0xB5, 0x62, 0x06, 0x08, 0x00, 0x00,
     0x0E, 0x30
 };
 
-/**
- *  @brief: configures Messages 01-07 NAV-PVT on UART 1
- *  PS. this command contains two packages MSG+CFG
- */
-static uint8_t uBloxMessagesNavPvtEnable[] = {
-    0xB5, 0x62, 0x06, 0x01, 0x08, 0x00, 0x01, 0x07, 0x00, 0x01,
-    0x00, 0x00, 0x00, 0x00, 0x18, 0xE1, 0xB5, 0x62, 0x06, 0x01,
-    0x02, 0x00, 0x01, 0x07, 0x11, 0x3A
-};
+static uint8_t ubxMonHw[] = {181,98,6,1,8,0,10,9,0,1,0,0,0,0,35,55};
+static uint8_t ubxNavCov[] = {181,98,6,1,8,0,1,54,0,1,0,0,0,0,71,42};
+static uint8_t ubxNavPvt[] = {181,98,6,1,8,0,1,7,0,1,0,0,0,0,24,225};
+static uint8_t ubxNavStatus[] = {181,98,6,1,8,0,1,3,0,1,0,0,0,0,20,197};
+static uint8_t ubxTimTim2[] = {181,98,6,1,8,0,13,3,0,1,0,0,0,0,32,37};
 
-/**
- *  @brief: deconfigures Messages 01-07 NAV-PVT on UART 1
- *  PS. this command contains two packages MSG+CFG
- */
-static uint8_t uBloxMessagesNavPvtDisable[NAVPVT_DISABLE_SIZE] = {
-    0xB5, 0x62, 0x06, 0x01, 0x08, 0x00, 0x01, 0x07, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x17, 0xDC, 0xB5, 0x62, 0x06, 0x01,
-    0x02, 0x00, 0x01, 0x07, 0x11, 0x3A
-};
+static uint8_t ubxSaveConfig[] = {181,98,6,9,13,0,0,0,0,0,31,31,0,0,0,0,0,0,3,93,203};
 
-uint8_t ubloxConfigure(bool DMA) {
-    int8_t (*Transmit)(uint8_t[], size_t) = DMA ? &uartTransmitDma : &uartTransmit;
+void ubloxConfigureCommandToDma() {
+    Transmit = &uartTransmitDma;
+}
 
-    UartChangeBaudrate(115200);
+int8_t ubloxSendCommand(UbloxCommand command) {
+    int8_t result;
+    switch (command) {
+    case UBX_CMD_FACTORY_RESET:
+        result = Transmit(uBloxConfigFactoryReset, sizeof(uBloxConfigFactoryReset));
+        break;
 
-    if (Transmit(uBloxConfigFactoryReset, FACTORY_RESET_SIZE) == STATUS_ERROR) {
-        return STATUS_ERROR;
+    case UBX_CMD_BAUDRATE_921600:
+        result = Transmit(ubxBaudRate921600, sizeof(ubxBaudRate921600));
+        break;
+
+    case UBX_MON_HW:
+        result = Transmit(ubxMonHw, sizeof(ubxMonHw));
+        break;
+
+    case UBX_NAV_COV:
+        result = Transmit(ubxNavCov, sizeof(ubxNavCov));
+        break;
+
+    case UBX_NAV_PVT:
+        result = Transmit(ubxNavPvt, sizeof(ubxNavPvt));
+        break;
+
+    case UBX_NAV_STATUS:
+        result = Transmit(ubxNavStatus, sizeof(ubxNavStatus));
+        break;
+
+    case UBX_TIM_TIM2:
+        result = Transmit(ubxTimTim2, sizeof(ubxTimTim2));
+        break;
+
+    case UBX_CMD_RATE_10_HZ:
+        result = Transmit(ubxRates10Hz, sizeof(ubxRates10Hz));
+        break;
+
+    case UBX_CMD_SAVE_CONFIG:
+        result = Transmit(ubxSaveConfig, sizeof(ubxSaveConfig));
+        break;
+
+    default:
+        result = -1;
+        break;
     }
 
-    UartChangeBaudrate(9600);
-
-    if (Transmit(uBloxConfigFactoryReset, FACTORY_RESET_SIZE) == STATUS_ERROR) {
-        return STATUS_ERROR;
-    }
-
-    if (Transmit(uBloxPortProfile0, PROFILE_0_SIZE) == STATUS_ERROR) {
-        return STATUS_ERROR;
-    }
-
-    UartChangeBaudrate(115200);
-
-    if (Transmit(uBloxMessagesNavPvtDisable, NAVPVT_DISABLE_SIZE) == STATUS_ERROR) {
-        return STATUS_ERROR;
-    }
-
-    if (Transmit(uBloxRates10Hz, UBLOX_RATE_10_SIZE) == STATUS_ERROR) {
-        return STATUS_ERROR;
-    }
-
-    if (Transmit(uBloxMessagesNavPvtEnable, NAVPVT_ENABLE_SIZE) == STATUS_ERROR) {
-        return STATUS_ERROR;
-    }
-
-    return STATUS_OK;
+    return result;
 }
