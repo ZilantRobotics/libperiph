@@ -5,12 +5,6 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-/**
- * @file ublox_commands.h
- * @author ehsan shaghaei
- * @date Dec 16, 2022
- */
-
 #ifndef SENSORS_GPS_UBLOX_COMMANDS_H
 #define SENSORS_GPS_UBLOX_COMMANDS_H
 

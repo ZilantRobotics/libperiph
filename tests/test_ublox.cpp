@@ -101,7 +101,8 @@ TEST(Ublox, test_serialization_05_two_packages) {
     memcpy(buffer + 100, &ubx_nav_pvt_raw, 100);
 
     ASSERT_EQ(UBX_UNKNOWN_PKG, ubloxParse(buffer + 0,    50, &parsed_bytes));
-    ASSERT_EQ(UBX_NAV_PVT_PKG, ubloxParse(buffer + 50,   100, &parsed_bytes));
+    ASSERT_EQ(UBX_NAV_PVT_PKG, ubloxParse(buffer + 50,   50, &parsed_bytes));
+    ASSERT_EQ(UBX_UNKNOWN_PKG, ubloxParse(buffer + 100,  50, &parsed_bytes));
     ASSERT_EQ(UBX_NAV_PVT_PKG, ubloxParse(buffer + 150,  50, &parsed_bytes));
 }
 

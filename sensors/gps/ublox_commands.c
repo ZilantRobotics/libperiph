@@ -5,12 +5,6 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-/**
- * @file ublox_commands.c
- * @author ehsan shaghaei
- * @date Dec 21, 2022
- */
-
 #include "ublox_commands.h"
 #include <assert.h>
 #include "libperiph_common.h"
