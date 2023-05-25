@@ -11,10 +11,40 @@ It also should provide a possibility to configure the device to required setting
 
 The driver should be stateful (keep previous parsed buffer state) and tolerate to errors.
 
-## Usage example:
+## Configure the gnss receiver example:
 
 ```c++
-#include "ublox.h"
+#include "gps/ublox_commands.h"
+
+// You should provide you own implementation of the following functions
+// Below you can see an example
+static int8_t uartTransmit(uint8_t buffer[], size_t size) {
+    return -1 * HAL_UART_Transmit(&huart1, buffer, size, 500);
+}
+static void ubxDelay(uint32_t delay_ms) {
+    osDelay(delay_ms);
+}
+static void ubxChangeBaudrate(uint32_t baudrate) {
+    huart1.Init.BaudRate = rate;
+    HAL_UART_Init(&huart1);
+}
+
+int8_t application_init() {
+
+    if (ubloxInit(&ubxTransmit, &ubxDelay, &ubxChangeBaudrate) < 0) {
+        return -1;
+    }
+
+    if (ubloxConfigure() < 0) {
+        return -1;
+    }
+}
+```
+
+## Receiving package example:
+
+```c++
+#include "gps/ublox.h"
 
 static UbxNavPvt_t ubx_nav_pvt;
 static UbxNavStatus_t ubx_nav_status;
