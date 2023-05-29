@@ -50,6 +50,13 @@ static uint8_t ubxSaveConfig[] = {
     181, 98, 6, 9, 13, 0, 0, 0, 0, 0, 31, 31, 0, 0, 0, 0, 0, 0, 3, 93, 203
 };
 
+static uint8_t ubxDisableGGA[] = {181, 98, 6, 1, 8, 0, 240, 0, 0, 0, 0, 0, 0, 0, 255, 35};
+static uint8_t ubxDisableGLL[] = {181, 98, 6, 1, 8, 0, 240, 1, 0, 0, 0, 0, 0, 0, 0, 42};
+static uint8_t ubxDisableGSA[] = {181, 98, 6, 1, 8, 0, 240, 2, 0, 0, 0, 0, 0, 0, 1, 49};
+static uint8_t ubxDisableGSV[] = {181, 98, 6, 1, 8, 0, 240, 3, 0, 0, 0, 0, 0, 0, 2, 56};
+static uint8_t ubxDisableRMC[] = {181, 98, 6, 1, 8, 0, 240, 4, 0, 0, 0, 0, 0, 0, 3, 63};
+static uint8_t ubxDisableVTG[] = {181, 98, 6, 1, 8, 0, 240, 5, 0, 0, 0, 0, 0, 0, 4, 70};
+
 static UbloxCommand ubxConfigurationSequence[] = {
     UBX_SET_BAUDRATE_9600,
     UBX_CMD_FACTORY_RESET,
@@ -63,6 +70,13 @@ static UbloxCommand ubxConfigurationSequence[] = {
     UBX_CMD_FACTORY_RESET,
     UBX_CMD_BAUDRATE_921600,
 
+    UBX_CMD_DISABLE_GGA,
+    UBX_CMD_DISABLE_GLL,
+    UBX_CMD_DISABLE_GSA,
+    UBX_CMD_DISABLE_GSV,
+    UBX_CMD_DISABLE_RMC,
+    UBX_CMD_DISABLE_VTG,
+
     UBX_MON_HW,
     UBX_NAV_COV,
     UBX_NAV_PVT,
@@ -72,7 +86,7 @@ static UbloxCommand ubxConfigurationSequence[] = {
     UBX_CMD_RATE_10_HZ,
     UBX_CMD_SAVE_CONFIG,
 };
-static_assert(sizeof(ubxConfigurationSequence) == 16);
+static_assert(sizeof(ubxConfigurationSequence) == 22);
 
 int8_t ubloxInit(UbxTransmit_t transmit, UbxDelay_t delay, UbxChangeBaudRate_t changeBaudRate) {
     if (transmit == NULL || delay == NULL || changeBaudRate == NULL) {
@@ -112,6 +126,25 @@ int8_t ubloxExecuteCommand(UbloxCommand command) {
         case UBX_SET_BAUDRATE_921600:
             ubxChangeBaudRate(921600);
             result = 0;
+            break;
+
+        case UBX_CMD_DISABLE_GGA:
+            result = ubxTransmit(ubxDisableGGA, sizeof(ubxDisableGGA));
+            break;
+        case UBX_CMD_DISABLE_GLL:
+            result = ubxTransmit(ubxDisableGLL, sizeof(ubxDisableGLL));
+            break;
+        case UBX_CMD_DISABLE_GSA:
+            result = ubxTransmit(ubxDisableGSA, sizeof(ubxDisableGSA));
+            break;
+        case UBX_CMD_DISABLE_GSV:
+            result = ubxTransmit(ubxDisableGSV, sizeof(ubxDisableGSV));
+            break;
+        case UBX_CMD_DISABLE_RMC:
+            result = ubxTransmit(ubxDisableRMC, sizeof(ubxDisableRMC));
+            break;
+        case UBX_CMD_DISABLE_VTG:
+            result = ubxTransmit(ubxDisableVTG, sizeof(ubxDisableVTG));
             break;
 
         case UBX_MON_HW:
