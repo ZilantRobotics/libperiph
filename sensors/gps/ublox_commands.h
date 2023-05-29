@@ -52,7 +52,7 @@ int8_t ubloxInit(UbxTransmit_t transmit, UbxDelay_t delay, UbxChangeBaudRate_t c
 /**
  * @brief Configure U-Blox gnss receiver
  */
-int8_t ubloxConfigure();
+int8_t ubloxConfigure(uint16_t delay);
 
 
 /**

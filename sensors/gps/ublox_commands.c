@@ -183,12 +183,12 @@ int8_t ubloxExecuteCommand(UbloxCommand command) {
     return result;
 }
 
-int8_t ubloxConfigure() {
+int8_t ubloxConfigure(uint16_t delay) {
     int8_t result = 0;
 
     for (uint_fast8_t cmd_idx = 0; cmd_idx < sizeof(ubxConfigurationSequence); cmd_idx++) {
         result |= ubloxExecuteCommand(ubxConfigurationSequence[cmd_idx]);
-        ubxDelay(100);
+        ubxDelay(delay);
     }
 
     return result;
