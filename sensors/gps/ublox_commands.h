@@ -11,7 +11,11 @@
 #include <stdint.h>
 #include <stddef.h>
 
+#ifdef __cplusplus
+typedef enum : uint8_t {
+#else
 typedef enum {
+#endif
     UBX_CMD_FACTORY_RESET,
     UBX_CMD_BAUDRATE_921600,
 
@@ -36,6 +40,10 @@ typedef enum {
     UBX_CMD_SAVE_CONFIG,
 } UbloxCommand;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef int8_t (*UbxTransmit_t)(uint8_t[], size_t);
 typedef void (*UbxDelay_t)(uint32_t);
 typedef void (*UbxChangeBaudRate_t)(uint32_t);
@@ -59,5 +67,9 @@ int8_t ubloxConfigure(uint16_t delay);
  * @brief Execute a specific command
  */
 int8_t ubloxExecuteCommand(UbloxCommand command);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif  // SENSORS_GPS_UBLOX_COMMANDS_H
