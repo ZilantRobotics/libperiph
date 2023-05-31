@@ -96,7 +96,11 @@ void rgbLedUpdateState(RgbLedState_t rgb_led_state, uint32_t crnt_time_ms) {
             greenLedSetState(false);
             blueLedSetState(false);
             break;
-
+        case RGB_LED_BLINKING_RED_BLUE:
+            redLedSetState(crnt_time_ms % 1000 > 500);
+            greenLedSetState(false);
+            blueLedSetState(crnt_time_ms % 1000 <= 500);
+            break;
         default:
             break;
     }

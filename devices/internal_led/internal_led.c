@@ -57,6 +57,11 @@ void internalLedSetState(InternalLedState_t inernal_led_state) {
             num_of_pulses = 3;
             break;
 
+        case INTERNAL_LED_STATE_INIT:
+            rgb_led_state = RGB_LED_BLINKING_RED_BLUE;
+            num_of_pulses = 3;
+            break;
+
         case INTERNAL_LED_STATE_ERROR:
         default:
             rgb_led_state = RGB_LED_BLINKING_RED;
