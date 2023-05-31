@@ -12,11 +12,15 @@
  * Datasheet: https://www.tme.eu/Document/75af175f80c090e9b8f9078a0b0b2409/ACS712.PDF
  */
 
-#ifndef ACS712_H_
-#define ACS712_H_
+#ifndef SENSORS_CURRENT_SENSOR_ACS712_H_
+#define SENSORS_CURRENT_SENSOR_ACS712_H_
 
 #include <stdint.h>
 #include <stdbool.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @brief   Initialize.
@@ -39,4 +43,8 @@ bool acs712PerformIterationOfCalibration(uint16_t current_raw);
  */
 void acs712SetCalibratedValue(uint16_t current_raw);
 
-#endif  // ACS712_H_
+#ifdef __cplusplus
+}
+#endif
+
+#endif  // SENSORS_CURRENT_SENSOR_ACS712_H_
