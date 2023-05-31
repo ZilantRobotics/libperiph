@@ -20,7 +20,7 @@ typedef enum {
     UBX_NAV_PVT_PKG,
     UBX_NAV_STATUS_PKG,
     UBX_NAV_COV_PKG,
-    UBX_NAV_RELPOSNED_PKG,
+    // UBX_NAV_RELPOSNED_PKG,
 
     UBX_PACKAGE_TYPES_AMOUNT,
 } UbloxPackageType_t;
@@ -77,6 +77,8 @@ void ubloxGetUbxNavStatus(UbxNavStatus_t* ubx_nav_status);
 void ubloxGetUbxNavCov(UbxNavCov_t* ubloxGetUbxNavCov);
 
 void ubloxGetDroneCanFix2(GnssUblox_t* uavcan_fix2);
+
+uint16_t ubloxGetPackageStats(UbloxPackageType_t package_type);
 
 #ifdef __cplusplus
 }

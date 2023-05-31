@@ -14,7 +14,7 @@
 
 /**
  * @brief UART1 RX DMA with semaphores
- * @note It is expected to to wait until data is received.
+ * @note It is expected to wait until data is received.
  * Response time is as small as possible. More effective than simple DMA approach.
  */
 int8_t tsUartInitRx(uint8_t buffer[], uint16_t size);

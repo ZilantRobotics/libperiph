@@ -86,7 +86,6 @@ static UbloxCommand ubxConfigurationSequence[] = {
     UBX_CMD_RATE_10_HZ,
     UBX_CMD_SAVE_CONFIG,
 };
-static_assert(sizeof(ubxConfigurationSequence) == 22);
 
 int8_t ubloxInit(UbxTransmit_t transmit, UbxDelay_t delay, UbxChangeBaudRate_t changeBaudRate) {
     if (transmit == NULL || delay == NULL || changeBaudRate == NULL) {

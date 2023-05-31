@@ -15,6 +15,7 @@
 typedef enum {
     UART_FIRST,
     UART_SECOND,
+    UART_AMOUNT,
 } UartInstance_t;
 
 #ifdef __cplusplus
@@ -34,6 +35,8 @@ int8_t uartInitRxDma(UartInstance_t instance, uint8_t buffer[], uint16_t size);
 void uartRegisterRxCallback(UartInstance_t instance, void (*rx_callback)());
 size_t uartGetLastReceivedIndex(UartInstance_t instance);
 uint8_t* uartRxDmaPop();
+uint32_t uartRxGetStats(UartInstance_t instance);
+void uartRxResetStats();
 
 
 /**

@@ -30,9 +30,10 @@ typedef enum {
 typedef struct {
     UART_HandleTypeDef* huart_ptr;
     uint8_t* buffer;
-    uint16_t size;
+    uint16_t full_size;
     UartRxStatus_t status;
     void (*rx_callback)();
+    uint32_t total_rx_counter;
 } UartRxConfig_t;
 
 static UartRxConfig_t uart_rx[2];
@@ -48,7 +49,8 @@ int8_t uartInitRxDma(UartInstance_t instance, uint8_t buffer[], uint16_t size) {
     }
 
     uart_rx[instance].buffer = buffer;
-    uart_rx[instance].size = size;
+    uart_rx[instance].full_size = size;
+    uart_rx[instance].total_rx_counter = 0;
     HAL_StatusTypeDef status = HAL_UART_Receive_DMA(uart_rx[instance].huart_ptr, buffer, size);
     return (status == HAL_OK) ? STATUS_OK : STATUS_ERROR;
 }
@@ -69,10 +71,10 @@ size_t uartGetLastReceivedIndex(UartInstance_t instance) {
 
     const UartRxConfig_t* config = &uart_rx[instance];
     uint16_t dma_counter = __HAL_DMA_GET_COUNTER(config->huart_ptr->hdmarx);
-    if (config->size == dma_counter) {
-        return config->size - 1;
+    if (config->full_size == dma_counter) {
+        return config->full_size - 1;
     }
-    return config->size - dma_counter - 1;
+    return config->full_size - dma_counter - 1;
 }
 
 uint8_t* uartRxDmaPop() {
@@ -84,11 +86,21 @@ uint8_t* uartRxDmaPop() {
 
     uint8_t* buffer_ptr = config->buffer;
     if (config->status == FULL_RECEIVED_FLAG || config->status == BOTH_FLAGS) {
-        buffer_ptr += config->size / 2;
+        buffer_ptr += config->full_size / 2;
     }
     config->status = NO_FLAGS;
     return buffer_ptr;
 }
+
+uint32_t uartRxGetStats(UartInstance_t instance) {
+    return (instance < UART_AMOUNT) ? uart_rx[UART_FIRST].total_rx_counter : 0;
+}
+
+void uartRxResetStats() {
+    uart_rx[UART_FIRST].total_rx_counter = 0;
+    uart_rx[UART_SECOND].total_rx_counter = 0;
+}
+
 
 void HAL_UART_RxHalfCpltCallback(UART_HandleTypeDef *huart) {
     if (huart == uart_rx[UART_FIRST].huart_ptr) {
@@ -96,6 +108,7 @@ void HAL_UART_RxHalfCpltCallback(UART_HandleTypeDef *huart) {
         if (uart_rx[UART_FIRST].rx_callback != NULL) {
             (*uart_rx[UART_FIRST].rx_callback)();
         }
+        uart_rx[UART_FIRST].total_rx_counter += uart_rx[UART_FIRST].full_size;
     }
 }
 
@@ -118,5 +131,5 @@ void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart) {
         return;
     }
 
-    HAL_UART_Receive_DMA(config->huart_ptr, config->buffer, config->size);
+    HAL_UART_Receive_DMA(config->huart_ptr, config->buffer, config->full_size);
 }

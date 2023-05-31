@@ -233,3 +233,11 @@ void ubloxCrcAddByte(uint8_t byte) {
     package.crc_checker.bytes.crc_a += byte;
     package.crc_checker.bytes.crc_b += package.crc_checker.bytes.crc_a;
 }
+
+uint16_t ubloxGetPackageStats(UbloxPackageType_t package_type) {
+    if (package_type >= UBX_PACKAGE_TYPES_AMOUNT) {
+        return 0;
+    }
+
+    return ubx_package_counters[package_type];
+}
