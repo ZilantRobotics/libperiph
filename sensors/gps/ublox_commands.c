@@ -22,7 +22,9 @@ static uint8_t uBloxConfigFactoryReset[] = {
 };
 
 static uint8_t ubxBaudRate921600[] = {
-    181, 98, 6, 0, 20, 0, 1, 0, 0, 0, 192, 8, 0, 0, 0, 16, 14, 0, 35, 0, 35, 0, 0, 0, 0, 0, 71, 250
+    181, 98, 6, 0, 20, 0, 1, 0, 0, 0,
+    192, 8, 0, 0, 0, 16, 14, 0, 35, 0,
+    35, 0, 0, 0, 0, 0, 71, 250
 };
 
 static uint8_t ubxRates10Hz[] = {
@@ -30,6 +32,21 @@ static uint8_t ubxRates10Hz[] = {
     0x01, 0x00, 0x7A, 0x12, 0xB5, 0x62, 0x06, 0x08, 0x00, 0x00,
     0x0E, 0x30
 };
+
+static uint8_t CfgNav5[] = {
+    181, 98, 6, 36, 36, 0, 255, 5, 7, 3,
+    0, 0, 0, 0, 16, 39, 0, 0, 10, 0,
+    250, 0, 250, 0, 100, 0, 94, 1, 0, 60,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 144, 116
+};
+static uint8_t CfgTp5[] = {
+    181, 98, 6, 49, 32, 0, 0, 1, 0, 0,
+    50, 0, 0, 0, 160, 134, 1, 0, 160, 134,
+    1, 0, 16, 39, 0, 0, 16, 39, 0, 0,
+    0, 0, 0, 0, 119, 0, 0, 0, 189, 152
+};
+
 
 static uint8_t ubxMonHw[] = {
     181, 98, 6, 1, 8, 0, 10, 9, 0, 1, 0, 0, 0, 0, 35, 55
@@ -69,6 +86,9 @@ static UbloxCommand ubxConfigurationSequence[] = {
     UBX_SET_BAUDRATE_921600,
     UBX_CMD_FACTORY_RESET,
     UBX_CMD_BAUDRATE_921600,
+
+    UBX_CFG_NAV_5,
+    UBX_CFG_TP_5,
 
     UBX_CMD_DISABLE_GGA,
     UBX_CMD_DISABLE_GLL,
@@ -125,6 +145,13 @@ int8_t ubloxExecuteCommand(UbloxCommand command) {
         case UBX_SET_BAUDRATE_921600:
             ubxChangeBaudRate(921600);
             result = 0;
+            break;
+
+        case UBX_CFG_NAV_5:
+            result = ubxTransmit(CfgNav5, sizeof(CfgNav5));
+            break;
+        case UBX_CFG_TP_5:
+            result = ubxTransmit(CfgTp5, sizeof(CfgTp5));
             break;
 
         case UBX_CMD_DISABLE_GGA:
