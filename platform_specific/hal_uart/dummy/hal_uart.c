@@ -34,5 +34,5 @@ bool uartIsReady() {
 void uartEnableTx(bool enable) {
 }
 
-void UartChangeBaudrate(uint32_t rate) {
+void UartChangeBaudrate(UartInstance_t instance, uint32_t rate) {
 }

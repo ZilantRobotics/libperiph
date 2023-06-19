@@ -25,7 +25,7 @@ extern "C" {
 /**
  * @brief Common
  */
-void UartChangeBaudrate(uint32_t rate);
+void UartChangeBaudrate(UartInstance_t instance, uint32_t rate);
 bool uartIsReady();
 
 /**
