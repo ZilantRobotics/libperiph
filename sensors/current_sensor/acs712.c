@@ -5,11 +5,6 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-/**
- * @file current_sensor/acs712.c
- * @author d.ponomarev
- */
-
 #include "acs712.h"
 
 

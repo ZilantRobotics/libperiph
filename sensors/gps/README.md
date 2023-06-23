@@ -70,3 +70,7 @@ void application_parse_serial_buffer(const uint8_t serial_buffer[], size_t seria
 }
 
 ```
+
+## Tests
+
+[tests/sensors/test_ublox.cpp](../../tests/test_ublox.cpp)

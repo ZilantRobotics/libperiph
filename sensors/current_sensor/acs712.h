@@ -5,13 +5,6 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-/**
- * @file acs712.h
- * @author d.ponomarev
- * @note This is a driver for ACS712
- * Datasheet: https://www.tme.eu/Document/75af175f80c090e9b8f9078a0b0b2409/ACS712.PDF
- */
-
 #ifndef SENSORS_CURRENT_SENSOR_ACS712_H_
 #define SENSORS_CURRENT_SENSOR_ACS712_H_
 

@@ -1,6 +1,8 @@
 # Barometer bmp280 driver
 
-## Usage example:
+Barometer driver is based on i2c driver.
+
+## Usage example
 
 ```c++
 ...
@@ -26,3 +28,7 @@ void application_collect_and_parse() {
 }
 
 ```
+
+## Tests
+
+[tests/sensors/test_bmp280.cpp](../../tests/sensors/test_bmp280.cpp)

@@ -4,10 +4,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-/**
- * @file rm3100.h
- * @author d.ponomarev
- */
+
 #ifndef SENSORS_MAGNETOMERE_RM3100_H_
 #define SENSORS_MAGNETOMERE_RM3100_H_
 

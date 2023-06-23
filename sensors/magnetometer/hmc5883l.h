@@ -5,12 +5,6 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-/**
- * @file hmc5883l.h
- * @author d.ponomarev
- * @date Nov 18, 2018
- */
-
 #ifndef SENSORS_HMC5883L_H_
 #define SENSORS_HMC5883L_H_
 

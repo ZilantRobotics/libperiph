@@ -5,12 +5,6 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-/**
- * @file rm3100.c
- * @author d.ponomarev
- * @note https://www.terraelectronica.ru/pdf/show?pdf_file=%252Fds%252Fpdf%252FR%252FRM3100.pdf
- */
-
 #include "rm3100.h"
 #include <string.h>
 #include <stdbool.h>

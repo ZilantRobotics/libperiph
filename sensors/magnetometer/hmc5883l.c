@@ -5,12 +5,6 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-/**
- * @file hmc5883l.c
- * @author d.ponomarev
- * @date Nov 18, 2018
- */
-
 #include "hmc5883l.h"
 #include <string.h>
 #include "libperiph_common.h"
