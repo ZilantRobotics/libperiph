@@ -1,12 +1,16 @@
 # libperiph ![badge](https://github.com/PonomarevDA/libperiph/actions/workflows/arm_build.yml/badge.svg) ![badge](https://github.com/PonomarevDA/libperiph/actions/workflows/code_style.yml/badge.svg) ![badge](https://github.com/PonomarevDA/libperiph/actions/workflows/unit_tests.yml/badge.svg)
 
-libperiph is a collection of onloard electronics used in aviation drivers.
+libperiph is a collection of open source aviation onloard electronics drivers writen in C.
+
+It has a minimal set of drivers required for an UAV application, such as: barometer, magnetometer, gnss, actuators and so on.
+
+The drivers are designed to be platform independent. You can port them on stm32, arduino or anything else that has a requried interfaces. To make it easire to start, a few platform expample implementations were written: HAL based periphery drivers for stm32 and dummy drivers for ununtu. Please check [platform_specific](platform_specific) for details.
 
 It was tested on:
 - stm32f3discovery board,
-- dsPIC33F,
 - stm32f767 nucleo board,
-- stm32f103.
+- stm32f103,
+- stm32fg0.
 
 The structural relationship of the drivers to each other is shown in the figure below:
 
@@ -14,7 +18,7 @@ The structural relationship of the drivers to each other is shown in the figure 
 
 Here orange blocks means periphery drivers, blue - sensors, green - devices.
 
-**Part 1.**
+**Part 1. Here are drivers required for minimal quadcopter application:**
 
 | Driver                                                    | Required HAL | Arm build | Test coverage |
 | --------------------------------------------------------- | ------------ | --------- | ------------- |
@@ -28,7 +32,7 @@ Here orange blocks means periphery drivers, blue - sensors, green - devices.
 
 Summary: Lines executed:73.87% of 444
 
-**Part 2.**
+**Part 2. Here are drivers required for a VTOL application:**
 
 | Driver                                    | Required HAL | Arm build | Test coverage |
 | ----------------------------------------- | ------------ | --------- | ------------- |
