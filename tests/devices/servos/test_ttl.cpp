@@ -1,14 +1,8 @@
 /*
- * Copyright (C) 2022 Dmitry Ponomarev <ponomarevda96@gmail.com>
+ * Copyright (C) 2022-2023 Dmitry Ponomarev <ponomarevda96@gmail.com>
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
- */
-
-/**
- * @file test_ttl.cpp
- * @author d.ponomarev
- * @date Aug 10, 2022
  */
 
 #include <gtest/gtest.h>
