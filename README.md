@@ -36,8 +36,8 @@ Summary: Lines executed:73.87% of 444
 
 | Driver                                    | HAL required | Arm build | Test coverage |
 | ----------------------------------------- | ------------ | --------- | ------------- |
-| [sensors/acs712](sensors/current_sensor)  | -            | +         | 
-| sensors/ms4252do                          | -            | +         | 78.26% of 23 |
+| [sensors/acs712](sensors/current_sensor)          | -            | +         |
+| [sensors/ms4252do](sensors/differential_pressure) | -            | +         | 78.26% of 23 |
 | sensors/rangefinder/garmin_lite           | i2c          | -         |
 | sensors/rangesensor/sf1xx                 | refactor me  | -         |
 | sensors/rangesensor/tf_luna               | -            | +         | 88.00% of 25 |
@@ -49,7 +49,8 @@ Summary: Lines executed:73.87% of 444
 | ----------------------------------------- | ------------ | --------- | ------------- |
 | [devices/rgb_leds](devices/rgb_leds)      | pwm dma      | -         | 17.86% of 28 |
 | sensors/encoder                           | gpio         | -         |
-| sensors/esc_flame                         | -            | +         | 100.00% of 31|
+| sensors/esc/flame                         | -            | +         | 100.00% of 31|
+| sensors/esc/thunder                       | -            | -         |
 | sensors/mpu9250                           | i2c          | +         |
 | sensors/rangefinder/srf_05                | refactor me  | +         |
 
