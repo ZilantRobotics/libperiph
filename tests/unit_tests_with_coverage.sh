@@ -23,6 +23,7 @@ $BUILD_DIR/servo
 $BUILD_DIR/servo_common
 $BUILD_DIR/tf_luna
 $BUILD_DIR/ws2812
+$BUILD_DIR/ring_buffer
 
 echo "Part 1:--------------------------------------------------"
 gcov $BUILD_DIR/CMakeFiles/bmp280.dir$REPO_DIR/sensors/barometer/*.gcda \

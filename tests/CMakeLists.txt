@@ -40,3 +40,4 @@ gen_test(servo          devices/servos/test_servo.cpp       ../devices/servos/CM
 gen_test(servo_common   devices/servos/test_common.cpp      ../devices/servos/CMakeLists.txt)
 gen_test(tf_luna        rangefinder/tf_luna.cpp             ../sensors/rangefinder/tf_luna/CMakeLists.txt)
 gen_test(ws2812         devices/rgb_leds/test_ws2812.cpp    ../devices/rgb_leds/CMakeLists.txt)
+gen_test(ring_buffer    test_ring_buffer.cpp                ../common/CMakeLists.txt)
