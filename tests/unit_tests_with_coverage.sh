@@ -1,3 +1,4 @@
+#!/bin/bash
 THIS_SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 REPO_DIR="$(dirname "$THIS_SCRIPT_DIR")"
 BUILD_DIR=$REPO_DIR/build/tests

@@ -5,11 +5,6 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-/**
- * @file ms4525do.c
- * @author d.ponomarev
- */
-
 #include "ms4525do.h"
 #include <string.h>
 #include "libperiph_common.h"

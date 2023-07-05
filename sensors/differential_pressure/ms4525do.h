@@ -5,11 +5,6 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-/**
- * @file ms4525do.h
- * @author d.ponomarev
- */
-
 #ifndef MS4525DO_PARSER_H_
 #define MS4525DO_PARSER_H_
 
