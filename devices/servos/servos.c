@@ -121,7 +121,7 @@ Channel_t servosGetTimerChannelBySetpointChannel(uint32_t sp_ch) {
 }
 
 int16_t servosGetSetpoint(uint8_t sp_idx) {
-    return (sp_idx < SETPOINTS_AMOUNT) ? setpoints[sp_idx] : 0;
+    return (sp_idx < SETPOINTS_AMOUNT) ? setpoints[sp_idx] : -1;
 }
 
 bool servosGetArmingState(uint32_t crnt_time_ms) {
