@@ -11,15 +11,20 @@
 #include "libperiph_common.h"
 
 extern UART_HandleTypeDef huart1;
-extern UART_HandleTypeDef huart2;
+#if defined(SECOND_UART)
+    extern UART_HandleTypeDef huart2;
+#endif
+
 
 void UartChangeBaudrate(UartInstance_t instance, uint32_t rate) {
     if (instance == UART_FIRST) {
         huart1.Init.BaudRate = rate;
         HAL_UART_Init(&huart1);
     } else if (instance == UART_SECOND) {
+#if defined(SECOND_UART)
         huart2.Init.BaudRate = rate;
         HAL_UART_Init(&huart2);
+#endif
     }
 }
 
