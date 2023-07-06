@@ -5,12 +5,6 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-/**
- * @file flame.h
- * @author d.ponomarev
- * @date May 27, 2021
- */
-
 #ifndef SENSORS_ESC_FLAME_H_
 #define SENSORS_ESC_FLAME_H_
 
@@ -18,9 +12,7 @@
 extern "C" {
 #endif
 
-#include <stdbool.h>
-#include <stdint.h>
-#include <stdio.h>
+#include "common.h"
 
 
 #define ESC_FLAME_PACKAGE_SIZE 24
@@ -34,34 +26,17 @@ typedef struct {
     int32_t rpm;                    // int18
     uint8_t power_rating_pct;       // uint7 (range 0% to 127%)
     uint8_t esc_index;              // uint5
-} EscFlameStatus_t;
-
-/**
- * @note UART buffer size depends on the preferred strategy: memory or performance.
- * Minimal size is PACKAGE_SIZE + 1 requires calling memcpy every single package
- * Bigger size allows to call it less often.
- */
-#define UART_BUFFER_SIZE 96
-typedef struct {
-    uint8_t buf[UART_BUFFER_SIZE];
-    size_t saved_idx;
-} UartDmaParser_t;
+} EscFlame_t;
 
 
-bool escFlameParseDma(size_t last_recv_idx, UartDmaParser_t* parser, EscFlameStatus_t* esc_status);
+bool escFlameParseDma(size_t last_recv_idx, DmaUartHandler_t* parser, EscFlame_t* esc_status);
 
 
-/**
-  * @param[in] raw_package_buffer must be a buffer with size of a package
-  * @return true if package is correct, otherwise false
-  */
-bool escFlameIsItPackageStart(const uint8_t* raw_package_buffer);
+#ifdef LIBPERIPH_UNIT_TESTS
+bool escFlameIsItPackageStart(const uint8_t* buffer);
+void escFlameParse(const uint8_t* buffer, EscFlame_t* esc_status);
+#endif
 
-/**
-  * @param[in] raw_package_buffer must be a correct package
-  * @param[out] esc_status - struct with parsed package
-  */
-void escFlameParse(const uint8_t* raw_package_buffer, EscFlameStatus_t* esc_status);
 
 #ifdef __cplusplus
 }

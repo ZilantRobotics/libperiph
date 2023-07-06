@@ -13,6 +13,7 @@ make
 
 $BUILD_DIR/bmp280
 $BUILD_DIR/esc_flame
+$BUILD_DIR/esc_thunder
 $BUILD_DIR/ublox
 $BUILD_DIR/ms4525do
 $BUILD_DIR/stm32_temp
@@ -29,6 +30,7 @@ echo "Part 1:--------------------------------------------------"
 gcov $BUILD_DIR/CMakeFiles/bmp280.dir$REPO_DIR/sensors/barometer/*.gcda \
      $BUILD_DIR/CMakeFiles/ublox.dir$REPO_DIR/sensors/gps/*.gcda \
      $BUILD_DIR/CMakeFiles/esc_flame.dir$REPO_DIR/sensors/esc/*.gcda \
+     $BUILD_DIR/CMakeFiles/esc_thunder.dir$REPO_DIR/sensors/esc/*.gcda \
      $BUILD_DIR/CMakeFiles/hmc5883l.dir$REPO_DIR/sensors/magnetometer/hmc5883l*.gcda \
      $BUILD_DIR/CMakeFiles/rm3100.dir$REPO_DIR/sensors/magnetometer/rm3100*.gcda \
      $BUILD_DIR/CMakeFiles/stm32_temp.dir$REPO_DIR/sensors/temperature_sensor/*.gcda \

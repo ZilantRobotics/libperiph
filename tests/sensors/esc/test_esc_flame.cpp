@@ -6,7 +6,7 @@
  */
 
 /**
- * @file test_algorithms.cpp
+ * @file test_esc_flame.cpp
  * @author d.ponomarev
  * @date Apr 16, 2021
  */
@@ -43,29 +43,29 @@ const uint8_t PWM_7_PERCENT[24] = {
     12,     226,    237,    4
 };
 
-void check_pwm_0_percent(const EscFlameStatus_t& esc_status) {
+void check_pwm_0_percent(const EscFlame_t& esc_status) {
     ASSERT_TRUE(esc_status.voltage > 25 && esc_status.voltage < 35);
     ASSERT_TRUE(esc_status.rpm == 0);
     ASSERT_TRUE(esc_status.power_rating_pct == 0);
 }
 
-void check_pwm_7_percent(const EscFlameStatus_t& esc_status) {
+void check_pwm_7_percent(const EscFlame_t& esc_status) {
     ASSERT_TRUE(esc_status.voltage > 25 && esc_status.voltage < 35);
     ASSERT_TRUE(esc_status.rpm == 385);
     ASSERT_TRUE(esc_status.power_rating_pct == 7);
 }
 
-void check_pwm_20_percent(const EscFlameStatus_t& esc_status) {
+void check_pwm_20_percent(const EscFlame_t& esc_status) {
     ASSERT_TRUE(esc_status.voltage > 25 && esc_status.voltage < 35);
     ASSERT_TRUE(esc_status.rpm == 1045);
     ASSERT_TRUE(esc_status.power_rating_pct == 20);
 }
 
-void fill_buffer_with_frame(UartDmaParser_t& parser, size_t parser_buf_idx, const uint8_t* real_case) {
-    if (parser_buf_idx + ESC_FLAME_PACKAGE_SIZE <= UART_BUFFER_SIZE) {
+void fill_buffer_with_frame(DmaUartHandler_t& parser, size_t parser_buf_idx, const uint8_t* real_case) {
+    if (parser_buf_idx + ESC_FLAME_PACKAGE_SIZE <= parser.size) {
         memcpy(parser.buf + parser_buf_idx, real_case, ESC_FLAME_PACKAGE_SIZE);
     } else {
-        size_t first_part_size = UART_BUFFER_SIZE - parser_buf_idx;
+        size_t first_part_size = parser.size - parser_buf_idx;
         size_t second_part_size = ESC_FLAME_PACKAGE_SIZE - first_part_size;
         memcpy(parser.buf + parser_buf_idx, real_case, first_part_size);
         memcpy(parser.buf, real_case + first_part_size, second_part_size);
@@ -90,7 +90,7 @@ TEST(EscFlame, escFlameIsItPackageStart) {
 }
 
 TEST(EscFlame, escFlameParse) {
-    EscFlameStatus_t esc_status{};
+    EscFlame_t esc_status{};
 
     // Wrong: first argument
     escFlameParse(NULL, &esc_status);
@@ -117,30 +117,42 @@ TEST(EscFlame, escFlameParse) {
 }
 
 TEST(EscFlame, escFlameParseDma_wrong_args) {
-    UartDmaParser_t parser;
-    EscFlameStatus_t esc_status;
+    uint8_t buffer[96];
+    DmaUartHandler_t parser = {
+        .buf = buffer,
+        .size = 96,
+    };
+    EscFlame_t esc_status;
     size_t recv_idx = 0;
 
-    ASSERT_FALSE(escFlameParseDma(UART_BUFFER_SIZE, &parser, &esc_status));
+    ASSERT_FALSE(escFlameParseDma(parser.size, &parser, &esc_status));
     ASSERT_FALSE(escFlameParseDma(recv_idx, NULL, &esc_status));
     ASSERT_FALSE(escFlameParseDma(recv_idx, &parser, NULL));
 }
 
 TEST(EscFlame, escFlameParseDma_empty) {
-    UartDmaParser_t parser;
-    EscFlameStatus_t esc_status;
+    uint8_t buffer[96];
+    DmaUartHandler_t parser = {
+        .buf = buffer,
+        .size = 96,
+    };
+    EscFlame_t esc_status;
     size_t recv_idx = 0;
 
     escFlameParseDma(recv_idx, &parser, &esc_status);
 }
 
 TEST(EscFlame, escFlameParseDma_perfect_sequence) {
-    UartDmaParser_t parser;
-    EscFlameStatus_t esc_status;
+    uint8_t buffer[96];
+    DmaUartHandler_t parser = {
+        .buf = buffer,
+        .size = 96,
+    };
+    EscFlame_t esc_status;
 
     for (size_t package_idx = 0; package_idx < 9; package_idx++) {
-        size_t parser_buf_idx = (package_idx * ESC_FLAME_PACKAGE_SIZE) % UART_BUFFER_SIZE;
-        size_t recv_idx = (parser_buf_idx + ESC_FLAME_PACKAGE_SIZE - 1) % UART_BUFFER_SIZE;
+        size_t parser_buf_idx = (package_idx * ESC_FLAME_PACKAGE_SIZE) % parser.size;
+        size_t recv_idx = (parser_buf_idx + ESC_FLAME_PACKAGE_SIZE - 1) % parser.size;
 
         const uint8_t* real_case;
         if (package_idx % 3 == 0) {
@@ -167,12 +179,16 @@ TEST(EscFlame, escFlameParseDma_perfect_sequence) {
 }
 
 TEST(EscFlame, escFlameParseDma_offset_sequence) {
-    UartDmaParser_t parser;
-    EscFlameStatus_t esc_status;
+    uint8_t buffer[96];
+    DmaUartHandler_t parser = {
+        .buf = buffer,
+        .size = 96,
+    };
+    EscFlame_t esc_status;
 
     for (size_t package_idx = 0; package_idx < 4; package_idx++) {
-        size_t parser_buf_idx = (12 + package_idx * ESC_FLAME_PACKAGE_SIZE) % UART_BUFFER_SIZE;
-        size_t recv_idx = (parser_buf_idx + ESC_FLAME_PACKAGE_SIZE - 1) % UART_BUFFER_SIZE;
+        size_t parser_buf_idx = (12 + package_idx * ESC_FLAME_PACKAGE_SIZE) % parser.size;
+        size_t recv_idx = (parser_buf_idx + ESC_FLAME_PACKAGE_SIZE - 1) % parser.size;
 
         const uint8_t* real_case;
         if (package_idx % 3 == 0) {
@@ -197,22 +213,26 @@ TEST(EscFlame, escFlameParseDma_offset_sequence) {
         }
 
         size_t intermediate_idx;
-        intermediate_idx = (recv_idx + 0) % UART_BUFFER_SIZE;
+        intermediate_idx = (recv_idx + 0) % parser.size;
         ASSERT_FALSE(escFlameParseDma(intermediate_idx, &parser, &esc_status));
-        intermediate_idx = (recv_idx + 1) % UART_BUFFER_SIZE;
+        intermediate_idx = (recv_idx + 1) % parser.size;
         ASSERT_FALSE(escFlameParseDma(intermediate_idx, &parser, &esc_status));
-        intermediate_idx = (recv_idx + 2) % UART_BUFFER_SIZE;
+        intermediate_idx = (recv_idx + 2) % parser.size;
         ASSERT_FALSE(escFlameParseDma(intermediate_idx, &parser, &esc_status));
     }
 }
 
 TEST(EscFlame, escFlameParseDma_poll_faster_than_measure) {
-    UartDmaParser_t parser;
-    EscFlameStatus_t esc_status;
+    uint8_t buffer[96];
+    DmaUartHandler_t parser = {
+        .buf = buffer,
+        .size = 96,
+    };
+    EscFlame_t esc_status;
 
     for (size_t package_idx = 0; package_idx < 9; package_idx++) {
-        size_t parser_buf_idx = (package_idx * ESC_FLAME_PACKAGE_SIZE) % UART_BUFFER_SIZE;
-        size_t recv_idx = (parser_buf_idx + ESC_FLAME_PACKAGE_SIZE - 1) % UART_BUFFER_SIZE;
+        size_t parser_buf_idx = (package_idx * ESC_FLAME_PACKAGE_SIZE) % parser.size;
+        size_t recv_idx = (parser_buf_idx + ESC_FLAME_PACKAGE_SIZE - 1) % parser.size;
 
         const uint8_t* real_case;
         if (package_idx % 3 == 0) {
@@ -237,11 +257,11 @@ TEST(EscFlame, escFlameParseDma_poll_faster_than_measure) {
         }
 
         size_t intermediate_idx;
-        intermediate_idx = (recv_idx + 0) % UART_BUFFER_SIZE;
+        intermediate_idx = (recv_idx + 0) % parser.size;
         ASSERT_FALSE(escFlameParseDma(intermediate_idx, &parser, &esc_status));
-        intermediate_idx = (recv_idx + 1) % UART_BUFFER_SIZE;
+        intermediate_idx = (recv_idx + 1) % parser.size;
         ASSERT_FALSE(escFlameParseDma(intermediate_idx, &parser, &esc_status));
-        intermediate_idx = (recv_idx + 2) % UART_BUFFER_SIZE;
+        intermediate_idx = (recv_idx + 2) % parser.size;
         ASSERT_FALSE(escFlameParseDma(intermediate_idx, &parser, &esc_status));
     }
 }

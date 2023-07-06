@@ -50,7 +50,7 @@ Summary: Lines executed:73.87% of 444
 | [devices/rgb_leds](devices/rgb_leds)      | pwm dma      | -         | 17.86% of 28 |
 | sensors/encoder                           | gpio         | -         |
 | sensors/esc/flame                         | -            | +         | 100.00% of 31|
-| sensors/esc/thunder                       | -            | -         |
+| sensors/esc/thunder                       | -            | -         | 100.00% of 63 |
 | sensors/mpu9250                           | i2c          | +         |
 | sensors/rangefinder/srf_05                | refactor me  | +         |
 

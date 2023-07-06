@@ -28,8 +28,11 @@ function(gen_test app_name test_file cmake_path)
     target_link_libraries(${app_name} gtest pthread gtest_main)
 endfunction()
 
+add_definitions( -DLIBPERIPH_UNIT_TESTS=1 )
+
 gen_test(bmp280         sensors/test_bmp280.cpp             ../sensors/barometer/CMakeLists.txt)
-gen_test(esc_flame      test_esc_flame                      ../sensors/esc/CMakeLists.txt)
+gen_test(esc_flame      sensors/esc/test_esc_flame.cpp      ../sensors/esc/CMakeLists.txt)
+gen_test(esc_thunder    sensors/esc/test_esc_thunder.cpp    ../sensors/esc/CMakeLists.txt)
 gen_test(ublox          test_ublox.cpp                      ../sensors/gps/CMakeLists.txt)
 gen_test(ms4525do       test_ms4525do.cpp                   ../sensors/differential_pressure/CMakeLists.txt)
 gen_test(stm32_temp     test_stm32_temperature.cpp          ../sensors/temperature_sensor/CMakeLists.txt)
