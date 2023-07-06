@@ -11,8 +11,8 @@
 
 typedef struct {
     const uint8_t* header;
-    uint8_t head_len;
     uint8_t msg_len;
+    uint8_t head_len;
     uint8_t val_len;
     void (*parse)(EscThunderFeedback*, const uint8_t*);
 } EscThunderMessageMetadata;
@@ -23,7 +23,7 @@ static void parseTmos(EscThunderFeedback* esc_thunder, const uint8_t* value);
 static void parseTmot(EscThunderFeedback* esc_thunder, const uint8_t* value);
 static void parseCuri(EscThunderFeedback* esc_thunder, const uint8_t* value);
 static void parseVolt(EscThunderFeedback* esc_thunder, const uint8_t* value);
-static bool thunderCompareHeaders(const uint8_t* buffer, EscThunderMessage msg_idx);
+static bool thunderCheckHeader(const uint8_t* buffer, EscThunderMessage msg_idx);
 static bool hexArrayIsCorrect(const uint8_t* hex_array, uint8_t array_size);
 
 
@@ -73,20 +73,21 @@ EscThunderMessage thunderParseMessageInRingBuffer(EscThunderFeedback* esc_thunde
     ringBufferLinearize(&esc_thunder->_ring_buffer, lin_buf);
 
     for (uint_fast8_t msg_idx = 0; msg_idx < ESC_THUNDER_UNKNOWN; msg_idx++) {
+        EscThunderMessage msg_type = (EscThunderMessage)msg_idx;
         const uint8_t* header = &lin_buf[ESC_THUNDER_MAX_MSG_LEN - messages[msg_idx].msg_len];
         const uint8_t* value = &lin_buf[ESC_THUNDER_MAX_MSG_LEN - 5];
-        if (thunderCompareHeaders(header, msg_idx) && hexArrayIsCorrect(value, 4)) {
+        if (thunderCheckHeader(header, msg_type) && hexArrayIsCorrect(value, 4)) {
             if (messages[msg_idx].parse != NULL) {
                 messages[msg_idx].parse(esc_thunder, value);
             }
-            return msg_idx;
+            return msg_type;
         }
     }
 
     return ESC_THUNDER_UNKNOWN;
 }
 
-bool thunderCompareHeaders(const uint8_t* buffer, EscThunderMessage msg_idx) {
+bool thunderCheckHeader(const uint8_t* buffer, EscThunderMessage msg_idx) {
     for (uint_fast8_t byte_idx = 0; byte_idx < messages[msg_idx].head_len; byte_idx++) {
         if (buffer[byte_idx] != messages[msg_idx].header[byte_idx]) {
             return false;
