@@ -50,6 +50,11 @@ void thunderInit(EscThunderFeedback* esc_thunder);
   */
 EscThunderMessage thunderNextByte(EscThunderFeedback* esc_thunder, uint8_t byte);
 
+/**
+  * @brief Parse byte by byte in the DMA buffer
+  */
+bool thunderParseDma(size_t recv_idx, DmaUartHandler_t* handler, EscThunderFeedback* feedback);
+
 
 /**
   * @brief The functions below are dedicated for tests only.

@@ -104,6 +104,74 @@ TEST(ESCThunder, test_thunderNextByte_voltage) {
     EXPECT_NEAR(60.3, esc_thunder.volt, 0.01);
 }
 
+TEST(ESCThunder, test_thunderParseDma_with_additional_characters) {
+    EscThunderFeedback feedback;
+    thunderInit(&feedback);
+    uint8_t dma_buffer[50];
+    DmaUartHandler_t handler = {
+        .buf = dma_buffer,
+        .size = 50,
+        .saved_idx = 49
+    };
+
+    memcpy(dma_buffer, volt_50_volts_buf, 11);
+    ASSERT_TRUE(thunderParseDma(10, &handler, &feedback));
+
+    memcpy(dma_buffer + 11, volt_50_volts_buf, 11);
+    ASSERT_TRUE(thunderParseDma(21, &handler, &feedback));
+
+    memcpy(dma_buffer + 22, volt_50_volts_buf, 11);
+    ASSERT_TRUE(thunderParseDma(32, &handler, &feedback));
+
+    memcpy(dma_buffer + 33, volt_50_volts_buf, 11);
+    ASSERT_TRUE(thunderParseDma(43, &handler, &feedback));
+
+    memcpy(dma_buffer + 44, volt_50_volts_buf, 6);
+    memcpy(dma_buffer, volt_50_volts_buf + 6, 5);
+    ASSERT_TRUE(thunderParseDma(5, &handler, &feedback));
+}
+
+TEST(ESCThunder, test_thunderParseDma) {
+    EscThunderFeedback feedback;
+    thunderInit(&feedback);
+    uint8_t dma_buffer[50];
+    DmaUartHandler_t handler = {
+        .buf = dma_buffer,
+        .size = 50,
+        .saved_idx = 49
+    };
+
+    memcpy(dma_buffer, volt_50_volts_buf, 10);
+    ASSERT_TRUE(thunderParseDma(9, &handler, &feedback));
+
+    memcpy(dma_buffer + 10, volt_50_volts_buf, 10);
+    ASSERT_TRUE(thunderParseDma(19, &handler, &feedback));
+
+    memcpy(dma_buffer + 20, volt_50_volts_buf, 10);
+    ASSERT_TRUE(thunderParseDma(29, &handler, &feedback));
+
+    memcpy(dma_buffer + 30, volt_50_volts_buf, 10);
+    ASSERT_TRUE(thunderParseDma(39, &handler, &feedback));
+
+    memcpy(dma_buffer + 40, volt_50_volts_buf, 10);
+    ASSERT_TRUE(thunderParseDma(49, &handler, &feedback));
+}
+
+TEST(ESCThunder, test_thunderParseDma_wrong_args) {
+    EscThunderFeedback feedback;
+    thunderInit(&feedback);
+    uint8_t dma_buffer[50];
+    DmaUartHandler_t handler = {
+        .buf = dma_buffer,
+        .size = 50,
+        .saved_idx = 49
+    };
+
+    ASSERT_FALSE(thunderParseDma(50, &handler, &feedback));
+    ASSERT_FALSE(thunderParseDma(0, NULL, &feedback));
+    ASSERT_FALSE(thunderParseDma(0, &handler, NULL));
+}
+
 TEST(ESCThunder, test_mull_args) {
     EscThunderFeedback esc_thunder;
     thunderInit(NULL);

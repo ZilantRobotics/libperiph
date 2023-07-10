@@ -68,6 +68,33 @@ EscThunderMessage thunderNextByte(EscThunderFeedback* esc_thunder, uint8_t byte)
     return ESC_THUNDER_UNKNOWN;
 }
 
+bool thunderParseDma(size_t recv_idx, DmaUartHandler_t* handler, EscThunderFeedback* feedback) {
+    if (handler == NULL || recv_idx >= handler->size || feedback == NULL) {
+        return false;
+    }
+
+    bool res = false;
+
+    uint8_t recv_bytes;
+    if (recv_idx > handler->saved_idx) {
+        recv_bytes = recv_idx - handler->saved_idx;
+        for (uint8_t idx = handler->saved_idx + 1; idx < recv_idx + 1; idx++) {
+            res |= (ESC_THUNDER_UNKNOWN != thunderNextByte(feedback, handler->buf[idx]));
+        }
+    } else if (recv_idx < handler->saved_idx) {
+        for (uint8_t idx = handler->saved_idx + 1; idx < handler->size; idx++) {
+            res |= (ESC_THUNDER_UNKNOWN != thunderNextByte(feedback, handler->buf[idx]));
+        }
+        for (uint8_t idx = 0; idx <= recv_idx; idx++) {
+            res |= (ESC_THUNDER_UNKNOWN != thunderNextByte(feedback, handler->buf[idx]));
+        }
+    }
+
+    handler->saved_idx = recv_idx;
+
+    return res;
+}
+
 EscThunderMessage thunderParseMessageInRingBuffer(EscThunderFeedback* esc_thunder) {
     uint8_t lin_buf[ESC_THUNDER_MAX_MSG_LEN];
     ringBufferLinearize(&esc_thunder->_ring_buffer, lin_buf);
