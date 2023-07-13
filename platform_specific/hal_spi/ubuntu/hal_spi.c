@@ -9,7 +9,6 @@
 #include <stddef.h>
 #include "libperiph_common.h"
 
-// NOTE: This function Should not be modified, when the callback is neede
 __attribute__((weak)) int8_t ubuntuSpiCallback(const uint8_t* tx, uint8_t* rx, uint8_t size) {
     (void)(tx);
     (void)(rx);
