@@ -31,6 +31,12 @@ $BUILD_DIR/tf_luna
 $BUILD_DIR/ws2812
 $BUILD_DIR/ring_buffer
 
+$BUILD_DIR/adc
+$BUILD_DIR/i2c
+$BUILD_DIR/spi
+$BUILD_DIR/timers
+$BUILD_DIR/uart
+
 if [[ $1 == "--coverage" ]]; then
 echo "Part 1:--------------------------------------------------"
 gcov $BUILD_DIR/CMakeFiles/bmp280.dir$REPO_DIR/sensors/barometer/*.gcda \

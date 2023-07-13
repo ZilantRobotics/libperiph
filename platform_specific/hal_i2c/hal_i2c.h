@@ -10,10 +10,18 @@
 
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * @brief Simple wrappers under HAL TX/RX functions
  */
 int8_t i2cTransmit(uint8_t id, const uint8_t tx[], uint8_t len);
 int8_t i2cReceive(uint8_t id, uint8_t* rx, uint8_t len);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif  // PLATFORM_SPECIFIC_HAL_I2C_H_

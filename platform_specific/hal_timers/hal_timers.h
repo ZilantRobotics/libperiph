@@ -10,6 +10,10 @@
 
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define HAL_TIMERS_ERROR                1
 #define HAL_TIMERS_WRONG_ARG            2
 #define HAL_TIMERS_WRONG_CONFIG         3
@@ -67,5 +71,9 @@ void timerSetPwmFrequency(Channel_t ch, uint16_t frequency_hz);
   * @brief Input capture features
   */
 uint32_t timerGetCapturedValue(Channel_t channel);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif  // PLATFORM_SPECIFIC_HAL_TIMERS_H_

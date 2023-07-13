@@ -8,3 +8,5 @@ Typically, you need to work with the following functions:
 int8_t i2cTransmit(uint8_t id, const uint8_t tx[], uint8_t len);
 int8_t i2cReceive(uint8_t id, uint8_t* rx, uint8_t len);
 ```
+
+You can check an example based on Ubuntu implementation in [the unit tests](../../tests/periphery/test_i2c.cpp).

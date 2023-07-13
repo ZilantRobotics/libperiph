@@ -53,3 +53,9 @@ gen_test(servo_common   devices/servos/test_common.cpp      ../devices/servos/CM
 gen_test(tf_luna        sensors/rangefinder/tf_luna.cpp     ../sensors/rangefinder/tf_luna/CMakeLists.txt)
 gen_test(ws2812         devices/rgb_leds/test_ws2812.cpp    ../devices/rgb_leds/CMakeLists.txt)
 gen_test(ring_buffer    common/test_ring_buffer.cpp         ../common/CMakeLists.txt)
+
+gen_test(adc            periphery/test_adc.cpp              ../platform_specific/hal_adc/CMakeLists.txt)
+gen_test(i2c            periphery/test_i2c.cpp              ../platform_specific/hal_i2c/CMakeLists.txt)
+gen_test(spi            periphery/test_spi.cpp              ../platform_specific/hal_spi/CMakeLists.txt)
+gen_test(timers         periphery/test_timers.cpp           ../platform_specific/hal_timers/CMakeLists.txt)
+gen_test(uart           periphery/test_uart.cpp             ../platform_specific/hal_uart/CMakeLists.txt)

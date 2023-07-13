@@ -11,3 +11,5 @@ uint8_t* uartRxDmaPop(UartInstance_t instance);
 
 int8_t uartTransmit(UartInstance_t instance, uint8_t buffer[], size_t size);
 ```
+
+You can check an example based on Ubuntu implementation in [the unit tests](../../tests/periphery/test_uart.cpp).

@@ -6,6 +6,7 @@ INC="-Icommon/ \
     -Idevices/ \
     -Isensors/ \
     -Itests/ \
+    -Iplatform_specific/hal_timers/ \
     -Iplatform_specific/hal_i2c"
 
 set -e
