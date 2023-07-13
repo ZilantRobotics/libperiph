@@ -4,11 +4,16 @@ REPO_DIR="$(dirname "$THIS_SCRIPT_DIR")"
 BUILD_DIR=$REPO_DIR/build/tests
 
 set -e
+if [[ $1 == "--coverage" ]]; then
+  RUN_COVERAGE="-DCOVERAGE=1"
+else
+  RUN_COVERAGE=""
+fi
 
 rm -rf $BUILD_DIR
 mkdir -p $BUILD_DIR
 cd $BUILD_DIR
-cmake -DCOVERAGE=1 ../../tests
+cmake $RUN_COVERAGE ../../tests
 make
 
 $BUILD_DIR/bmp280
@@ -26,6 +31,7 @@ $BUILD_DIR/tf_luna
 $BUILD_DIR/ws2812
 $BUILD_DIR/ring_buffer
 
+if [[ $1 == "--coverage" ]]; then
 echo "Part 1:--------------------------------------------------"
 gcov $BUILD_DIR/CMakeFiles/bmp280.dir$REPO_DIR/sensors/barometer/*.gcda \
      $BUILD_DIR/CMakeFiles/ublox.dir$REPO_DIR/sensors/gps/*.gcda \
@@ -43,3 +49,4 @@ echo "Part 2:--------------------------------------------------"
 gcov $BUILD_DIR/CMakeFiles/ms4525do.dir$REPO_DIR/sensors/differential_pressure/ms4525do*.gcda \
      $BUILD_DIR/CMakeFiles/ws2812.dir$REPO_DIR/devices/rgb_leds/ws2812*.gcda \
      $BUILD_DIR/CMakeFiles/tf_luna.dir$REPO_DIR/sensors/rangefinder/tf_luna/*.gcda
+fi

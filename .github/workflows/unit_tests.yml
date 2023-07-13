@@ -23,4 +23,4 @@ jobs:
           sudo make                                                                 &&  \
           sudo cp ./lib/libgtest*.a /usr/lib
 
-      - run: ./repository/tests/unit_tests_with_coverage.sh
+      - run: cd repository && make tests
