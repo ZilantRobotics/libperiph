@@ -20,11 +20,18 @@ set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 
 include_directories(.)
-set(LIBPERIPH_PLATFORM dummy)
+set(LIBPERIPH_PLATFORM ubuntu)
 
 function(gen_test app_name test_file cmake_path)
     include(${cmake_path})
-    add_executable(${app_name} ${test_file} ${DRIVERS_SOURCE} ${PERIPHERY_SOURCE})
+    include_directories(
+        ${LIBPERIPH_PERIPHERY_HEADERS}
+    )
+    add_executable(${app_name}
+        ${test_file}
+        ${DRIVERS_SOURCE}
+        ${LIBPERIPH_PERIPHERY_SOURCE}
+    )
     target_link_libraries(${app_name} gtest pthread gtest_main)
 endfunction()
 
