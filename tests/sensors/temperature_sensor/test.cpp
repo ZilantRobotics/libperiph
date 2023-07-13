@@ -5,11 +5,6 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-/**
- * @file test_stm32_temperature.cpp
- * @author d.ponomarev
- */
-
 #include <iostream>
 #include <gtest/gtest.h>
 #include "temperature_sensor/stm32_temperature.h"

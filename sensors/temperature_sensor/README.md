@@ -11,4 +11,4 @@ uint16_t temperature_degree = stm32TemperatureParse(raw_temperature_adc);
 
 ## Tests
 
-[tests/sensors/test_stm32_temperature.cpp](../../tests/test_stm32_temperature.cpp)
+[tests/sensors/temperature_sensor/test.cpp](../../tests/sensors/temperature_sensor/test.cpp)

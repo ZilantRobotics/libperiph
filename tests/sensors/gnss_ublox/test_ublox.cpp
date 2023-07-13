@@ -5,11 +5,6 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-/**
- * @file test_ublox.cpp
- * @author d.ponomarev
- */
-
 #include <gtest/gtest.h>
 #include <iostream>
 #include "gps/ublox.h"

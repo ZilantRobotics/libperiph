@@ -5,28 +5,12 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-/**
- * @file test_hmc5883l.cpp
- * @author d.ponomarev
- */
-
 #include <iostream>
 #include <gtest/gtest.h>
-#include "magnetometer/hmc5883l.h"
+#include "magnetometer/rm3100.h"
 
-TEST(hmc5883l, hmc5883lParseNormal) {
-    uint8_t raw[6] = {
-        4, 66,
-        4, 66,
-        4, 66
-    };
-    float x, y, z;
-
-    hmc5883lFillRxBuffer(raw);
-    hmc5883GetMeasurement(&x, &y, &z);
-    ASSERT_EQ(x, 1.0);
-    ASSERT_EQ(y, 1.0);
-    ASSERT_EQ(z, 1.0);
+TEST(rm3100, rm3100Init) {
+    ASSERT_EQ(rm3100Init(), -1);
 }
 
 int main (int argc, char *argv[]) {

@@ -36,5 +36,5 @@ rm3100GetMeasurement(&x, &y, &z);
 
 ## Tests
 
-- [tests/sensors/test_hmc5883l.cpp](../../tests/test_hmc5883l.cpp)
-- [tests/sensors/test_rm3100.cpp](../../tests/test_rm3100.cpp)
+- [tests/sensors/mag/hmc5883l.cpp](../../tests/sensors/mag/test_hmc5883l.cpp)
+- [tests/sensors/test_rm3100.cpp](../../tests/sensors/mag/test_rm3100.cpp)
