@@ -6,6 +6,7 @@
  */
 
 #include "hal_uart.h"
+#include <string.h>
 #include "libperiph_common.h"
 
 uint8_t ubuntu_uart_last_recv[2] __attribute__((weak)) = {};
