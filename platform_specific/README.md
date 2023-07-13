@@ -1,53 +1,29 @@
 ## HAL drivers
 
-Some drivers do not require any HAL specific functions, but other expected to have an outside implementation of a few function prototypes.
+Some drivers do not require any HAL specific functions, but other expected to have an outside implementation of a few functions.
+
+## Periphery
+
+The supported peripherals are listed in the table below:
+
+|||
+|-|-|
+|[hal_adc](hal_adc/README.md) | Analog-to-digital converter
+|[hal_i2c](hal_i2c/README.md) | Inter-Integrated Circuit
+|[hal_spi](hal_spi/README.md) | Serial Peripheral Interface
+|[hal_timers](hal_timers/README.md) | Hardware timers (PWM or input capture mode)
+|[hal_uart](hal_uart/README.md) | Universal asynchronous receiver / transmitter
+
+Please, refer to the specific periphery for the details.
 
 ## Supported platforms
 
-Here is a few examples of their implementation:
+Here are the few examples of the implementation:
 1. An example for stm32f103 based on STM32Cube Hardware Abstraction Layer (HAL) library.
-2. An example of dummy implementation for Ubuntu to be able to run a libperiph besed application is SITL mode.
+2. An example of dummy implementation for Ubuntu to be able to run a libperiph based application in Software In The Loop (SITL) mode.
 
+## Usage
 
-## Periphery API
+Normally, you don't need to directly work with these drivers. They are for internal purposes only.
 
-The supported periphery are listed below:
-
-**hal_adc**
-
-```c++
-int8_t adcInitDma(uint8_t num_of_channels);
-int8_t adcGetAll(uint16_t adc_measurements[]);
-uint16_t adcGet(uint8_t rank);
-```
-
-**hal_i2c**
-
-```c++
-int8_t i2cTransmit(uint8_t id, const uint8_t tx[], uint8_t len);
-int8_t i2cReceive(uint8_t id, uint8_t* rx, uint8_t len);
-```
-
-**hal_spi**
-
-```c++
-int8_t spiPerformTransaction(uint8_t* tx, uint8_t* rx, uint8_t size);
-```
-
-**hal_tim**
-
-```c++
-int8_t timerInit(Channel_t channel, TimerMode_t mode);
-void timerSetPwmDuration(Channel_t channel, uint32_t pwm);
-void timerSetPwmFrequency(Channel_t ch, uint16_t frequency_hz);
-```
-
-**hal_uart**
-
-```c++
-int8_t uartInitRx(UartInstance_t instance, UartType_t, uint8_t buffer[], uint16_t size);
-size_t uartGetLastReceivedIndex(UartInstance_t instance);
-uint8_t* uartRxDmaPop(UartInstance_t instance);
-
-int8_t uartTransmit(UartInstance_t instance, uint8_t buffer[], size_t size);
-```
+Otherwise, if you want to use them manually, it is recommended to define `LIBPERIPH_PLATFORM` to either `stm32` or `ubuntu` and then include a related CMakeLists.txt. After that, you will get `LIBPERIPH_PERIPHERY_SOURCE` and `LIBPERIPH_PERIPHERY_HEADERS` CMake variables with required source and header files.

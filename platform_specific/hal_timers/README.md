@@ -1,4 +1,14 @@
-## Usage
+## Hardware timers (PWM or input capture mode) HAL
+
+The usage of hal_timers driver is self documented in [hal_timers.h header file](hal_timers.h). Please refer to it for details.
+
+Typically, you need to work with the following functions:
+
+```c++
+int8_t timerInit(Channel_t channel, TimerMode_t mode);
+void timerSetPwmDuration(Channel_t channel, uint32_t pwm);
+void timerSetPwmFrequency(Channel_t ch, uint16_t frequency_hz);
+```
 
 Minimal usage example:
 
