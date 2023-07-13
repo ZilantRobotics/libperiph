@@ -1,4 +1,4 @@
-list(APPEND DRIVERS_SOURCE
+list(APPEND LIBPERIPH_DRIVERS_SOURCE
     ${CMAKE_CURRENT_LIST_DIR}/ring_buffer.c
 )
 include_directories(${CMAKE_CURRENT_LIST_DIR})

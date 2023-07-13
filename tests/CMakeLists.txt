@@ -29,7 +29,7 @@ function(gen_test app_name test_file cmake_path)
     )
     add_executable(${app_name}
         ${test_file}
-        ${DRIVERS_SOURCE}
+        ${LIBPERIPH_DRIVERS_SOURCE}
         ${LIBPERIPH_PERIPHERY_SOURCE}
     )
     target_link_libraries(${app_name} gtest pthread gtest_main)
