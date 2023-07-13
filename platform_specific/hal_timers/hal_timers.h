@@ -72,6 +72,11 @@ void timerSetPwmFrequency(Channel_t ch, uint16_t frequency_hz);
   */
 uint32_t timerGetCapturedValue(Channel_t channel);
 
+/**
+ * @brief This function is required only for unit tests or SITL mode
+ */
+void ubuntuStm32TimerCallback(Channel_t ch);
+
 #ifdef __cplusplus
 }
 #endif
