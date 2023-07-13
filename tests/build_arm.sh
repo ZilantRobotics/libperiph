@@ -8,6 +8,8 @@ INC="-Icommon/ \
     -Itests/ \
     -Iplatform_specific/hal_i2c"
 
+set -e
+
 # Part 1.
 $CC $FLAGS sensors/barometer/bmp280.c               $INC -o build/baro_bmp280.o
 $CC $FLAGS sensors/gps/ublox.c                      $INC -o build/ublox.o
@@ -25,7 +27,6 @@ $CC $FLAGS sensors/differential_pressure/ms4525do.c $INC -o build/ms4525do.o
 $CC $FLAGS sensors/rangefinder/tf_luna/tf_luna.c    $INC -o build/tf_luna.o
 
 # Auxiliary
-$CXX $FLAGS common/soft_timer.cpp                   $INC -o build/soft_timer.o
 # $CC $FLAGS devices/ws2812.c                         $INC -o build/ws2812.o
 $CC $FLAGS sensors/esc/flame.c                      $INC -o build/esc_flame.o
 $CC $FLAGS sensors/imu/mpu9250.c                    $INC -o build/mpu9250.o
