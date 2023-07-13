@@ -7,3 +7,5 @@ Typically, you need to work with the following functions:
 ```c++
 int8_t spiPerformTransaction(uint8_t* tx, uint8_t* rx, uint8_t size);
 ```
+
+You can check an example based on Ubuntu implementation in [the unit tests](../../tests/periphery/test_spi.cpp).

@@ -10,6 +10,14 @@
 
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 int8_t spiPerformTransaction(uint8_t* tx, uint8_t* rx, uint8_t size);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif  // PLATFORM_SPECIFIC_HAL_SPI_H_

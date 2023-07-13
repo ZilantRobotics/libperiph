@@ -17,4 +17,7 @@
 #define STATUS_OK       0
 #define STATUS_ERROR    -1
 
+#define LIBPERIPH_OK        0
+#define LIBPERIPH_ERROR     -1
+
 #endif  // SRC_COMMON_LIBPERIPH_COMMON_H_

@@ -32,3 +32,5 @@ int8_t res = timerInit(channel, mode);
 timerSetPwmDuration(channel, 1000);
 timerSetPwmFrequency(channel, 50);
 ```
+
+You can check an example based on Ubuntu implementation in [the unit tests](../../tests/periphery/test_timers.cpp).
