@@ -16,6 +16,11 @@ extern "C" {
 
 int8_t spiPerformTransaction(uint8_t* tx, uint8_t* rx, uint8_t size);
 
+/**
+ * @brief This function is required only for unit tests or SITL mode
+ */
+int8_t ubuntuSpiCallback(const uint8_t* tx, uint8_t* rx, uint8_t size);
+
 #ifdef __cplusplus
 }
 #endif
