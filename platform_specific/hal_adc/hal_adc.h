@@ -14,6 +14,8 @@
 extern "C" {
 #endif
 
+#define MAX_CHANNELS_NUM    8
+
 /**
  * @note use when your DMA is free
  */

@@ -10,4 +10,10 @@ int8_t adcGetAll(uint16_t adc_measurements[]);
 uint16_t adcGet(uint8_t rank);
 ```
 
+## stm32 usage
+
+You should configure the periphery in STM32CubeMX.
+
+## Ubuntu usage
+
 You can check an example based on Ubuntu implementation in [the unit tests](../../tests/periphery/test_adc.cpp).

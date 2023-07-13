@@ -10,13 +10,37 @@
 #include "hal_adc.h"
 #include "libperiph_common.h"
 
+uint16_t ubuntu_adc[MAX_CHANNELS_NUM] = {
+    365,    ///< 5.0 / (3.3 * 17.0 / 4095.0)
+    3102,   ///< 5.0 / (3.3 * 2.0 / 4095.0)
+    400,    ///< 400
+    1750,   ///< 1750
+};
 
-TEST(hal_adc, test) {
+
+TEST(hal_adc, test_adcInitDma) {
     ASSERT_EQ(LIBPERIPH_OK, adcInitDma(4));
-    ASSERT_EQ(LIBPERIPH_OK, adcGetAll(NULL));
-    adcGet(0);
+    ASSERT_EQ(LIBPERIPH_ERROR, adcInitDma(MAX_CHANNELS_NUM));
 }
 
+TEST(hal_adc, test_adcGetAll) {
+    ASSERT_EQ(LIBPERIPH_OK, adcInitDma(4));
+    uint16_t adc_value[4];
+    ASSERT_EQ(4, adcGetAll(adc_value));
+
+    ASSERT_EQ(LIBPERIPH_ERROR, adcGetAll(NULL));
+}
+
+TEST(hal_adc, test_adcGet) {
+    ASSERT_EQ(LIBPERIPH_OK, adcInitDma(4));
+
+    ASSERT_EQ(ubuntu_adc[0], adcGet(0));
+    ASSERT_EQ(ubuntu_adc[1], adcGet(1));
+    ASSERT_EQ(ubuntu_adc[2], adcGet(2));
+    ASSERT_EQ(ubuntu_adc[3], adcGet(3));
+    ASSERT_EQ(65535, adcGet(4));
+
+}
 
 int main (int argc, char *argv[]) {
     testing::InitGoogleTest(&argc, argv);

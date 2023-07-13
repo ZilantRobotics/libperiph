@@ -12,8 +12,6 @@
 #include "libperiph_common.h"
 
 
-#define MAX_CHANNELS_NUM    8
-
 #ifdef HAL_ADC_MODULE_ENABLED
     extern ADC_HandleTypeDef hadc1;
     #define ADC_PTR &hadc1
