@@ -1,6 +1,17 @@
 ## HAL drivers
 
-Some drivers do not require any HAL specific functions, but other expected to have an outside implementation of few function prototypes.
+Some drivers do not require any HAL specific functions, but other expected to have an outside implementation of a few function prototypes.
+
+## Supported platforms
+
+Here is a few examples of their implementation:
+1. An example for stm32f103 based on STM32Cube Hardware Abstraction Layer (HAL) library.
+2. An example of dummy implementation for Ubuntu to be able to run a libperiph besed application is SITL mode.
+
+
+## Periphery API
+
+The supported periphery are listed below:
 
 **hal_adc**
 
