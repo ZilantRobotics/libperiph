@@ -37,4 +37,4 @@ int8_t ubuntuSpiCallback(const uint8_t* tx, uint8_t* rx, uint8_t size) {
 
 By default, this fuction has a weak attribute and do nothing.
 
-Using this function you can emulate the real SPI in a way you want. In the init tests there is an example of RM3100 emulation.
+Using this function you can emulate the real SPI in a way you want. In the unit tests there is an example of RM3100 emulation.
