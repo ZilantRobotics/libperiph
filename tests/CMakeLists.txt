@@ -26,6 +26,8 @@ function(gen_test app_name test_file cmake_path)
     include(${cmake_path})
     include_directories(
         ${LIBPERIPH_PERIPHERY_HEADERS}
+        ${LIBPERIPH_DRIVERS_HEADERS}
+        ${LIBPERIPH_SENSORS_HEADERS}
     )
     add_executable(${app_name}
         ${test_file}
