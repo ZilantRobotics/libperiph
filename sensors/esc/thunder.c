@@ -75,9 +75,7 @@ bool thunderParseDma(size_t recv_idx, DmaUartHandler_t* handler, EscThunderFeedb
 
     bool res = false;
 
-    uint8_t recv_bytes;
     if (recv_idx > handler->saved_idx) {
-        recv_bytes = recv_idx - handler->saved_idx;
         for (uint8_t idx = handler->saved_idx + 1; idx < recv_idx + 1; idx++) {
             res |= (ESC_THUNDER_UNKNOWN != thunderNextByte(feedback, handler->buf[idx]));
         }

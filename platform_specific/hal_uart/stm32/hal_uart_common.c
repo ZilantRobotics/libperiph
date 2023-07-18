@@ -23,7 +23,7 @@ void UartChangeBaudrate(UartInstance_t instance, uint32_t rate) {
     } else if (instance == UART_SECOND) {
 #if defined(SECOND_UART)
         huart2.Init.BaudRate = rate;
-        HAL_UART_Init(&huart2);
+        HAL_HalfDuplex_Init(&huart2);
 #endif
     }
 }
