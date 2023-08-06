@@ -29,7 +29,7 @@ size_t uartGetLastReceivedIndex(UartInstance_t instance) {
 }
 
 uint8_t* uartRxDmaPop() {
-    return NULL;
+    return ubuntu_uart_rx_buffer[UART_FIRST];
 }
 
 int8_t uartTransmit(uint8_t buffer[], size_t size) {

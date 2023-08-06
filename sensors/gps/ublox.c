@@ -64,7 +64,7 @@ UbloxPackageType_t ubloxParse(const uint8_t buffer[], size_t size, size_t* num_o
         }
     }
 
-    *num_of_parsed_bytes = idx;
+    *num_of_parsed_bytes = idx + received_package;
 
     return received_package;
 }

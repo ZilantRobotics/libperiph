@@ -58,3 +58,4 @@ typedef struct {
     uint16_t crc;
 } UbxNavPvtRaw_t;
 #pragma pack(pop)
+static_assert(sizeof(UbxNavPvtRaw_t) == 100, "Wrong size");

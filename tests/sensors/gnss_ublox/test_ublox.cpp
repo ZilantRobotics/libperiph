@@ -46,6 +46,7 @@ TEST(Ublox, test_serialization_01_correct_package) {
     auto recv_pkg = ubloxParse((uint8_t*)&ubx_nav_pvt_raw, sizeof(ubx_nav_pvt_raw), &parsed_bytes);
     ubloxGetDroneCanFix2(&uavcan_fix2);
     ASSERT_EQ(recv_pkg, UBX_NAV_PVT_PKG);
+    ASSERT_EQ(parsed_bytes, sizeof(ubx_nav_pvt_raw));
 }
 
 TEST(Ublox, test_serialization_02_wrong_package) {
@@ -56,6 +57,7 @@ TEST(Ublox, test_serialization_02_wrong_package) {
     auto recv_pkg = ubloxParse((uint8_t*)&ubx_nav_pvt_raw, sizeof(ubx_nav_pvt_raw), &parsed_bytes);
     ubloxGetDroneCanFix2(&uavcan_fix2);
     ASSERT_EQ(recv_pkg, UBX_UNKNOWN_PKG);
+    ASSERT_EQ(parsed_bytes, sizeof(ubx_nav_pvt_raw));
 }
 
 TEST(Ublox, test_serialization_03_two_packages) {
@@ -68,7 +70,9 @@ TEST(Ublox, test_serialization_03_two_packages) {
     memcpy(buffer + 100, &ubx_nav_pvt_raw, 100);
 
     ASSERT_EQ(UBX_NAV_PVT_PKG, ubloxParse(buffer, 100, &parsed_bytes));
+    ASSERT_EQ(parsed_bytes, sizeof(ubx_nav_pvt_raw));
     ASSERT_EQ(UBX_NAV_PVT_PKG, ubloxParse(buffer + 100, 100, &parsed_bytes));
+    ASSERT_EQ(parsed_bytes, sizeof(ubx_nav_pvt_raw));
 }
 
 TEST(Ublox, test_serialization_04_two_packages) {
@@ -81,9 +85,13 @@ TEST(Ublox, test_serialization_04_two_packages) {
     memcpy(buffer + 100, &ubx_nav_pvt_raw, 100);
 
     ASSERT_EQ(UBX_UNKNOWN_PKG, ubloxParse(buffer + 0,    50, &parsed_bytes));
+    ASSERT_EQ(parsed_bytes, 50);
     ASSERT_EQ(UBX_NAV_PVT_PKG, ubloxParse(buffer + 50,   50, &parsed_bytes));
+    ASSERT_EQ(parsed_bytes, 50);
     ASSERT_EQ(UBX_UNKNOWN_PKG, ubloxParse(buffer + 100,  50, &parsed_bytes));
+    ASSERT_EQ(parsed_bytes, 50);
     ASSERT_EQ(UBX_NAV_PVT_PKG, ubloxParse(buffer + 150,  50, &parsed_bytes));
+    ASSERT_EQ(parsed_bytes, 50);
 }
 
 TEST(Ublox, test_serialization_05_two_packages) {
@@ -96,9 +104,13 @@ TEST(Ublox, test_serialization_05_two_packages) {
     memcpy(buffer + 100, &ubx_nav_pvt_raw, 100);
 
     ASSERT_EQ(UBX_UNKNOWN_PKG, ubloxParse(buffer + 0,    50, &parsed_bytes));
+    ASSERT_EQ(parsed_bytes, 50);
     ASSERT_EQ(UBX_NAV_PVT_PKG, ubloxParse(buffer + 50,   50, &parsed_bytes));
+    ASSERT_EQ(parsed_bytes, 50);
     ASSERT_EQ(UBX_UNKNOWN_PKG, ubloxParse(buffer + 100,  50, &parsed_bytes));
+    ASSERT_EQ(parsed_bytes, 50);
     ASSERT_EQ(UBX_NAV_PVT_PKG, ubloxParse(buffer + 150,  50, &parsed_bytes));
+    ASSERT_EQ(parsed_bytes, 50);
 }
 
 TEST(Ublox, test_deserialization_01_correct) {
