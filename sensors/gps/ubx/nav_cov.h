@@ -32,3 +32,16 @@ typedef struct {
     float velCovDD;
 } UbxNavCov_t;
 static_assert(sizeof(UbxNavCov_t) == 64, "Wrong size");
+
+#pragma pack(push, 1)
+typedef struct {
+    uint8_t sync_char_1;
+    uint8_t sync_char_2;
+    uint8_t class_nav;
+    uint8_t id_nav_pvt;
+    uint16_t payload_length;
+    UbxNavCov_t payload;
+    uint16_t crc;
+} UbxNavCovRaw_t;
+#pragma pack(pop)
+static_assert(sizeof(UbxNavCovRaw_t) == 72, "Wrong size");

@@ -50,3 +50,16 @@ typedef struct {
     uint32_t msss;                  ///< Milliseconds since Startup / Reset
 } UbxNavStatus_t;
 static_assert(sizeof(UbxNavStatus_t) == 16, "Wrong size");
+
+#pragma pack(push, 1)
+typedef struct {
+    uint8_t sync_char_1;
+    uint8_t sync_char_2;
+    uint8_t class_nav;
+    uint8_t id_nav_pvt;
+    uint16_t payload_length;
+    UbxNavStatus_t payload;
+    uint16_t crc;
+} UbxNavStatusRaw_t;
+#pragma pack(pop)
+static_assert(sizeof(UbxNavStatusRaw_t) == 24, "Wrong size");
