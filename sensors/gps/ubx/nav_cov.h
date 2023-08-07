@@ -11,25 +11,28 @@
 #include <assert.h>
 
 typedef struct {
+    float nn;
+    float ne;
+    float nd;
+    float ee;
+    float ed;
+    float dd;
+} UbloxCovarianceValues;
+
+typedef union {
+    UbloxCovarianceValues cov;
+    float covariance_urt[6];
+} UbloxCovariance;
+
+typedef struct {
     uint32_t iTow;                  ///< GPS time of week of the navigation epoch
     uint8_t version;
     uint8_t posCovValid;
     uint8_t velCovValid;
     uint8_t reserved1[9];
 
-    float posCovNN;
-    float posCovNE;
-    float posCovND;
-    float posCovEE;
-    float posCovED;
-    float posCovDD;
-
-    float velCovNN;
-    float velCovNE;
-    float velCovND;
-    float velCovEE;
-    float velCovED;
-    float velCovDD;
+    UbloxCovariance pos;
+    UbloxCovariance vel;
 } UbxNavCov_t;
 static_assert(sizeof(UbxNavCov_t) == 64, "Wrong size");
 

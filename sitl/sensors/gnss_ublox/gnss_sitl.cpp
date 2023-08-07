@@ -11,7 +11,28 @@ using namespace std::chrono_literals;
 #define GNSS_BUFFER_SIZE 200
 extern uint8_t gnss_buffer[GNSS_BUFFER_SIZE];
 
-void create_ubx_nav_pvt_package(UbxNavPvtRaw_t& buffer) {
+struct UbloxBuffer {
+    UbxNavPvtRaw_t ubx_nav_pvt_raw;
+    UbxNavCovRaw_t ubx_nav_cov_raw;
+    UbxNavStatusRaw_t ubx_nav_status_raw;
+
+    static constexpr const size_t SIZE = sizeof(UbxNavPvtRaw_t) + sizeof(UbxNavCovRaw_t) + sizeof(UbxNavStatusRaw_t);
+
+    void construct();
+
+private:
+    void create_ubx_nav_pvt_package(UbxNavPvtRaw_t& buffer);
+    void create_ubx_nav_cov_package(UbxNavCovRaw_t& buffer);
+    void create_ubx_nav_status_package(UbxNavStatusRaw_t& buffer);
+};
+
+void UbloxBuffer::construct() {
+    create_ubx_nav_pvt_package(ubx_nav_pvt_raw);
+    create_ubx_nav_cov_package(ubx_nav_cov_raw);
+    create_ubx_nav_status_package(ubx_nav_status_raw);
+}
+
+void UbloxBuffer::create_ubx_nav_pvt_package(UbxNavPvtRaw_t& buffer) {
     buffer.sync_char_1 = GPS_UBLOX_SYNC_CHAR_1_CODE;
     buffer.sync_char_2 = GPS_UBLOX_SYNC_CHAR_2_CODE;
     buffer.class_nav = CLASS_NAV;
@@ -20,7 +41,7 @@ void create_ubx_nav_pvt_package(UbxNavPvtRaw_t& buffer) {
     buffer.crc = ubloxCrc16(&buffer.class_nav, sizeof(buffer) - 4);
 }
 
-void create_ubx_nav_cov_package(UbxNavCovRaw_t& buffer) {
+void UbloxBuffer::create_ubx_nav_cov_package(UbxNavCovRaw_t& buffer) {
     buffer.sync_char_1 = GPS_UBLOX_SYNC_CHAR_1_CODE;
     buffer.sync_char_2 = GPS_UBLOX_SYNC_CHAR_2_CODE;
     buffer.class_nav = CLASS_NAV;
@@ -29,7 +50,7 @@ void create_ubx_nav_cov_package(UbxNavCovRaw_t& buffer) {
     buffer.crc = ubloxCrc16(&buffer.class_nav, sizeof(buffer) - 4);
 }
 
-void create_ubx_nav_status_package(UbxNavStatusRaw_t& buffer) {
+void UbloxBuffer::create_ubx_nav_status_package(UbxNavStatusRaw_t& buffer) {
     buffer.sync_char_1 = GPS_UBLOX_SYNC_CHAR_1_CODE;
     buffer.sync_char_2 = GPS_UBLOX_SYNC_CHAR_2_CODE;
     buffer.class_nav = CLASS_NAV;
@@ -38,22 +59,10 @@ void create_ubx_nav_status_package(UbxNavStatusRaw_t& buffer) {
     buffer.crc = ubloxCrc16(&buffer.class_nav, sizeof(buffer) - 4);
 }
 
-struct UbloxBuffer {
-    UbxNavPvtRaw_t ubx_nav_pvt_raw;
-    UbxNavCovRaw_t ubx_nav_cov_raw;
-    UbxNavStatusRaw_t ubx_nav_status_raw;
-
-    static constexpr const size_t SIZE = sizeof(UbxNavPvtRaw_t) + sizeof(UbxNavCovRaw_t) + sizeof(UbxNavStatusRaw_t);
-
-    void construct() {
-        create_ubx_nav_pvt_package(ubx_nav_pvt_raw);
-        create_ubx_nav_cov_package(ubx_nav_cov_raw);
-        create_ubx_nav_status_package(ubx_nav_status_raw);
-    }
-};
 
 void GnssSitlStartTask() {
     std::cout << "GNSS SITL mode has been activated!" << std::endl;
+    const auto init_time = std::chrono::steady_clock::now();
     size_t counter = 199;
 
     UbloxBuffer buffer;
@@ -63,12 +72,19 @@ void GnssSitlStartTask() {
     buffer.ubx_nav_pvt_raw.payload.lat = 596176930;
     buffer.ubx_nav_pvt_raw.payload.hMSL = 48000;
 
-    buffer.ubx_nav_cov_raw.payload.posCovNN = 1.0;
-    buffer.ubx_nav_cov_raw.payload.posCovEE = 0.99;
-    buffer.ubx_nav_cov_raw.payload.posCovDD = 1.01;
-    buffer.ubx_nav_cov_raw.payload.velCovNN = 0.50;
-    buffer.ubx_nav_cov_raw.payload.velCovEE = 0.49;
-    buffer.ubx_nav_cov_raw.payload.velCovDD = 0.51;
+    buffer.ubx_nav_cov_raw.payload.pos.cov.nn = 1.01;
+    buffer.ubx_nav_cov_raw.payload.pos.cov.ne = 1.02;
+    buffer.ubx_nav_cov_raw.payload.pos.cov.nd = 1.03;
+    buffer.ubx_nav_cov_raw.payload.pos.cov.ee = 1.04;
+    buffer.ubx_nav_cov_raw.payload.pos.cov.ed = 1.05;
+    buffer.ubx_nav_cov_raw.payload.pos.cov.dd = 1.06;
+
+    buffer.ubx_nav_cov_raw.payload.vel.cov.nn = 0.51;
+    buffer.ubx_nav_cov_raw.payload.vel.cov.ne = 0.52;
+    buffer.ubx_nav_cov_raw.payload.vel.cov.nd = 0.53;
+    buffer.ubx_nav_cov_raw.payload.vel.cov.ee = 0.54;
+    buffer.ubx_nav_cov_raw.payload.vel.cov.ed = 0.45;
+    buffer.ubx_nav_cov_raw.payload.vel.cov.dd = 0.56;
 
     buffer.ubx_nav_status_raw.payload.flags2.spoofDetState = NO_SPOOFING_INDICATED;
 
@@ -76,6 +92,14 @@ void GnssSitlStartTask() {
 
     auto next_awake = std::chrono::steady_clock::now() + 1ms;
     while (true) {
+        const auto crnt_time = std::chrono::steady_clock::now();
+        auto elapsed_time = std::chrono::duration_cast<std::chrono::milliseconds>(crnt_time - init_time).count();
+
+        if (counter % UbloxBuffer::SIZE == 0) {
+            buffer.ubx_nav_pvt_raw.payload.time_of_week_ms = elapsed_time;
+            buffer.construct();
+        }
+
         size_t buffer_idx = counter % GNSS_BUFFER_SIZE;
         gnss_buffer[buffer_idx] = ((uint8_t*)&buffer)[counter % UbloxBuffer::SIZE];
         uartSetLastReceivedIndex(UART_FIRST, buffer_idx);

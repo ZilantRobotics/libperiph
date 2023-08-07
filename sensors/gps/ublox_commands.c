@@ -211,6 +211,14 @@ int8_t ubloxExecuteCommand(UbloxCommand command) {
     return result;
 }
 
+UbloxCommand ubloxGetCommand(uint8_t idx) {
+    if (idx >= UBLOX_COMMAND_AMOUNT) {
+        return 255;
+    }
+
+    return ubxConfigurationSequence[idx];
+}
+
 int8_t ubloxConfigure(uint16_t delay) {
     int8_t result = 0;
 
