@@ -47,6 +47,11 @@ int8_t uartTransmitDma(uint8_t buffer[], size_t size);
 void uartRegisterTxCallback(UartInstance_t instance, void (*tx_callback)());
 void uartEnableTx(bool enable);
 
+/**
+ * @brief For SITL and unit tests only
+ */
+void uartSetLastReceivedIndex(UartInstance_t instance, size_t last_recv_idx);
+
 #ifdef __cplusplus
 }
 #endif

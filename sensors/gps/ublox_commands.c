@@ -106,6 +106,8 @@ static UbloxCommand ubxConfigurationSequence[] = {
     UBX_CMD_RATE_10_HZ,
     UBX_CMD_SAVE_CONFIG,
 };
+#define UBLOX_COMMAND_AMOUNT (sizeof(ubxConfigurationSequence) / sizeof(UbloxCommand))
+static_assert(UBLOX_COMMAND_AMOUNT == 24, "Wrong size");
 
 int8_t ubloxInit(UbxTransmit_t transmit, UbxDelay_t delay, UbxChangeBaudRate_t changeBaudRate) {
     if (transmit == NULL || delay == NULL || changeBaudRate == NULL) {
@@ -212,7 +214,7 @@ int8_t ubloxExecuteCommand(UbloxCommand command) {
 int8_t ubloxConfigure(uint16_t delay) {
     int8_t result = 0;
 
-    for (uint_fast8_t cmd_idx = 0; cmd_idx < sizeof(ubxConfigurationSequence); cmd_idx++) {
+    for (uint_fast8_t cmd_idx = 0; cmd_idx < UBLOX_COMMAND_AMOUNT; cmd_idx++) {
         result |= ubloxExecuteCommand(ubxConfigurationSequence[cmd_idx]);
         ubxDelay(delay);
     }

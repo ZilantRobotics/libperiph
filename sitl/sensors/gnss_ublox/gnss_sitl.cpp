@@ -2,13 +2,13 @@
 #include <iostream>
 #include <cstring>
 #include <chrono>
+#include "hal_uart.h"
 #include "gps/ublox.h"
 #include "gps/ublox_emulation.h"
 
 using namespace std::chrono_literals;
 
 #define GNSS_BUFFER_SIZE 200
-uint8_t ubuntu_uart_last_recv[2] = {199, 199};
 extern uint8_t gnss_buffer[GNSS_BUFFER_SIZE];
 
 void create_ubx_nav_pvt_package(UbxNavPvtRaw_t& buffer) {
@@ -78,7 +78,7 @@ void GnssSitlStartTask() {
     while (true) {
         size_t buffer_idx = counter % GNSS_BUFFER_SIZE;
         gnss_buffer[buffer_idx] = ((uint8_t*)&buffer)[counter % UbloxBuffer::SIZE];
-        ubuntu_uart_last_recv[0] = buffer_idx;
+        uartSetLastReceivedIndex(UART_FIRST, buffer_idx);
         counter++;
         std::this_thread::sleep_until(next_awake);
         next_awake += 1ms;

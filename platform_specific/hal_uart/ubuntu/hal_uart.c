@@ -9,27 +9,37 @@
 #include <string.h>
 #include "libperiph_common.h"
 
-uint8_t ubuntu_uart_last_recv[2] __attribute__((weak)) = {};
-uint8_t* ubuntu_uart_rx_buffer[2] __attribute__((weak)) = {};
+static uint8_t rx_last_indexes[2];
+static uint8_t* rx_buffers[2] = {};
 
-uint8_t ubuntu_uart_tx_buffer[256] __attribute__((weak)) = {};
+// We should have a ring buffer here and a callback here
+static uint8_t tx_buffer[256] = {};
+static uint8_t tx_buffer_size;
 
 int8_t uartInitRxDma(UartInstance_t instance, uint8_t buffer[], uint16_t size) {
     if (instance >= UART_AMOUNT || buffer == NULL || size == 0) {
         return LIBPERIPH_ERROR;
     }
 
-    ubuntu_uart_rx_buffer[instance] = buffer;
+    rx_buffers[instance] = buffer;
 
     return LIBPERIPH_OK;
 }
 
+void uartSetLastReceivedIndex(UartInstance_t instance, size_t last_recv_idx) {
+    if (instance >= UART_AMOUNT) {
+        return;
+    }
+
+    rx_last_indexes[instance] = last_recv_idx;
+}
+
 size_t uartGetLastReceivedIndex(UartInstance_t instance) {
-    return (instance >= UART_AMOUNT) ? 0 : ubuntu_uart_last_recv[instance];
+    return (instance >= UART_AMOUNT) ? 0 : rx_last_indexes[instance];
 }
 
 uint8_t* uartRxDmaPop() {
-    return ubuntu_uart_rx_buffer[UART_FIRST];
+    return rx_buffers[UART_FIRST];
 }
 
 int8_t uartTransmit(uint8_t buffer[], size_t size) {
@@ -37,7 +47,8 @@ int8_t uartTransmit(uint8_t buffer[], size_t size) {
         return LIBPERIPH_ERROR;
     }
 
-    memcpy(ubuntu_uart_tx_buffer, buffer, size);
+    memcpy(tx_buffer, buffer, size);
+    tx_buffer_size = size;
     return LIBPERIPH_OK;
 }
 
