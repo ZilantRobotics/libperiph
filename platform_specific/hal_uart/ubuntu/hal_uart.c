@@ -9,7 +9,7 @@
 #include <string.h>
 #include "libperiph_common.h"
 
-static uint16_t rx_last_indexes[2];
+static uint16_t rx_last_indexes[2] = {199, 199};
 static uint8_t* rx_buffers[2] = {};
 
 // We should have a ring buffer here and a callback here

@@ -63,7 +63,7 @@ void UbloxBuffer::create_ubx_nav_status_package(UbxNavStatusRaw_t& buffer) {
 void GnssSitlStartTask() {
     std::cout << "GNSS SITL mode has been activated!" << std::endl;
     const auto init_time = std::chrono::steady_clock::now();
-    size_t counter = 199;
+    size_t ubx_byte_counter = GNSS_BUFFER_SIZE - 1;
 
     UbloxBuffer buffer;
 
@@ -90,20 +90,27 @@ void GnssSitlStartTask() {
 
     buffer.construct();
 
-    auto next_awake = std::chrono::steady_clock::now() + 1ms;
+    auto next_awake = std::chrono::steady_clock::now() + 50ms;
+    std::this_thread::sleep_until(next_awake);
+    memcpy(gnss_buffer, &buffer, UbloxBuffer::SIZE);
+
     while (true) {
         const auto crnt_time = std::chrono::steady_clock::now();
         auto elapsed_time = std::chrono::duration_cast<std::chrono::milliseconds>(crnt_time - init_time).count();
-
-        if (counter % UbloxBuffer::SIZE == 0) {
+        if (ubx_byte_counter % UbloxBuffer::SIZE == 0) {
+            std::cout << elapsed_time << std::endl;
             buffer.ubx_nav_pvt_raw.payload.time_of_week_ms = elapsed_time;
             buffer.construct();
         }
 
-        size_t buffer_idx = counter % GNSS_BUFFER_SIZE;
-        gnss_buffer[buffer_idx] = ((uint8_t*)&buffer)[counter % UbloxBuffer::SIZE];
-        uartSetLastReceivedIndex(UART_FIRST, buffer_idx);
-        counter++;
+        for (uint_fast8_t idx = 0; idx < 1; idx++) {
+            ubx_byte_counter++;
+            size_t buffer_idx = ubx_byte_counter % GNSS_BUFFER_SIZE;
+            size_t ubx_tx_buffer_idx = ubx_byte_counter % UbloxBuffer::SIZE;
+            gnss_buffer[buffer_idx] = ((uint8_t*)&buffer)[ubx_tx_buffer_idx];
+            uartSetLastReceivedIndex(UART_FIRST, buffer_idx);
+        }
+
         std::this_thread::sleep_until(next_awake);
         next_awake += 1ms;
     }
