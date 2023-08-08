@@ -9,12 +9,12 @@
 #include <string.h>
 #include "libperiph_common.h"
 
-static uint8_t rx_last_indexes[2];
+static uint16_t rx_last_indexes[2];
 static uint8_t* rx_buffers[2] = {};
 
 // We should have a ring buffer here and a callback here
 static uint8_t tx_buffer[256] = {};
-static uint8_t tx_buffer_size;
+static uint16_t tx_buffer_size;
 
 int8_t uartInitRxDma(UartInstance_t instance, uint8_t buffer[], uint16_t size) {
     if (instance >= UART_AMOUNT || buffer == NULL || size == 0) {
