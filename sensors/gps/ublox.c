@@ -241,3 +241,8 @@ uint16_t ubloxGetPackageStats(UbloxPackageType_t package_type) {
 
     return ubx_package_counters[package_type];
 }
+
+double ubloxRawToRad(int32_t ublox_raw_deg_1e_7) {
+    double UBLOX_TO_CYPHAL = 1.74532925e-9;  // pi / 1e7 / 180
+    return UBLOX_TO_CYPHAL * ublox_raw_deg_1e_7;
+}

@@ -20,8 +20,8 @@ TEST(hal_uart, test_uartInitRxDma) {
 }
 
 TEST(hal_uart, test_uartGetLastReceivedIndex) {
-    ASSERT_EQ(0, uartGetLastReceivedIndex(UART_FIRST));
-    ASSERT_EQ(0, uartGetLastReceivedIndex(UART_SECOND));
+    ASSERT_EQ(199, uartGetLastReceivedIndex(UART_FIRST));
+    ASSERT_EQ(199, uartGetLastReceivedIndex(UART_SECOND));
 
     ASSERT_EQ(0, uartGetLastReceivedIndex(UART_AMOUNT));
 }
