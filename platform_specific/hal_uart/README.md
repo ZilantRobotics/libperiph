@@ -29,15 +29,10 @@ Ubuntu platform might used either for unit tests or for SITL mode.
 
 For unit tests example based on Ubuntu implementation please check [tests/periphery/test_uart.cpp](../../tests/periphery/test_uart.cpp).
 
-In SITL mode you should implement your own version of ubuntu_uart arrays:
+In SITL mode it is expected to use the following functions:
 
 ```c++
-uint8_t ubuntu_uart_last_recv[2] = {};
-uint8_t* ubuntu_uart_rx_buffer[2] = {};
-
-uint8_t ubuntu_uart_tx_buffer[256] = {};
+void uartSetLastReceivedIndex(UartInstance_t instance, size_t last_recv_idx);
 ```
 
-By default, this array has a weak attribute.
-
-So, you can change the values of UART in real time to emulate the real UART in a way you want.
+GNSS SITL example: [gnss_sitl](../../sitl/sensors/gnss_ublox/gnss_sitl.cpp)

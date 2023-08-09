@@ -71,6 +71,8 @@ int8_t ubloxConfigure(uint16_t delay);
  */
 int8_t ubloxExecuteCommand(UbloxCommand command);
 
+UbloxCommand ubloxGetCommand(uint8_t idx);
+
 #ifdef __cplusplus
 }
 #endif

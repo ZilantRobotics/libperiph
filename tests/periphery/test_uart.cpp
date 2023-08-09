@@ -10,12 +10,6 @@
 #include "hal_uart.h"
 #include "libperiph_common.h"
 
-uint8_t ubuntu_uart_last_recv[2] = {};
-uint8_t* ubuntu_uart_rx_buffer[2] = {};
-
-uint8_t ubuntu_uart_tx_buffer[256] = {};
-
-
 TEST(hal_uart, test_uartInitRxDma) {
     uint8_t uart_rx_buffer[8];
     ASSERT_EQ(LIBPERIPH_OK, uartInitRxDma(UART_FIRST, uart_rx_buffer, 8));
@@ -26,8 +20,8 @@ TEST(hal_uart, test_uartInitRxDma) {
 }
 
 TEST(hal_uart, test_uartGetLastReceivedIndex) {
-    ASSERT_EQ(0, uartGetLastReceivedIndex(UART_FIRST));
-    ASSERT_EQ(0, uartGetLastReceivedIndex(UART_SECOND));
+    ASSERT_EQ(199, uartGetLastReceivedIndex(UART_FIRST));
+    ASSERT_EQ(199, uartGetLastReceivedIndex(UART_SECOND));
 
     ASSERT_EQ(0, uartGetLastReceivedIndex(UART_AMOUNT));
 }

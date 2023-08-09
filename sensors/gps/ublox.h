@@ -80,6 +80,9 @@ void ubloxGetDroneCanFix2(GnssUblox_t* uavcan_fix2);
 
 uint16_t ubloxGetPackageStats(UbloxPackageType_t package_type);
 
+double ubloxRawToRad(int32_t ublox_raw_deg_1e_7);
+uint64_t dayToUnixTimestamp(uint16_t y, uint8_t mo, uint8_t d, uint8_t h, uint8_t mi, uint8_t s);
+
 #ifdef __cplusplus
 }
 #endif
