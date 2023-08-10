@@ -79,6 +79,10 @@ static UbloxCommand ubxConfigurationSequence[] = {
     UBX_CMD_FACTORY_RESET,
     UBX_CMD_BAUDRATE_921600,
 
+    UBX_SET_BAUDRATE_38400,
+    UBX_CMD_FACTORY_RESET,
+    UBX_CMD_BAUDRATE_921600,
+
     UBX_SET_BAUDRATE_115200,
     UBX_CMD_FACTORY_RESET,
     UBX_CMD_BAUDRATE_921600,
@@ -107,7 +111,7 @@ static UbloxCommand ubxConfigurationSequence[] = {
     UBX_CMD_SAVE_CONFIG,
 };
 #define UBLOX_COMMAND_AMOUNT (sizeof(ubxConfigurationSequence) / sizeof(UbloxCommand))
-static_assert(UBLOX_COMMAND_AMOUNT == 24, "Wrong size");
+static_assert(UBLOX_COMMAND_AMOUNT == 27, "Wrong size");
 
 int8_t ubloxInit(UbxTransmit_t transmit, UbxDelay_t delay, UbxChangeBaudRate_t changeBaudRate) {
     if (transmit == NULL || delay == NULL || changeBaudRate == NULL) {
@@ -138,6 +142,10 @@ int8_t ubloxExecuteCommand(UbloxCommand command) {
 
         case UBX_SET_BAUDRATE_9600:
             ubxChangeBaudRate(9600);
+            result = 0;
+            break;
+        case UBX_SET_BAUDRATE_38400:
+            ubxChangeBaudRate(38400);
             result = 0;
             break;
         case UBX_SET_BAUDRATE_115200:

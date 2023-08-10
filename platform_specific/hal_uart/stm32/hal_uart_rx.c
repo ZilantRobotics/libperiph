@@ -36,7 +36,7 @@ typedef struct {
     uint32_t total_rx_counter;
 } UartRxConfig_t;
 
-static UartRxConfig_t uart_rx[2];
+static UartRxConfig_t uart_rx[2] = {};
 
 
 int8_t uartInitRxDma(UartInstance_t instance, uint8_t buffer[], uint16_t size) {
@@ -65,7 +65,7 @@ void uartRegisterRxCallback(UartInstance_t instance, void (*rx_callback)()) {
 
 
 size_t uartGetLastReceivedIndex(UartInstance_t instance) {
-    if (instance > UART_SECOND) {
+    if (instance > UART_SECOND || uart_rx[instance].huart_ptr == NULL) {
         return 0;
     }
 
