@@ -31,7 +31,7 @@ void uartRegisterTxCallback(UartInstance_t instance, void (*tx_callback)()) {
     }
 }
 
-int8_t uartTransmit(uint8_t buffer[], size_t size) {
+int8_t uartTransmit(const uint8_t buffer[], size_t size) {
     if (size > MAX_UART_TX_BUF_SIZE) {
         return STATUS_ERROR;
     }

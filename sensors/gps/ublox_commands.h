@@ -48,7 +48,7 @@ typedef enum {
 extern "C" {
 #endif
 
-typedef int8_t (*UbxTransmit_t)(uint8_t[], size_t);
+typedef int8_t (*UbxTransmit_t)(const uint8_t[], size_t);
 typedef void (*UbxDelay_t)(uint32_t);
 typedef void (*UbxChangeBaudRate_t)(uint32_t);
 
