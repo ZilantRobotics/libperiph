@@ -75,19 +75,19 @@ static uint8_t ubxDisableRMC[] = {181, 98, 6, 1, 8, 0, 240, 4, 0, 0, 0, 0, 0, 0,
 static uint8_t ubxDisableVTG[] = {181, 98, 6, 1, 8, 0, 240, 5, 0, 0, 0, 0, 0, 0, 4, 70};
 
 static UbloxCommand ubxConfigurationSequence[] = {
-    UBX_SET_BAUDRATE_9600,
+    NODE_SET_BAUDRATE_9600,
     UBX_CMD_FACTORY_RESET,
     UBX_CMD_BAUDRATE_921600,
 
-    UBX_SET_BAUDRATE_38400,
+    NODE_SET_BAUDRATE_38400,
     UBX_CMD_FACTORY_RESET,
     UBX_CMD_BAUDRATE_921600,
 
-    UBX_SET_BAUDRATE_115200,
+    NODE_SET_BAUDRATE_115200,
     UBX_CMD_FACTORY_RESET,
     UBX_CMD_BAUDRATE_921600,
 
-    UBX_SET_BAUDRATE_921600,
+    NODE_SET_BAUDRATE_921600,
     UBX_CMD_FACTORY_RESET,
     UBX_CMD_BAUDRATE_921600,
 
@@ -140,19 +140,19 @@ int8_t ubloxExecuteCommand(UbloxCommand command) {
             result = ubxTransmit(ubxBaudRate921600, sizeof(ubxBaudRate921600));
             break;
 
-        case UBX_SET_BAUDRATE_9600:
+        case NODE_SET_BAUDRATE_9600:
             ubxChangeBaudRate(9600);
             result = 0;
             break;
-        case UBX_SET_BAUDRATE_38400:
+        case NODE_SET_BAUDRATE_38400:
             ubxChangeBaudRate(38400);
             result = 0;
             break;
-        case UBX_SET_BAUDRATE_115200:
+        case NODE_SET_BAUDRATE_115200:
             ubxChangeBaudRate(115200);
             result = 0;
             break;
-        case UBX_SET_BAUDRATE_921600:
+        case NODE_SET_BAUDRATE_921600:
             ubxChangeBaudRate(921600);
             result = 0;
             break;
