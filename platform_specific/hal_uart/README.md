@@ -8,7 +8,7 @@ Typically, you need to work with the following functions:
 int8_t uartInitRx(UartInstance_t instance, UartType_t, uint8_t buffer[], uint16_t size);
 size_t uartGetLastReceivedIndex(UartInstance_t instance);
 
-int8_t uartTransmit(UartInstance_t instance, uint8_t buffer[], size_t size);
+int8_t uartTransmit(UartInstance_t instance, const uint8_t buffer[], size_t size);
 ```
 
 ## stm32 usage

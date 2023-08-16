@@ -18,7 +18,7 @@ The driver should be stateful (keep previous parsed buffer state) and tolerate t
 
 // You should provide you own implementation of the following functions
 // Below you can see an example
-static int8_t uartTransmit(uint8_t buffer[], size_t size) {
+static int8_t uartTransmit(const uint8_t buffer[], size_t size) {
     return -1 * HAL_UART_Transmit(&huart1, buffer, size, 500);
 }
 static void ubxDelay(uint32_t delay_ms) {

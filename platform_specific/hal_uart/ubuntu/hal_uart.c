@@ -42,7 +42,7 @@ uint8_t* uartRxDmaPop() {
     return rx_buffers[UART_FIRST];
 }
 
-int8_t uartTransmit(uint8_t buffer[], size_t size) {
+int8_t uartTransmit(const uint8_t buffer[], size_t size) {
     if (buffer == NULL || size == 0) {
         return LIBPERIPH_ERROR;
     }
