@@ -28,6 +28,19 @@ void UartChangeBaudrate(UartInstance_t instance, uint32_t rate) {
     }
 }
 
+uint32_t UartGetBaudrate(UartInstance_t instance) {
+    uint32_t baudrate = 0;
+    if (instance == UART_FIRST) {
+        baudrate = huart1.Init.BaudRate;
+    } else if (instance == UART_SECOND) {
+#if defined(SECOND_UART)
+        baudrate = huart2.Init.BaudRate;
+#endif
+    }
+
+    return baudrate;
+}
+
 bool uartIsReady() {
     HAL_UART_StateTypeDef status = HAL_UART_GetState(&huart1);
     return (status == HAL_UART_STATE_READY || status == HAL_UART_STATE_BUSY_RX);

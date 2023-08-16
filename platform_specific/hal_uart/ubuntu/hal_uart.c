@@ -64,3 +64,7 @@ void uartEnableTx(bool enable) {
 
 void UartChangeBaudrate(UartInstance_t instance, uint32_t rate) {
 }
+
+uint32_t UartGetBaudrate(UartInstance_t instance) {
+    return 0;
+}
