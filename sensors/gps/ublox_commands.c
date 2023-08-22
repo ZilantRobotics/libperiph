@@ -221,7 +221,7 @@ int8_t ubloxExecuteCommand(UbloxCommand command) {
 
 UbloxCommand ubloxGetCommand(uint8_t idx) {
     if (idx >= UBLOX_COMMAND_AMOUNT) {
-        return 255;
+        return UBX_UNKNOWN_COMMAND;
     }
 
     return ubxConfigurationSequence[idx];
