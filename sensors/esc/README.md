@@ -8,43 +8,20 @@ This driver is suitable for T-motor ESC Alpha and Flame series:
 - [ALPHA Series](https://store.tmotor.com/category-59-b0-ALPHA+Series.html)
 - [FLAME Series](https://store.tmotor.com/category-20-b0-FLAME+Series.html)
 
-The usage is following:
+<img src="https://github.com/ZilantRobotics/libperiph/blob/docs/assets/sensors/esc/alpha.png?raw=true" alt="drawing" width=350>
 
-```c++
-static uint8_t dma_buffer[100];
-static DmaUartHandler_t dma_handler = {
-    .buf = dma_buffer,
-    .size = 100
-};
-static EscFlame_t esc_flame_status;
+<img src="https://github.com/ZilantRobotics/libperiph/blob/docs/assets/sensors/esc/flame.png?raw=true" alt="drawing" width=350>
 
-void process_esc_flame() {
-    // dma_handler.buf should be associated with DMA buffer
-    size_t last_recv_index; // is the latest received index in DMA buffer
+Protocol description: https://wiki.paparazziuav.org/wiki/Alpha_esc_with_telemetry_output
 
-    if (escFlameParseDma(last_recv_index, &dma_handler, &esc_flame_status)) {
-        // do something with data
-    }
-}
-
-```
+Please, follow [flame.h](flame.h) for usage description.
 
 ## ESC Thunder usage
 
 ESC Thunder driver parses UART feedback from [T-motor 300A 24S ESC Thunder](https://store.tmotor.com/goods-975-Thunder+300A+24S.html).
 
+<img src="https://github.com/ZilantRobotics/libperiph/blob/docs/assets/sensors/esc/thunder.png?raw=true" alt="drawing" width=350>
+
 Protocol description: https://m.xcopter.com/download/Thunder%20300A%20ESC%20Manual.pdf
 
-Usage:
-
-```c++
-// Usage example:
-EscThunderFeedback esc_thunder;
-thunderInit(&esc_thunder);
-
-uint8_t recv_byte;
-if (ESC_THUNDER_SPD == thunderNextByte(&esc_thunder, recv_byte)) {
-    // process esc_thunder.spd
-}
-
-```
+Please, follow [thunder.h](thunder.h) for usage description.
