@@ -7,6 +7,7 @@
 
 #include "flame.h"
 #include <string.h>
+#include <assert.h>
 
 
 #define FIRST_BYTE      155
@@ -19,30 +20,50 @@
 #endif
 
 typedef struct {
-    uint16_t smth;              // 0-1      OK  bytes are: 155, 22
-    uint16_t bale_no;           // 2-3      OK  bytes are: 4, 2
-    uint16_t weird_counter;     // 4-5      OK  0x??17
-    uint16_t rx_pct;            // 6-7      OK  0x0000 -> 0x0004    input pwm scaled from 0->1000
-    uint16_t rx_pct_too;        // 8-9      OK  0x2f00 -> 0x0004    input pwm too?
-    uint16_t rpm;               // 10-11    OK  0x0000 ->
-    uint16_t voltage;           // 12-13    ~OK 0xc?05              30V(1770),25V(1482), coef=59
-    uint16_t weird_may_be_crnt;  // 14-15   OK  0x00
-    uint16_t zero;              // 16-17    OK  0x00
-    uint16_t temperature;       // 18-19    ~OK 0x680c              need calibration
-    uint16_t status_code;       // 20-21    OK  0x??0c
-    uint16_t verify_code;       // 22-23    OK  0x????
-} EscFrame_t;
+    uint16_t header;            // 0-1      Bytes are: 155, 22
+    uint16_t bale_no;           // 2-3
+    uint16_t counter;           // 4-5
+    uint16_t throttle_in;       // 6-7
+    uint16_t throttle_out;      // 8-9
+    uint16_t rpm;               // 10-11
+    uint16_t voltage;           // 12-13
+    uint16_t current;           // 14-15
+    uint16_t current_phase;     // 16-17
+    uint8_t temperature_1;      // 18-19
+    uint8_t temperature_2;      // 18-19
+    uint16_t status_code;       // 20-21
+    uint16_t crc16;             // 22-23
+} EscFlameRaw_t;
+static_assert(sizeof(EscFlameRaw_t) == 24, "Wrong size");
 
-static uint8_t auxiliary_buf[ESC_FLAME_PACKAGE_SIZE];
 
-static uint16_t swap_bytes_order_u16(uint16_t u16);
+static uint8_t temp_buffer[ESC_FLAME_PACKAGE_SIZE];
+
+typedef struct {
+    float voltage;
+    float rpm;
+    float current;
+    float throttle;
+    uint8_t mot_num_poles;
+} Multipliers_t;
+
+// ESC coefficients (ESC Flame by default)
+static Multipliers_t config = {
+    .voltage = 1 / 59.0,
+    .rpm = 60.0 / 3.27 * 28,
+    .current = 0,
+    .throttle = 100.0 / 1024.0,
+    .mot_num_poles = 28,
+};
+
 LIBPERIPH_STATIC bool escFlameIsItPackageStart(const uint8_t* buffer);
 LIBPERIPH_STATIC void escFlameParse(const uint8_t* buffer, EscFlame_t* esc_status);
+static uint16_t swapBytesU16(uint16_t u16);
+static float escRawTemperatureToKelvin(uint8_t raw_temperature);
 
-bool escFlameParseDma(size_t last_idx,
-                      DmaUartHandler_t* parser,
-                      EscFlame_t* esc_status) {
-    if (parser == NULL || last_idx >= parser->size || esc_status == NULL) {
+
+bool escFlameParseDma(size_t last_idx, DmaUartHandler_t* parser, EscFlame_t* esc_flame) {
+    if (parser == NULL || last_idx >= parser->size || esc_flame == NULL) {
         return false;
     }
 
@@ -53,40 +74,66 @@ bool escFlameParseDma(size_t last_idx,
         if (last_idx < ESC_FLAME_PACKAGE_SIZE - 1) {
             uint16_t first_idx = parser->size - ESC_FLAME_PACKAGE_SIZE + last_idx + 1;
             uint16_t first_package_part_size = ESC_FLAME_PACKAGE_SIZE - last_idx - 1;
-            memcpy(auxiliary_buf, &parser->buf[first_idx], first_package_part_size);
-            memcpy(auxiliary_buf + first_package_part_size, parser->buf, last_idx + 1);
-            package = auxiliary_buf;
+            memcpy(temp_buffer, &parser->buf[first_idx], first_package_part_size);
+            memcpy(temp_buffer + first_package_part_size, parser->buf, last_idx + 1);
+            package = temp_buffer;
         } else {
             uint16_t first_idx = last_idx - ESC_FLAME_PACKAGE_SIZE + 1;
             package = &parser->buf[first_idx];
         }
 
         if (escFlameIsItPackageStart(package)) {
-            escFlameParse(package, esc_status);
+            escFlameParse(package, esc_flame);
             res = true;
         }
     }
     return res;
 }
 
+void escSetAlphaParameters() {
+    config.voltage = 1 / 10.0;
+    config.rpm = 10.0 / 3.0 * 28;
+    config.current = 0.000015625;
+    config.throttle = 100.0 / 1024.0;
+    config.mot_num_poles = 28;
+}
+
+void escMotorNumberOfPoles(uint8_t mot_num_poles) {
+    config.mot_num_poles = (mot_num_poles == 0) ? 1 : mot_num_poles;
+}
+
 bool escFlameIsItPackageStart(const uint8_t* raw_package_buffer) {
     if (raw_package_buffer == NULL) {
         return false;
     }
+
     return raw_package_buffer[0] == FIRST_BYTE && raw_package_buffer[1] == SECOND_BYTE;
 }
 
-void escFlameParse(const uint8_t* raw_package_buffer, EscFlame_t* esc_status) {
-    if (raw_package_buffer == NULL || esc_status == NULL) {
+void escFlameParse(const uint8_t* raw_package_buffer, EscFlame_t* esc_flame) {
+    if (raw_package_buffer == NULL || esc_flame == NULL) {
         return;
     }
 
-    const EscFrame_t* esc_frame = (const EscFrame_t*)raw_package_buffer;
-    esc_status->rpm = swap_bytes_order_u16(esc_frame->rpm) * 60.0 / 3.27;
-    esc_status->voltage = swap_bytes_order_u16(esc_frame->voltage) / 59.0;
-    esc_status->power_rating_pct = swap_bytes_order_u16(esc_frame->rx_pct) * 100.0 / 1024.0;
+    const EscFlameRaw_t* buffer = (const EscFlameRaw_t*)raw_package_buffer;
+    esc_flame->counter = buffer->counter;
+    esc_flame->rpm = swapBytesU16(buffer->rpm) * config.rpm / config.mot_num_poles;
+    esc_flame->voltage = swapBytesU16(buffer->voltage) * config.voltage;
+    esc_flame->current = swapBytesU16(buffer->current) * config.current;
+    esc_flame->temperature = escRawTemperatureToKelvin(buffer->temperature_1);
+    esc_flame->power_rating_pct = swapBytesU16(buffer->throttle_in) * config.throttle;
 }
 
-uint16_t swap_bytes_order_u16(uint16_t u16) {
+uint16_t swapBytesU16(uint16_t u16) {
     return (u16 >> 8) + ((u16 & 0xFF) << 8);
+}
+
+/**
+  * @note Actual formula is:
+  * fahrenheit = 273 - raw_temperature
+  * kelvin = (fahrenheit - 32) * 5 / 9 + 273
+  * Here is an optimized version
+  */
+float escRawTemperatureToKelvin(uint8_t raw_temperature) {
+    return (773 - raw_temperature) * 0.5555556f;
 }

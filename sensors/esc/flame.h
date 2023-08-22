@@ -19,7 +19,7 @@ extern "C" {
 
 
 typedef struct {
-    uint32_t error_count;           // uint32
+    uint32_t counter;               // uint32
     float voltage;                  // float16  Volt
     float current;                  // float16  Ampere
     float temperature;              // float16  Kelvin
@@ -29,8 +29,9 @@ typedef struct {
 } EscFlame_t;
 
 
+void escSetAlphaParameters();
 bool escFlameParseDma(size_t last_recv_idx, DmaUartHandler_t* parser, EscFlame_t* esc_status);
-
+void escMotorNumberOfPoles(uint8_t mot_num_poles);
 
 #ifdef LIBPERIPH_UNIT_TESTS
 bool escFlameIsItPackageStart(const uint8_t* buffer);

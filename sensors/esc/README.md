@@ -1,8 +1,14 @@
-# T-motor ESC Flame/Thunder drivers
+# T-motor ESC Flame/Alpha/Thunder drivers
 
-## ESC Flame usage
+## ESC Flame/Alpha usage
 
 ESC Flame driver parses UART feedback from [T-motor flame series](https://uav-en.tmotor.com/html/UAV/Multirotor/ESC/flame/).
+
+This driver is suitable for T-motor ESC Alpha and Flame series:
+- [ALPHA Series](https://store.tmotor.com/category-59-b0-ALPHA+Series.html)
+- [FLAME Series](https://store.tmotor.com/category-20-b0-FLAME+Series.html)
+
+The usage is following:
 
 ```c++
 static uint8_t dma_buffer[100];
