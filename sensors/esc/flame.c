@@ -92,7 +92,7 @@ bool escFlameParseDma(size_t last_idx, DmaUartHandler_t* parser, EscFlame_t* esc
 
 void escSetAlphaParameters() {
     config.voltage = 1 / 10.0;
-    config.rpm = 10.0 / 3.0 * 28;
+    config.rpm = 20.258398f;  // experimental value
     config.current = 0.000015625;
     config.throttle = 100.0 / 1024.0;
     config.mot_num_poles = 28;
