@@ -75,6 +75,10 @@ static uint8_t ubxDisableRMC[] = {181, 98, 6, 1, 8, 0, 240, 4, 0, 0, 0, 0, 0, 0,
 static uint8_t ubxDisableVTG[] = {181, 98, 6, 1, 8, 0, 240, 5, 0, 0, 0, 0, 0, 0, 4, 70};
 
 static UbloxCommand ubxConfigurationSequence[] = {
+    NODE_SET_BAUDRATE_921600,
+    UBX_CMD_FACTORY_RESET,
+    UBX_CMD_BAUDRATE_921600,
+
     NODE_SET_BAUDRATE_9600,
     UBX_CMD_FACTORY_RESET,
     UBX_CMD_BAUDRATE_921600,
@@ -83,13 +87,7 @@ static UbloxCommand ubxConfigurationSequence[] = {
     UBX_CMD_FACTORY_RESET,
     UBX_CMD_BAUDRATE_921600,
 
-    NODE_SET_BAUDRATE_115200,
-    UBX_CMD_FACTORY_RESET,
-    UBX_CMD_BAUDRATE_921600,
-
     NODE_SET_BAUDRATE_921600,
-    UBX_CMD_FACTORY_RESET,
-    UBX_CMD_BAUDRATE_921600,
 
     UBX_CFG_NAV_5,
     UBX_CFG_TP_5,
@@ -111,7 +109,7 @@ static UbloxCommand ubxConfigurationSequence[] = {
     UBX_CMD_SAVE_CONFIG,
 };
 #define UBLOX_COMMAND_AMOUNT (sizeof(ubxConfigurationSequence) / sizeof(UbloxCommand))
-static_assert(UBLOX_COMMAND_AMOUNT == 27, "Wrong size");
+static_assert(UBLOX_COMMAND_AMOUNT == 25, "Wrong size");
 
 int8_t ubloxInit(UbxTransmit_t transmit, UbxDelay_t delay, UbxChangeBaudRate_t changeBaudRate) {
     if (transmit == NULL || delay == NULL || changeBaudRate == NULL) {
