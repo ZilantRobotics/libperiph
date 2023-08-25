@@ -1,14 +1,8 @@
 /*
- * Copyright (C) 2021 Dmitry Ponomarev <ponomarevda96@gmail.com>
+ * Copyright (C) 2021-2023 Dmitry Ponomarev <ponomarevda96@gmail.com>
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
- */
-
-/**
- * @file tf_luna.c
- * @author d.ponomarev
- * @note https://files.seeedstudio.com/wiki/Grove-TF_Mini_LiDAR/res/SJ-PM-TF-Luna-A03-Product-Manual.pdf
  */
 
 #include "tf_luna.h"

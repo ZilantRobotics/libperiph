@@ -1,14 +1,8 @@
 /*
- * Copyright (C) 2020 Dmitry Ponomarev <ponomarevda96@gmail.com>
+ * Copyright (C) 2020-2023 Dmitry Ponomarev <ponomarevda96@gmail.com>
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
- */
-
-/**
- * @file sf1xx.c
- * @author d.ponomarev
- * @note https://www.mouser.com/datasheet/2/321/28055-LW20-SF20-LiDAR-Manual-Rev-7-1371848.pdf
  */
 
 #include "sf1xx.h"

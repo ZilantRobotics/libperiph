@@ -1,12 +1,8 @@
 /*
- * Copyright (C) 2020 Dmitry Ponomarev <ponomarevda96@gmail.com>
+ * Copyright (C) 2020-2023 Dmitry Ponomarev <ponomarevda96@gmail.com>
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
- */
-/**
- * @file sf1xx.h
- * @author d.ponomarev
  */
 
 #ifndef SENSORS_RANGESENSOR_SF1XX_H_
@@ -15,11 +11,14 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
   * @brief  Just save i2c_manager_id
   */
 void sf1xxInit(int8_t i2c_manager_id);
-
 
 /**
   * @brief  Process measurement
@@ -27,10 +26,13 @@ void sf1xxInit(int8_t i2c_manager_id);
   */
 bool sf1xxCollectData(uint32_t measurement_period);
 
-
 /**
   * @brief  Parse I2C rx buffer
   */
 float sf1xxParseCollectedData();
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif  // SENSORS_RANGESENSOR_SF1XX_H_

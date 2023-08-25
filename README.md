@@ -34,14 +34,14 @@ Summary: Lines executed:73.87% of 444
 
 **Part 2. Here are drivers required for a VTOL application:**
 
-| Driver                                    | HAL required | Arm build | Test coverage |
-| ----------------------------------------- | ------------ | --------- | ------------- |
-| [sensors/acs712](sensors/current_sensor)          | -            | +         |
-| [sensors/ms4252do](sensors/differential_pressure) | -            | +         | 78.26% of 23 |
-| sensors/rangefinder/garmin_lite           | i2c          | -         |
-| sensors/rangesensor/sf1xx                 | refactor me  | -         |
-| sensors/rangesensor/tf_luna               | -            | +         | 88.00% of 25 |
-| sensors/rangesensor/vl53l0x               | -            | +         |
+| Driver                                                                | HAL required | Arm build | Test coverage |
+| --------------------------------------------------------------------- | ------------ | --------- | ------------- |
+| [sensors/acs712](sensors/current_sensor)                              | -            | +         |
+| [sensors/ms4252do](sensors/differential_pressure)                     | -            | +         | 78.26% of 23 |
+| [sensors/rangefinder/garmin_lite](sensors/rangefinder/garmin_lite)    | i2c          | -         |
+| [sensors/rangesensor/sf1xx](sensors/rangefinder/sf1xx)                | refactor me  | -         |
+| [sensors/rangesensor/tf_luna](sensors/rangefinder/tf_luna)            | -            | +         | 88.00% of 25 |
+| [sensors/rangesensor/vl53l0x](sensors/rangefinder/vl53l0x)            | -            | +         |
 
 **Auxiliary**
 
@@ -49,8 +49,8 @@ Summary: Lines executed:73.87% of 444
 | ----------------------------------------- | ------------ | --------- | ------------- |
 | [devices/rgb_leds](devices/rgb_leds)      | pwm dma      | -         | 17.86% of 28 |
 | sensors/encoder                           | gpio         | -         |
-| sensors/esc/flame                         | -            | +         | 100.00% of 31|
-| sensors/esc/thunder                       | -            | -         | 100.00% of 63 |
+| [sensors/esc/flame](sensors/esc)          | -            | +         | 100.00% of 31|
+| [sensors/esc/thunder](sensors/esc)        | -            | -         | 100.00% of 63 |
 | sensors/mpu9250                           | i2c          | +         |
 | sensors/rangefinder/srf_05                | refactor me  | +         |
 

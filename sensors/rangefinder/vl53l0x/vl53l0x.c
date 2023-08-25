@@ -5,11 +5,6 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-/**
- * @file vl53l0x.c
- * @author d.ponomarev
- */
-
 #include "vl53l0x.h"
 #include <string.h>
 #include "main.h"

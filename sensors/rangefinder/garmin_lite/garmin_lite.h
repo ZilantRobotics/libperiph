@@ -1,18 +1,19 @@
 /*
- * Copyright (C) 2020 Dmitry Ponomarev <ponomarevda96@gmail.com>
+ * Copyright (C) 2020-2023 Dmitry Ponomarev <ponomarevda96@gmail.com>
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-/**
- * @file garmin_lite.h
- * @author d.ponomarev
- */
+
 #ifndef SENSORS_RANGESENSOR_GARMIN_LITE_H_
 #define SENSORS_RANGESENSOR_GARMIN_LITE_H_
 
 #include <stdbool.h>
 #include <stdint.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
   * @brief  Just save i2c_manager_id
@@ -36,5 +37,9 @@ float garminLiteParseCollectedData();
   * @brief  Get 2 bytes of serial number
   */
 void garminGetSerialNumber(uint8_t buffer[]);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif  // SENSORS_RANGESENSOR_GARMIN_LITE_H_
