@@ -10,14 +10,7 @@
 #include "main.h"
 #include "i2c_manager.h"
 #include "params.h"
-
-#ifndef STATUS_ERROR
-    #define STATUS_ERROR -1
-#endif
-#ifndef STATUS_OK
-    #define STATUS_OK 0
-#endif
-
+#include "libperiph_common.h"
 
 #define I2C_ID                  (0x68 << 1)
 #define I2C_RESPONSE_SIZE       2
@@ -36,12 +29,12 @@ bool sf1xxCollectData(uint32_t measurement_period) {
     static uint32_t next_measurement_time_ms = 0;
     uint32_t crnt_time = HAL_GetTick();
 
-    if (i2c_manager_id == STATUS_ERROR || crnt_time < next_measurement_time_ms) {
+    if (i2c_manager_id == LIBPERIPH_ERROR || crnt_time < next_measurement_time_ms) {
         return false;
     }
     next_measurement_time_ms = crnt_time + measurement_period;
 
-    if (i2cManagerPerformRequest(i2c_manager_id, &sf1xxMeasureCallback) == STATUS_ERROR) {
+    if (i2cManagerPerformRequest(i2c_manager_id, &sf1xxMeasureCallback) == LIBPERIPH_ERROR) {
         return false;
     }
 

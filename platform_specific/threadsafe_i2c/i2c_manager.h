@@ -28,8 +28,4 @@ int8_t i2cManagerPerformRequest(int8_t device_id, void (*function)());
  */
 void i2cManagerSpin();
 
-
-int8_t i2cWriteRegisterOneByte(uint8_t dev_id, uint8_t reg_addr, uint8_t new_reg_value);
-int8_t i2cReadRegister(uint8_t dev_id, uint8_t reg_addr, uint8_t* out, uint8_t out_length);
-
 #endif  // PLATFORM_SPECIFIC_I2C_MANAGER_H_

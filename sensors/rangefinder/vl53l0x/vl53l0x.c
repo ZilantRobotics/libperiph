@@ -10,14 +10,7 @@
 #include "main.h"
 #include "i2c_manager.h"
 #include "params.h"
-
-#ifndef STATUS_ERROR
-    #define STATUS_ERROR -1
-#endif
-#ifndef STATUS_OK
-    #define STATUS_OK 0
-#endif
-
+#include "libperiph_common.h"
 
 #define I2C_ID                                          (0x52)
 
@@ -48,7 +41,7 @@ typedef enum {
     CALIBRATION_TYPE_PHASE
 } Calibration_type_t;
 
-static int8_t i2c_manager_id = STATUS_ERROR;
+static int8_t i2c_manager_id = LIBPERIPH_ERROR;
 static uint16_t range = 0;
 static uint8_t stop_variable = 0;
 
@@ -75,14 +68,14 @@ int8_t vl53l0xInit(int8_t new_i2c_manager_id) {
     }
 
     if (!vl53l0xStaticInit()) {
-        return STATUS_ERROR;
+        return LIBPERIPH_ERROR;
     }
 
     if (!vl53l0xPerformRefCalibration()) {
-        return STATUS_ERROR;
+        return LIBPERIPH_ERROR;
     }
 
-    return STATUS_OK;
+    return LIBPERIPH_OK;
 }
 
 
@@ -90,12 +83,12 @@ bool vl53l0xCollectData(uint32_t measurement_period) {
     static uint32_t next_measurement_time_ms = 0;
     uint32_t crnt_time = HAL_GetTick();
 
-    if (i2c_manager_id == STATUS_ERROR || crnt_time < next_measurement_time_ms) {
+    if (i2c_manager_id == LIBPERIPH_ERROR || crnt_time < next_measurement_time_ms) {
         return false;
     }
     next_measurement_time_ms = crnt_time + measurement_period;
 
-    if (i2cManagerPerformRequest(i2c_manager_id, &vl53l0xMeasureCallback) == STATUS_ERROR) {
+    if (i2cManagerPerformRequest(i2c_manager_id, &vl53l0xMeasureCallback) == LIBPERIPH_ERROR) {
         return false;
     }
 

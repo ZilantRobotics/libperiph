@@ -85,21 +85,3 @@ void i2cManagerSpin() {
 bool i2cManagerIsComplete(uint8_t device_id) {
     return (requests[device_id].status == STATUS_WORKING) ? false : true;
 }
-
-int8_t i2cWriteRegisterOneByte(uint8_t dev_id, uint8_t reg_addr, uint8_t new_reg_value) {
-    uint8_t tx_buffer[2] = {reg_addr, new_reg_value};
-    if (i2cTransmit(dev_id, tx_buffer, 2) == STATUS_ERROR) {
-        return STATUS_ERROR;
-    }
-    return STATUS_OK;
-}
-
-int8_t i2cReadRegister(uint8_t dev_id, uint8_t reg_addr, uint8_t* out, uint8_t out_length) {
-    if (i2cTransmit(dev_id, &reg_addr, 1) == STATUS_ERROR) {
-        return STATUS_ERROR;
-    }
-    if (i2cReceive(dev_id, out, out_length) == STATUS_ERROR) {
-        return STATUS_ERROR;
-    }
-    return STATUS_OK;
-}

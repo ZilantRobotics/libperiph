@@ -21,7 +21,7 @@ static uint8_t buffer[TF_LUNA_BUFFER_SIZE];
 
 
 int8_t tfLunaInit() {
-    return STATUS_OK;
+    return LIBPERIPH_OK;
 }
 
 float tfParseRange(const TfLunaSerialFrame_t* buffer_ptr) {
@@ -47,7 +47,7 @@ int8_t tfLunaFindFrameStart() {
             return idx;
         }
     }
-    return STATUS_ERROR;
+    return LIBPERIPH_ERROR;
 }
 
 float tfLunaParseData(int8_t idx) {

@@ -5,17 +5,11 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-/**
- * @file libperiph_common.h
- * @author d.ponomarev
- * @date Oct 23, 2022
- */
-
 #ifndef SRC_COMMON_LIBPERIPH_COMMON_H_
 #define SRC_COMMON_LIBPERIPH_COMMON_H_
 
-#define STATUS_OK       0
-#define STATUS_ERROR    -1
+#define STATUS_OK           0
+#define STATUS_ERROR        -1
 
 #define LIBPERIPH_OK        0
 #define LIBPERIPH_ERROR     -1
