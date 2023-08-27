@@ -51,7 +51,7 @@ void ws2812bSetColors(const Leds_Color_t* ledsColor) {
     for (size_t shade_num = 0; shade_num < SHADES_AMOUNT; shade_num++) {
         for (size_t bit_num = 0; bit_num < BITS_PER_SHADE; bit_num++) {
             bool is_bit_high = ledsColor->shades[shade_num] >> (7 - bit_num) & 0x01;
-            uint16_t ccr_value = (is_bit_high) ? PWM_PERIOD_HIGH : PWM_PERIOD_LOW;
+            uint16_t ccr_value = is_bit_high ? PWM_PERIOD_HIGH : PWM_PERIOD_LOW;
             ccr_values[BUF_OFFSET + shade_num * BITS_PER_SHADE + bit_num] =  ccr_value;
         }
     }
