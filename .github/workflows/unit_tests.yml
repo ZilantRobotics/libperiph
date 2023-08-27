@@ -8,19 +8,18 @@ jobs:
       - name: Install GIT
         run: sudo apt-get update && sudo apt-get install -y git
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+
+      - uses: actions/checkout@v3
         with:
-          path: 'repository'
+          repository: RaccoonlabDev/code_style
+          token: ${{ secrets.ACCESS_TOKEN }}
+          path: code_style
 
       - name: Install dependencies
         run: sudo apt-get install -y make gcc-arm-none-eabi
 
       - name: Install gtest
-        run: |
-          sudo apt-get install libgtest-dev cmake                                   &&  \
-          cd /usr/src/gtest                                                         &&  \
-          sudo cmake CMakeLists.txt                                                 &&  \
-          sudo make                                                                 &&  \
-          sudo cp ./lib/libgtest*.a /usr/lib
+        run: code_style/install_gtest.sh
 
-      - run: cd repository && make tests
+      - run: make unit_tests
