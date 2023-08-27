@@ -9,10 +9,10 @@
 #include <gtest/gtest.h>
 #include "rgb_leds/ws2812.h"
 
-int8_t HAL_TIM_PWM_Start_DMA(TIM_HandleTypeDef*, uint8_t, uint32_t*, uint32_t) {
+int8_t HAL_TIM_PWM_Start_DMA(TIM_HandleTypeDef*, uint32_t, uint32_t*, uint32_t) {
     return 0;
 }
-int8_t HAL_TIM_PWM_Stop_DMA(TIM_HandleTypeDef*, uint8_t) {
+int8_t HAL_TIM_PWM_Stop_DMA(TIM_HandleTypeDef*, uint32_t) {
     return 0;
 }
 

@@ -15,8 +15,8 @@ typedef int TIM_HandleTypeDef;
 extern "C" {
 #endif
 
-int8_t HAL_TIM_PWM_Start_DMA(TIM_HandleTypeDef*, uint8_t, uint32_t*, uint32_t);
-int8_t HAL_TIM_PWM_Stop_DMA(TIM_HandleTypeDef*, uint8_t);
+int8_t HAL_TIM_PWM_Start_DMA(TIM_HandleTypeDef*, uint32_t, uint32_t*, uint32_t);
+int8_t HAL_TIM_PWM_Stop_DMA(TIM_HandleTypeDef*, uint32_t);
 
 #ifdef __cplusplus
 }

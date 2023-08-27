@@ -216,15 +216,15 @@ bool ubloxCheckCrc() {
     return ubloxCrc16(buf, size) == package.crc;
 }
 
-uint16_t ubloxCrc16(const uint8_t* buf, uint16_t size) {
+uint16_t ubloxCrc16(const uint8_t buf[GPS_UBLOX_MAX_PACKAGE_SIZE], uint16_t size) {
     if (size > GPS_UBLOX_MAX_PACKAGE_SIZE) {
         return 0;
     }
 
     ubloxClearCrc();
 
-    while (size-- != 0) {
-        ubloxCrcAddByte(*buf++);
+    for (uint_fast16_t idx = 0; idx < size; idx++) {
+        ubloxCrcAddByte(buf[idx]);
     }
     return package.crc_checker.u16;
 }

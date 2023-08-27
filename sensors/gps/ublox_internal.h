@@ -85,7 +85,7 @@ extern "C" {
 /**
  * @brief Private functions. For tests only
  */
-uint16_t ubloxCrc16(const uint8_t* buf, uint16_t size);
+uint16_t ubloxCrc16(const uint8_t buf[GPS_UBLOX_MAX_PACKAGE_SIZE], uint16_t size);
 
 #ifdef __cplusplus
 }

@@ -34,7 +34,6 @@ int8_t ws2812bInit(uint8_t number_of_leds, TIM_HandleTypeDef* timer_ptr, uint32_
  * @note    Do not actually start PWM.
  *          This method may has an affect on resulting RGB leds color if it is called during
  *          DMA work.
- * @todo    May add condition if dma is in process now, return an error
  */
 void ws2812bSetColors(const Leds_Color_t* leds_color);
 
