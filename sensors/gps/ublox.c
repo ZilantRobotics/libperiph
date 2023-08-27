@@ -212,11 +212,15 @@ void ubloxDeserializeFix2(GnssUblox_t* uavcan_fix2) {
 
 bool ubloxCheckCrc() {
     const uint8_t* buf = (uint8_t*)(&package.ubx_class);
-    size_t size = package.length + 4;
+    uint16_t size = package.length + 4;
     return ubloxCrc16(buf, size) == package.crc;
 }
 
-uint16_t ubloxCrc16(const uint8_t* buf, size_t size) {
+uint16_t ubloxCrc16(const uint8_t* buf, uint16_t size) {
+    if (size > GPS_UBLOX_MAX_PACKAGE_SIZE) {
+        return 0;
+    }
+
     ubloxClearCrc();
 
     while (size-- != 0) {

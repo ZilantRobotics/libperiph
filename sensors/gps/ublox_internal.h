@@ -20,8 +20,10 @@
 #include "ubx/nav_pvt.h"
 #include "ubx/nav_status.h"
 
-#define GPS_UBLOX_SYNC_CHAR_1_CODE        0xB5    // 181
-#define GPS_UBLOX_SYNC_CHAR_2_CODE        0x62    // 98
+#define GPS_UBLOX_SYNC_CHAR_1_CODE          0xB5    // 181
+#define GPS_UBLOX_SYNC_CHAR_2_CODE          0x62    // 98
+
+#define GPS_UBLOX_MAX_PACKAGE_SIZE          200
 
 typedef enum {
     STATE_SYNC_CHAR_1 = 0,
@@ -83,7 +85,7 @@ extern "C" {
 /**
  * @brief Private functions. For tests only
  */
-uint16_t ubloxCrc16(const uint8_t* buf, size_t size);
+uint16_t ubloxCrc16(const uint8_t* buf, uint16_t size);
 
 #ifdef __cplusplus
 }
