@@ -2,3 +2,5 @@ build/
 .vscode/
 shell
 code_style/
+.scannerwork/
+bw-output/
