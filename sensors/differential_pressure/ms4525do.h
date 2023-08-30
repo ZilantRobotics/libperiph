@@ -1,12 +1,12 @@
 /*
- * Copyright (C) 2020 Dmitry Ponomarev <ponomarevda96@gmail.com>
+ * Copyright (C) 2020-2023 Dmitry Ponomarev <ponomarevda96@gmail.com>
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-#ifndef MS4525DO_PARSER_H_
-#define MS4525DO_PARSER_H_
+#ifndef SENSORS_DIFFERENTIAL_PRESSURE_MS4525DO_H_
+#define SENSORS_DIFFERENTIAL_PRESSURE_MS4525DO_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -15,12 +15,28 @@ extern "C" {
 #include <stdint.h>
 #include "libperiph_common.h"
 
-int8_t ms4525doInit();
-void ms4525doMeasure();
-void ms4525doParse(float* raw_temperature, float* raw_diff_press);
+typedef struct {
+    float temperature;
+    float diff_pressure;
+} DifferentialPressureData;
 
 /**
-  * @brief  Only for test usage
+  * @brief Run it once. It returns LIBPERIPH_OK on success and < 0 on failure.
+  */
+int8_t ms4525doInit();
+
+
+/**
+  * @brief In a baremetal application you may want to call these functions one by one consequently.
+  * Alternatively, for example in RTOS applications, you can call them separately.
+  * ms4525doMeasure is blocking function and can take some time.
+  * ms4525doMeasure just perform data serialization.
+  */
+void ms4525doMeasure();
+DifferentialPressureData ms4525doParse();
+
+/**
+  * @brief Only for test usage
   */
 void ms4525doFillBuffer(const uint8_t new_buffer[]);
 
@@ -28,4 +44,4 @@ void ms4525doFillBuffer(const uint8_t new_buffer[]);
 }
 #endif
 
-#endif  // MS4525DO_PARSER_H_
+#endif  // SENSORS_DIFFERENTIAL_PRESSURE_MS4525DO_H_

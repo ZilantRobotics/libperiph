@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Dmitry Ponomarev <ponomarevda96@gmail.com>
+ * Copyright (C) 2020-2023 Dmitry Ponomarev <ponomarevda96@gmail.com>
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -24,7 +24,7 @@ void ms4525doMeasure() {
     i2cReceive(I2C_ID, ms4525do_rx_buf, I2C_RESPONSE_SIZE);
 }
 
-void ms4525doParse(float* raw_temperature, float* raw_diff_press) {
+DifferentialPressureData ms4525doParse() {
     int16_t dp_raw = 0;
     int16_t dT_raw = 0;
 
@@ -50,8 +50,10 @@ void ms4525doParse(float* raw_temperature, float* raw_diff_press) {
     float diff_press_PSI = -((dp_raw - 0.1f * 16383) * (P_max - P_min) / (0.8f * 16383) + P_min);
     float diff_press_pa_raw = diff_press_PSI * PSI_to_Pa;
 
-    *raw_temperature = temperature;
-    *raw_diff_press = diff_press_pa_raw;
+    DifferentialPressureData data;
+    data.temperature = temperature;
+    data.diff_pressure = diff_press_pa_raw;
+    return data;
 }
 
 void ms4525doFillBuffer(const uint8_t new_buffer[]) {
