@@ -23,7 +23,7 @@ void hmc5883GetMeasurement(float* x, float* y, float* z);
 
 
 // For tests only:
-void hmc5883lFillRxBuffer(uint8_t new_buf[6]);
+void hmc5883lFillRxBuffer(const uint8_t new_buf[6]);
 
 #ifdef __cplusplus
 }

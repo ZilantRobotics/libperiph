@@ -20,7 +20,8 @@ void create_correct_ubx_nav_pvt_package(UbxNavPvtRaw_t& out_pkg) {
         .id_nav_pvt = ID_NAV_PVT,
         .payload_length = sizeof(UbxNavPvt_t),
     };
-    ubx_nav_pvt.crc = ubloxCrc16(&ubx_nav_pvt.class_nav, sizeof(ubx_nav_pvt) - 4);
+    const UbloxCrcBuffer_t* crc_buffer = (const UbloxCrcBuffer_t*)&ubx_nav_pvt.class_nav;
+    ubx_nav_pvt.crc = ubloxCrc16(crc_buffer, sizeof(ubx_nav_pvt) - 4);
     out_pkg = ubx_nav_pvt;
 }
 

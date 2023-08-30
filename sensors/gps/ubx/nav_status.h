@@ -12,30 +12,26 @@
 
 ///< use compile attribute otherwise a value of this type will be 4 bytes in size
 ///< it should be packed to correctly perform crc calculation
-// *INDENT-OFF*
 typedef enum __attribute__((__packed__)) {
     gpsFixOk = (1 << 0),        ///< position and velocity valid and within DOP and ACC Masks
     diffSoln = (1 << 1),        ///< differential corrections were applied
     wknSet = (1 << 2),          ///< Week Number valid (see Time Validity section for details)
     towSet = (1 << 3),          ///< Time of Week valid (see Time Validity section for details)
 } UbxNavStatusFlags_t;
-// *INDENT-ON*
 
 ///< use compile attribute otherwise a value of this type will be 4 bytes in size
 ///< it should be packed to correctly perform crc calculation
-// *INDENT-OFF*
 typedef enum __attribute__((__packed__)) {
     UNKNOWN = 0,
     NO_SPOOFING_INDICATED = 1,
     SPOOFING_INDICATED = 2,
     MULTIPLE_SPOOFING_INDICATIONS = 3,
 } SpoofingDetectionState_t;
-// *INDENT-ON*
 
 typedef union {
     uint8_t psmState : 2;
     uint8_t reserver1 : 1;
-    SpoofingDetectionState_t spoofDetState : 2;
+    uint8_t spoofDetState : 2;
     uint8_t reserver2 : 1;
     uint8_t carrSoln : 2;
 } UbxNavStatusFlags2_t;

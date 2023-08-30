@@ -90,7 +90,7 @@ void hmc5883lMeasure() {
     }
 }
 
-void hmc5883lFillRxBuffer(uint8_t new_buf[6]) {
+void hmc5883lFillRxBuffer(const uint8_t new_buf[6]) {
     memcpy(rx_buf, new_buf, 6);
 }
 

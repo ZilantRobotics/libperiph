@@ -16,7 +16,6 @@ void ubloxCreateRawDataFromPackage(UbxNavPvtRaw_t* buffer, const GnssUblox_t* ua
 
     buffer->payload.time_of_week_ms = uavcan_fix2->timestamp / 1000;
 
-    ///< @todo reverse dayToUnixTimestamp() should be here
     buffer->payload.year_utc = 0;
     buffer->payload.month_utc = 0;
     buffer->payload.day_utc = 0;
@@ -35,5 +34,6 @@ void ubloxCreateRawDataFromPackage(UbxNavPvtRaw_t* buffer, const GnssUblox_t* ua
     buffer->payload.fixType = uavcan_fix2->status;
     buffer->payload.pDOP = uavcan_fix2->pdop * 100;
 
-    buffer->crc = ubloxCrc16(&buffer->class_nav, buffer->payload_length + 4);
+    const UbloxCrcBuffer_t* crc_buf = &buffer->class_nav;
+    buffer->crc = ubloxCrc16(crc_buf, buffer->payload_length + 4);
 }

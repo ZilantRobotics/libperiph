@@ -43,7 +43,7 @@
 #define CCZ_DEFAULT_MSB                     CCX_DEFAULT_MSB
 #define CCZ_DEFAULT_LSB                     CCX_DEFAULT_LSB
 #define TMRC_DEFAULT                        0x95    ///< 75 hz
-#define START_ALL_AXIS                      1 | (1 << 4) | (1 << 5) | (1 << 6);
+#define START_ALL_AXIS                      (1 | (1 << 4) | (1 << 5) | (1 << 6))
 
 #define UTESLA_TO_GAUSS                     100.0f
 #define RM3100_GAIN_OF_CYCLE_COUNTS_200     75.0f
@@ -174,7 +174,7 @@ void rm310GetMeasurement(float* x, float* y, float* z) {
  * @note Sensor returns values as 24 bit signed values,
  * so we need to manually convert to 32 bit signed values
  */
-int32_t rm3100ConvertSigned(int32_t n) {
+static int32_t rm3100ConvertSigned(int32_t n) {
     if ((n & (1 << 23)) == (1 << 23)) {
         n |= 0xFF000000;
     }

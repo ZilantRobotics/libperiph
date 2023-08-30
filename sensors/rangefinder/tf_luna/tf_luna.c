@@ -50,7 +50,7 @@ static int8_t tfLunaFindFrameStart() {
 }
 
 static float tfLunaParseData(int8_t idx) {
-    TfLunaSerialFrame_t* frame = (TfLunaSerialFrame_t*)&buffer[idx];
+    const TfLunaSerialFrame_t* frame = (const TfLunaSerialFrame_t*)&buffer[idx];
     uint16_t distance_sm = frame->distance;
     return distance_sm * 0.01f;
 }

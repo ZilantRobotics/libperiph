@@ -70,6 +70,12 @@ typedef union {
 
 #pragma pack(push, 1)
 typedef struct {
+    uint8_t buffer[GPS_UBLOX_MAX_CRC_BUFFER_SIZE];
+} UbloxCrcBuffer_t;
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+typedef struct {
     UbloxState_t state;
     UbloxClass_t ubx_class;
     UbloxId_t id;
@@ -88,7 +94,7 @@ extern "C" {
 /**
  * @brief Private functions. For tests only
  */
-uint16_t ubloxCrc16(const uint8_t buf[GPS_UBLOX_MAX_CRC_BUFFER_SIZE], uint16_t crc_buf_size);
+uint16_t ubloxCrc16(const UbloxCrcBuffer_t* buf, uint16_t crc_buf_size);
 
 #ifdef __cplusplus
 }
