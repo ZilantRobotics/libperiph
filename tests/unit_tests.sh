@@ -33,8 +33,7 @@ done
 
 if [[ $1 == "--coverage" ]]; then
 echo "Part 1:--------------------------------------------------"
-gcov $BUILD_DIR/CMakeFiles/acs712.dir$REPO_DIR/sensors/current_sensor/*.gcda \
-     $BUILD_DIR/CMakeFiles/bmp280.dir$REPO_DIR/sensors/barometer/*.gcda \
+gcov $BUILD_DIR/CMakeFiles/bmp280.dir$REPO_DIR/sensors/barometer/*.gcda \
      $BUILD_DIR/CMakeFiles/ublox.dir$REPO_DIR/sensors/gps/ublox.*.gcda \
      $BUILD_DIR/CMakeFiles/ublox_commands.dir$REPO_DIR/sensors/gps/ublox_commands.*.gcda \
      $BUILD_DIR/CMakeFiles/hmc5883l.dir$REPO_DIR/sensors/magnetometer/hmc5883l*.gcda \
@@ -46,7 +45,8 @@ gcov $BUILD_DIR/CMakeFiles/acs712.dir$REPO_DIR/sensors/current_sensor/*.gcda \
 
 echo ""
 echo "Part 2:--------------------------------------------------"
-gcov $BUILD_DIR/CMakeFiles/ms4525do.dir$REPO_DIR/sensors/differential_pressure/ms4525do*.gcda \
+gcov $BUILD_DIR/CMakeFiles/acs712.dir$REPO_DIR/sensors/current_sensor/*.gcda \
+     $BUILD_DIR/CMakeFiles/ms4525do.dir$REPO_DIR/sensors/differential_pressure/ms4525do*.gcda \
      $BUILD_DIR/CMakeFiles/tf_luna.dir$REPO_DIR/sensors/rangefinder/tf_luna/*.gcda
 fi
 

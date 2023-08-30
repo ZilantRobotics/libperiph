@@ -29,41 +29,36 @@ The library has been tested on:
 - stm32f3discovery board,
 - stm32f767 nucleo board.
 
+Sensors:
 
-**Drivers for a minimal quadcopter application**
+| Driver                                                        | HAL required |
+| ------------------------------------------------------------- | ------------ |
+| [Barometer bmp280](sensors/barometer)                         | i2c          |
+| [Current sensor acs712](sensors/current_sensor)               | ADC          |
+| [Diff pressure ms4252do](sensors/differential_pressure)       | i2c          |
+| [ESC Alpha](sensors/esc)                                      | UART         |
+| [ESC Flame](sensors/esc)                                      | UART         |
+| [ESC Thunder](sensors/esc)                                    | UART         |
+| [GNSS UBLOX](sensors/gps)                                     | UART         |
+| [Magnetometer hmc5883l](sensors/magnetometer)                 | i2c          |
+| [Magnetometer rm3100](sensors/magnetometer)                   | spi          |
+| [Temperature sensor](sensors/temperature_sensor)              | ADC          |
+| [Rangefinder garmin lite](sensors/rangefinder/garmin_lite)    | i2c          |
+| [Rangefinder sf1xx](sensors/rangefinder/sf1xx)                | i2c          |
+| [Rangefinder tf_luna](sensors/rangefinder/tf_luna)            | UART         |
+| [Rangefinder vl53l0x](sensors/rangefinder/vl53l0x)            | i2c          |
+| Encoder as5600                                                | gpio         |
+| Inclinometer mpu9250                                          | i2c          |
+| Rangefinder SRF05                                             | refactor me  |
 
-| Driver                                                    | HAL required |
-| --------------------------------------------------------- | ------------ |
-| [sensors/bmp280](sensors/barometer)                       | i2c          |
-| [sensors/gps](sensors/gps)                                | -            |
-| [sensors/mag_hmc5883l](sensors/magnetometer)              | i2c          |
-| [sensors/mag_rm3100](sensors/magnetometer)                | spi          |
-| [sensors/temperature_sensor](sensors/temperature_sensor)  | -            |
-| [devices/servos](devices/servos)                          | pwm          |
-| [platform_specific](platform_specific)                    |
+Other (devices, platform specific and common):
 
-**Drivers required for a VTOL application:**
+| Driver                                                        | HAL required |
+| ------------------------------------------------------------- | ------------ |
+| [Servos](devices/servos)                                      | pwm          |
+| [RGB LEDs](devices/rgb_leds)                                  | pwm dma      |
+| [Platform specific](platform_specific)                        |
 
-| Driver                                                                | HAL required |
-| --------------------------------------------------------------------- | ------------ |
-| [sensors/acs712](sensors/current_sensor)                              | -            |
-| [sensors/ms4252do](sensors/differential_pressure)                     | -            |
-| [sensors/rangefinder/garmin_lite](sensors/rangefinder/garmin_lite)    | i2c          |
-| [sensors/rangesensor/sf1xx](sensors/rangefinder/sf1xx)                | refactor me  |
-| [sensors/rangesensor/tf_luna](sensors/rangefinder/tf_luna)            | -            |
-| [sensors/rangesensor/vl53l0x](sensors/rangefinder/vl53l0x)            | -            |
-
-**Auxiliary drivers**
-
-| Driver                                    | HAL required |
-| ----------------------------------------- | ------------ |
-| [devices/rgb_leds](devices/rgb_leds)      | pwm dma      |
-| sensors/encoder                           | gpio         |
-| [sensors/esc/alpha](sensors/esc)          | -            |
-| [sensors/esc/flame](sensors/esc)          | -            |
-| [sensors/esc/thunder](sensors/esc)        | -            |
-| sensors/mpu9250                           | i2c          |
-| sensors/rangefinder/srf_05                | refactor me  |
 
 ## Usage
 
