@@ -12,6 +12,7 @@
 #include <stddef.h>
 #include <stdbool.h>
 #include <assert.h>
+#include "libperiph_common.h"
 
 #define TF_LUNA_SERIAL_FRAME_SIZE   9
 #define TF_LUNA_BUFFER_SIZE         18
