@@ -123,22 +123,23 @@ void bmp280CollectData() {
     i2cTransmit(I2C_ID, tx, 1);
     i2cReceive(I2C_ID + 1, (uint8_t*)&data, 6);
 
-    bmp280.static_pressure = data.p_msb << 12 | data.p_lsb << 4 | data.p_xlsb >> 4;
-    bmp280.static_temperature = data.t_msb << 12 | data.t_lsb << 4 | data.t_xlsb >> 4;
+    bmp280.static_pressure = (float)(data.p_msb << 12 | data.p_lsb << 4 | data.p_xlsb >> 4);
+    bmp280.static_temperature = (float)(data.t_msb << 12 | data.t_lsb << 4 | data.t_xlsb >> 4);
 }
 
 
 void bmp280ParseData() {
-    float static_temperature, static_pressure;
+    float static_temperature;
+    float static_pressure;
 
-    float ofs = (float)bmp280.static_temperature - processed_calib.t1;
+    float ofs = bmp280.static_temperature - processed_calib.t1;
     float t_fine = (ofs * processed_calib.t3 + processed_calib.t2) * ofs;
     static_temperature = t_fine * (1.0f / 5120.0f) + 273;
 
     float tf = t_fine - 128000.0f;
     float x1 = (tf * processed_calib.p6 + processed_calib.p5) * tf + processed_calib.p4;
     float x2 = (tf * processed_calib.p3 + processed_calib.p2) * tf + processed_calib.p1;
-    float pf = ((float) bmp280.static_pressure + x1) / x2;
+    float pf = (bmp280.static_pressure + x1) / x2;
     static_pressure = (pf * processed_calib.p9 + processed_calib.p8) * pf + processed_calib.p7;
 
     bmp280.static_temperature = static_temperature;

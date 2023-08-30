@@ -9,11 +9,13 @@
 
 #include <stdint.h>
 
-typedef int TIM_HandleTypeDef;
-
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+typedef struct {
+    int value;
+} TIM_HandleTypeDef;
 
 int8_t HAL_TIM_PWM_Start_DMA(TIM_HandleTypeDef*, uint32_t, uint32_t*, uint32_t);
 int8_t HAL_TIM_PWM_Stop_DMA(TIM_HandleTypeDef*, uint32_t);

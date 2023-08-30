@@ -223,7 +223,7 @@ uint16_t ubloxCrc16(const uint8_t buf[GPS_UBLOX_MAX_PACKAGE_SIZE], uint16_t size
 
     ubloxClearCrc();
 
-    for (uint_fast16_t idx = 0; idx < size; idx++) {
+    for (uint16_t idx = 0; idx < size; idx++) {
         ubloxCrcAddByte(buf[idx]);
     }
     return package.crc_checker.u16;

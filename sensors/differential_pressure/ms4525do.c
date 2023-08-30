@@ -25,11 +25,13 @@ void ms4525doMeasure() {
 }
 
 void ms4525doParse(float* raw_temperature, float* raw_diff_press) {
-    int16_t dp_raw = 0, dT_raw = 0;
-    dp_raw = (ms4525do_rx_buf[0] << 8) + ms4525do_rx_buf[1];
+    int16_t dp_raw = 0;
+    int16_t dT_raw = 0;
+
+    dp_raw = (int16_t)((ms4525do_rx_buf[0] << 8) + ms4525do_rx_buf[1]);
     /* mask the used bits */
     dp_raw = 0x3FFF & dp_raw;
-    dT_raw = (ms4525do_rx_buf[2] << 8) + ms4525do_rx_buf[3];
+    dT_raw = (int16_t)((ms4525do_rx_buf[2] << 8) + ms4525do_rx_buf[3]);
     dT_raw = (0xFFE0 & dT_raw) >> 5;
     float temperature = ((200.0f * dT_raw) / 2047) - 50;
 

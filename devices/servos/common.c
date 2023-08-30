@@ -9,8 +9,8 @@
 
 
 static float clampFloat(float value, float first, float second);
-static float maxFloat(float value, float first, float second);
-static float minFloat(float value, float first, float second);
+static float maxFloat(float first, float second);
+static float minFloat(float first, float second);
 
 
 static const RawCommand_t RC_MIN = 0;
@@ -23,22 +23,22 @@ PwmDurationMillisecond_t mapRawCommandToPwm(RawCommand_t rc_value,
     if (rc_value < RC_MIN || rc_value > RC_MAX) {
         pwm = def_pwm;
     } else {
-        pwm = mapFloat(rc_value, RC_MIN, RC_MAX, min_pwm, max_pwm);
+        pwm = (PwmDurationMillisecond_t)mapFloat(rc_value, RC_MIN, RC_MAX, min_pwm, max_pwm);
     }
     return pwm;
 }
 
-float minFloat(float value, float first, float second) {
+float minFloat(float first, float second) {
     return (first < second) ? first : second;
 }
 
-float maxFloat(float value, float first, float second) {
+float maxFloat(float first, float second) {
     return (first > second) ? first : second;
 }
 
 float clampFloat(float value, float first, float second) {
-    float min_value = minFloat(value, first, second);
-    float max_value = maxFloat(value, first, second);
+    float min_value = minFloat(first, second);
+    float max_value = maxFloat(first, second);
 
     if (value <= min_value) {
         return min_value;

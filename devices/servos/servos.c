@@ -65,7 +65,7 @@ void servosSetTimeout(uint32_t ttl_ms) {
 }
 
 void servosSetArmingState(bool arm, uint32_t crnt_time_ms) {
-    arm_ts_ms = (arm) ? crnt_time_ms : 0;
+    arm_ts_ms = arm ? crnt_time_ms : 0;
 }
 
 void servosSetSetpoint(uint8_t sp_idx, int16_t value, uint32_t crnt_time_ms) {
@@ -98,8 +98,8 @@ bool servosIsChannelInited(Channel_t tim_ch) {
 int8_t servosGetPwmPercent(Channel_t tim_ch) {
     int32_t percent;
     if (tim_ch < SERVO_TIM_CHANNELS_AMOUNT && timerGetMode(tim_ch) == TIMER_MODE_PWM) {
-        uint32_t pwm_duration = (uint32_t)timerGetPwmDuration(tim_ch);
-        percent = mapFloat(pwm_duration, params[tim_ch].min, params[tim_ch].max, 0, 100);
+        uint32_t pwm = (uint32_t)timerGetPwmDuration(tim_ch);
+        percent = (int32_t)mapFloat(pwm, params[tim_ch].min, params[tim_ch].max, 0, 100);
     } else {
         percent = STATUS_ERROR;
     }
@@ -146,7 +146,7 @@ bool servosGetEstimatedArmStatus(uint32_t crnt_time_ms) {
 /**
  * @note All args checks must be done out of here scope
  */
-int8_t servosInitPwmChannel(Channel_t tim_channel_idx) {
+static int8_t servosInitPwmChannel(Channel_t tim_channel_idx) {
     int8_t status;
     if (timerInit(tim_channel_idx, TIMER_MODE_PWM) != STATUS_OK) {
         status = STATUS_ERROR;
@@ -157,12 +157,12 @@ int8_t servosInitPwmChannel(Channel_t tim_channel_idx) {
     return status;
 }
 
-void servosSetDefaultValueForChannel(Channel_t tim_ch) {
+static void servosSetDefaultValueForChannel(Channel_t tim_ch) {
     timerSetPwmDuration(tim_ch, params[tim_ch].def);
 }
 
-void servosUpdateChannelStateAccordingToSetpoint(Channel_t tim_ch) {
-    uint8_t sp_idx = servosGetTimerSetpoint(tim_ch);
+static void servosUpdateChannelStateAccordingToSetpoint(Channel_t tim_ch) {
+    uint8_t sp_idx = (uint8_t)servosGetTimerSetpoint(tim_ch);
     RawCommand_t val = servosGetSetpoint(sp_idx);
     PwmDurationMillisecond_t min = params[tim_ch].min;
     PwmDurationMillisecond_t max = params[tim_ch].max;
@@ -172,7 +172,7 @@ void servosUpdateChannelStateAccordingToSetpoint(Channel_t tim_ch) {
 }
 
 
-void servosProcessTimeToLiveChecks(uint32_t crnt_ts_ms) {
+static void servosProcessTimeToLiveChecks(uint32_t crnt_ts_ms) {
     for (uint_fast8_t tim_idx = 0; tim_idx < SERVO_TIM_CHANNELS_AMOUNT; tim_idx++) {
         uint8_t sp_idx = params[tim_idx].ch;
         if (sp_idx >= SETPOINTS_AMOUNT) {

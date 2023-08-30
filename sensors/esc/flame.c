@@ -49,10 +49,10 @@ typedef struct {
 
 // ESC coefficients (ESC Flame by default)
 static Multipliers_t config = {
-    .voltage = 1 / 59.0,
-    .rpm = 60.0 / 3.27 * 28,
+    .voltage = 1.0f / 59.0f,
+    .rpm = 60.0f / 3.27f * 28.0f,
     .current = 0,
-    .throttle = 100.0 / 1024.0,
+    .throttle = 100.0f / 1024.0f,
     .mot_num_poles = 28,
 };
 
@@ -69,7 +69,7 @@ bool escFlameParseDma(size_t last_idx, DmaUartHandler_t* parser, EscFlame_t* esc
 
     bool res = false;
     if (last_idx != parser->saved_idx) {
-        uint8_t* package;
+        const uint8_t* package;
         parser->saved_idx = last_idx;
         if (last_idx < ESC_FLAME_PACKAGE_SIZE - 1) {
             uint16_t first_idx = parser->size - ESC_FLAME_PACKAGE_SIZE + last_idx + 1;
