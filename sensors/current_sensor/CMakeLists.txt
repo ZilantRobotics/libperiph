@@ -1,0 +1,4 @@
+list(APPEND LIBPERIPH_DRIVERS_SOURCE
+    ${CMAKE_CURRENT_LIST_DIR}/acs712.c
+)
+include_directories(${CMAKE_CURRENT_LIST_DIR}/..)

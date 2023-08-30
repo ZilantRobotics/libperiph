@@ -7,38 +7,46 @@
 
 #include "acs712.h"
 
+#define NUMBER_OF_ITERATIONS 3000
 
-///< Calibration
-static float zero_current = 1970;
-static uint32_t calib_current_raw = 0;
-static uint32_t calib_iter = 0;
-static const uint32_t NUMBER_OF_ITERATIONS = 3000;
+typedef struct {
+    float zero_current;
+    uint32_t calib_current_raw;
+    uint32_t calib_iter;
+    float adc_raw_to_dc_dc_out_current;
+} Acs712Coeeficients;
 
-static float adc_raw_to_dc_dc_out_current = 0.0216898;
+static Acs712Coeeficients acs712 = {
+    .zero_current = 1970,
+    .calib_current_raw = 0,
+    .calib_iter = 0,
+    .adc_raw_to_dc_dc_out_current = 0.0216898,
+};
+
 
 void acs712SetCoefficient(float new_adc_raw_to_dc_dc_out_current) {
-    adc_raw_to_dc_dc_out_current = new_adc_raw_to_dc_dc_out_current;
+    acs712.adc_raw_to_dc_dc_out_current = new_adc_raw_to_dc_dc_out_current;
 }
 
 float acs712ConvertToCurrent(uint16_t current_raw) {
-    return (current_raw - zero_current) * adc_raw_to_dc_dc_out_current;
+    return (current_raw - acs712.zero_current) * acs712.adc_raw_to_dc_dc_out_current;
 }
 
 bool acs712PerformIterationOfCalibration(uint16_t current_raw) {
-    if (calib_iter < NUMBER_OF_ITERATIONS) {
-        calib_current_raw += current_raw;
-        calib_iter++;
+    if (acs712.calib_iter < NUMBER_OF_ITERATIONS) {
+        acs712.calib_current_raw += current_raw;
+        acs712.calib_iter++;
         return false;
     } else {
-        zero_current = calib_current_raw / NUMBER_OF_ITERATIONS;
-        calib_current_raw = 0;
-        calib_iter = 0;
+        acs712.zero_current = acs712.calib_current_raw / NUMBER_OF_ITERATIONS;
+        acs712.calib_current_raw = 0;
+        acs712.calib_iter = 0;
         return true;
     }
 }
 
 void acs712SetCalibratedValue(uint16_t current_raw) {
     if (current_raw <= 4095) {
-        zero_current = current_raw;
+        acs712.zero_current = current_raw;
     }
 }

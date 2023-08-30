@@ -16,7 +16,7 @@ cd $BUILD_DIR
 cmake $RUN_COVERAGE ../../tests
 make
 
-sensor_executables=(bmp280 esc_flame esc_thunder ublox ublox_commands ms4525do stm32_temp hmc5883l rm3100 tf_luna)
+sensor_executables=(acs712 bmp280 esc_flame esc_thunder ublox ublox_commands ms4525do stm32_temp hmc5883l rm3100 tf_luna)
 for sensor_executable in ${sensor_executables[@]}; do
     $BUILD_DIR/$sensor_executable
 done
@@ -33,7 +33,8 @@ done
 
 if [[ $1 == "--coverage" ]]; then
 echo "Part 1:--------------------------------------------------"
-gcov $BUILD_DIR/CMakeFiles/bmp280.dir$REPO_DIR/sensors/barometer/*.gcda \
+gcov $BUILD_DIR/CMakeFiles/acs712.dir$REPO_DIR/sensors/current_sensor/*.gcda \
+     $BUILD_DIR/CMakeFiles/bmp280.dir$REPO_DIR/sensors/barometer/*.gcda \
      $BUILD_DIR/CMakeFiles/ublox.dir$REPO_DIR/sensors/gps/ublox.*.gcda \
      $BUILD_DIR/CMakeFiles/ublox_commands.dir$REPO_DIR/sensors/gps/ublox_commands.*.gcda \
      $BUILD_DIR/CMakeFiles/hmc5883l.dir$REPO_DIR/sensors/magnetometer/hmc5883l*.gcda \

@@ -1,13 +1,12 @@
 # Current sensor ACS712
 
-Fully Integrated, Hall Effect-Based Linear Current Sensor
-with 2.1 kVRMS Voltage Isolation and a Low-Resistance Current Conductor.
+Fully Integrated, Hall Effect-Based Linear Current Sensor with 2.1 kVRMS Voltage Isolation and a Low-Resistance Current Conductor.
 
 |   |   |
 | - | - |
 | Reference | [Datasheet](https://www.tme.eu/Document/75af175f80c090e9b8f9078a0b0b2409/ACS712.PDF) |
 | Requred periphery | ADC |
-| Unit tests | not yet |
+| Unit tests | [test_acs712.cpp](tests/sensors/current_sensor/test_acs712.cpp) |
 
 ## Usage
 
