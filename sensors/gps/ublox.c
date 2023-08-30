@@ -16,9 +16,10 @@ uint16_t ubx_package_counters[UBX_PACKAGE_TYPES_AMOUNT] = {};
 
 static UbloxPackage_t package = {};
 
-static void ubloxCrcAddByte(uint8_t byte);
-static bool ubloxCheckCrc();
+static UbloxPackageType_t ubloxGetPackageType(const UbloxPackage_t* considered_package);
 static void ubloxClearCrc();
+static bool ubloxCheckCrc();
+static void ubloxCrcAddByte(uint8_t byte);
 static bool ubloxNextByte(uint8_t byte);
 static void ubloxDeserializeFix2(GnssUblox_t* uavcan_fix2);
 static bool ubloxIsPackageTypeSupported();
@@ -46,17 +47,9 @@ UbloxPackageType_t ubloxParse(const uint8_t buffer[], size_t size, size_t* num_o
     for (idx = 0; idx < size; idx++) {
         bool package_is_finished = ubloxNextByte(buffer[idx]);
         if (package_is_finished && ubloxCheckCrc()) {
-            if (package.id == ID_NAV_PVT) {
-                received_package = UBX_NAV_PVT_PKG;
-                ubx_package_counters[UBX_NAV_PVT_PKG]++;
-                break;
-            } else if (package.id == ID_NAV_STATUS) {
-                received_package = UBX_NAV_STATUS_PKG;
-                ubx_package_counters[UBX_NAV_STATUS_PKG]++;
-                break;
-            } else if (package.id == ID_NAV_COV) {
-                received_package = UBX_NAV_COV_PKG;
-                ubx_package_counters[UBX_NAV_COV_PKG]++;
+            received_package = ubloxGetPackageType(&package);
+            if (received_package != UBX_UNKNOWN_PKG) {
+                ubx_package_counters[received_package]++;
                 break;
             }
         } else if (package_is_finished) {
@@ -99,33 +92,6 @@ void ubloxGetUbxNavCov(UbxNavCov_t* ubloxGetUbxNavCov) {
     }
 
     memcpy(ubloxGetUbxNavCov, (const void*)package.payload, sizeof(UbxNavCov_t));
-}
-
-bool ubloxIsPackageTypeSupported() {
-    if (package.id == ID_NAV_PVT || package.id == ID_NAV_STATUS || package.id == ID_NAV_COV) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
-bool ubloxIsPackageLengthCorrect() {
-    if (package.ubx_class != CLASS_NAV) {
-        return false;
-    }
-
-    bool is_correct;
-    if ((package.id == ID_NAV_PVT && package.length == sizeof(UbxNavPvt_t))) {
-        is_correct = true;
-    } else if ((package.id == ID_NAV_STATUS && package.length == sizeof(UbxNavStatus_t))) {
-        is_correct = true;
-    } else if ((package.id == ID_NAV_COV && package.length == sizeof(UbxNavCov_t))) {
-        is_correct = true;
-    } else {
-        is_correct = false;
-    }
-
-    return is_correct;
 }
 
 /**
@@ -210,32 +176,17 @@ void ubloxDeserializeFix2(GnssUblox_t* uavcan_fix2) {
     uavcan_fix2->pdop = ubx_nav_pvt->pDOP * 0.01;
 }
 
-bool ubloxCheckCrc() {
-    const uint8_t* buf = (uint8_t*)(&package.ubx_class);
-    uint16_t size = package.length + 4;
-    return ubloxCrc16(buf, size) == package.crc;
-}
-
-uint16_t ubloxCrc16(const uint8_t buf[GPS_UBLOX_MAX_PACKAGE_SIZE], uint16_t size) {
-    if (size > GPS_UBLOX_MAX_PACKAGE_SIZE) {
+uint16_t ubloxCrc16(const uint8_t buf[GPS_UBLOX_MAX_CRC_BUFFER_SIZE], uint16_t crc_buf_size) {
+    if (crc_buf_size > GPS_UBLOX_MAX_CRC_BUFFER_SIZE) {
         return 0;
     }
 
     ubloxClearCrc();
 
-    for (uint16_t idx = 0; idx < size; idx++) {
+    for (uint16_t idx = 0; idx < crc_buf_size; idx++) {
         ubloxCrcAddByte(buf[idx]);
     }
     return package.crc_checker.u16;
-}
-
-void ubloxClearCrc() {
-    package.crc_checker.u16 = 0;
-}
-
-void ubloxCrcAddByte(uint8_t byte) {
-    package.crc_checker.bytes.crc_a += byte;
-    package.crc_checker.bytes.crc_b += package.crc_checker.bytes.crc_a;
 }
 
 uint16_t ubloxGetPackageStats(UbloxPackageType_t package_type) {
@@ -249,4 +200,66 @@ uint16_t ubloxGetPackageStats(UbloxPackageType_t package_type) {
 double ubloxRawToRad(int32_t ublox_raw_deg_1e_7) {
     double UBLOX_TO_CYPHAL = 1.74532925e-9;  // pi / 1e7 / 180
     return UBLOX_TO_CYPHAL * ublox_raw_deg_1e_7;
+}
+
+///< *************************** PRIVATE FUNCTIONS ***************************
+/**
+ * @note All args checks must be done out of here scope
+ */
+
+static UbloxPackageType_t ubloxGetPackageType(const UbloxPackage_t* considered_package) {
+    UbloxPackageType_t package_type;
+    if (considered_package->id == ID_NAV_PVT) {
+        package_type = UBX_NAV_PVT_PKG;
+    } else if (considered_package->id == ID_NAV_STATUS) {
+        package_type = UBX_NAV_STATUS_PKG;
+    } else if (considered_package->id == ID_NAV_COV) {
+        package_type = UBX_NAV_COV_PKG;
+    } else {
+        package_type = UBX_UNKNOWN_PKG;
+    }
+
+    return package_type;
+}
+
+static void ubloxClearCrc() {
+    package.crc_checker.u16 = 0;
+}
+
+static bool ubloxCheckCrc() {
+    const uint8_t* buf = (uint8_t*)(&package.ubx_class);
+    uint16_t size = package.length + 4;
+    return ubloxCrc16(buf, size) == package.crc;
+}
+
+static void ubloxCrcAddByte(uint8_t byte) {
+    package.crc_checker.bytes.crc_a += byte;
+    package.crc_checker.bytes.crc_b += package.crc_checker.bytes.crc_a;
+}
+
+static bool ubloxIsPackageTypeSupported() {
+    if (package.id == ID_NAV_PVT || package.id == ID_NAV_STATUS || package.id == ID_NAV_COV) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+static bool ubloxIsPackageLengthCorrect() {
+    if (package.ubx_class != CLASS_NAV) {
+        return false;
+    }
+
+    bool is_correct;
+    if ((package.id == ID_NAV_PVT && package.length == sizeof(UbxNavPvt_t))) {
+        is_correct = true;
+    } else if ((package.id == ID_NAV_STATUS && package.length == sizeof(UbxNavStatus_t))) {
+        is_correct = true;
+    } else if ((package.id == ID_NAV_COV && package.length == sizeof(UbxNavCov_t))) {
+        is_correct = true;
+    } else {
+        is_correct = false;
+    }
+
+    return is_correct;
 }

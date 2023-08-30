@@ -94,7 +94,7 @@ void hmc5883lFillRxBuffer(uint8_t new_buf[6]) {
     memcpy(rx_buf, new_buf, 6);
 }
 
-void hmc5883lParse() {
+static void hmc5883lParse() {
     hmc5883.raw[0] = (rx_buf[0] << 8) + rx_buf[1];
     hmc5883.raw[1] = (rx_buf[2] << 8) + rx_buf[3];
     hmc5883.raw[2] = (rx_buf[4] << 8) + rx_buf[5];

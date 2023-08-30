@@ -154,7 +154,7 @@ float bmp280GetStaticTemperature() {
     return bmp280.static_temperature;
 }
 
-void bmp280CheckDeviceId() {
+static void bmp280CheckDeviceId() {
     uint8_t tx[1] = {ID_REG};
     uint8_t rx[1] = {0};
 
@@ -165,14 +165,14 @@ void bmp280CheckDeviceId() {
 }
 
 
-void bmp280SetCtrlMeas() {
+static void bmp280SetCtrlMeas() {
     uint8_t tx[2] = {CTRL_MEAS_REG, CTRL_MEAS_SETTINGS};
     uint8_t rx[1] = {0};
     i2cTransmit(I2C_ID, tx, 2);
     i2cReceive(I2C_ID, rx, 1);
 }
 
-void bmp280GetCalibration() {
+static void bmp280GetCalibration() {
     uint8_t tx[1] = {0x88};
     i2cTransmit(I2C_ID, tx, 1);
     i2cReceive(I2C_ID, (uint8_t*)(&stored_calib), 24);

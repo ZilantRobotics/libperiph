@@ -28,27 +28,6 @@ PwmDurationMillisecond_t mapRawCommandToPwm(RawCommand_t rc_value,
     return pwm;
 }
 
-float minFloat(float first, float second) {
-    return (first < second) ? first : second;
-}
-
-float maxFloat(float first, float second) {
-    return (first > second) ? first : second;
-}
-
-float clampFloat(float value, float first, float second) {
-    float min_value = minFloat(first, second);
-    float max_value = maxFloat(first, second);
-
-    if (value <= min_value) {
-        return min_value;
-    } else if (value >= max_value) {
-        return max_value;
-    } else {
-        return value;
-    }
-}
-
 float mapFloat(float value, float in_min, float in_max, float out_min, float out_max) {
     float output;
     if (value <= in_min && in_min <= in_max) {
@@ -62,4 +41,25 @@ float mapFloat(float value, float in_min, float in_max, float out_min, float out
         output = clampFloat(output, out_min, out_max);
     }
     return output;
+}
+
+static float minFloat(float first, float second) {
+    return (first < second) ? first : second;
+}
+
+static float maxFloat(float first, float second) {
+    return (first > second) ? first : second;
+}
+
+static float clampFloat(float value, float first, float second) {
+    float min_value = minFloat(first, second);
+    float max_value = maxFloat(first, second);
+
+    if (value <= min_value) {
+        return min_value;
+    } else if (value >= max_value) {
+        return max_value;
+    } else {
+        return value;
+    }
 }

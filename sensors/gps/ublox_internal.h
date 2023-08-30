@@ -23,7 +23,8 @@
 #define GPS_UBLOX_SYNC_CHAR_1_CODE          0xB5    // 181
 #define GPS_UBLOX_SYNC_CHAR_2_CODE          0x62    // 98
 
-#define GPS_UBLOX_MAX_PACKAGE_SIZE          200
+#define GPS_UBLOX_MAX_PAYLOAD_SIZE          128
+#define GPS_UBLOX_MAX_CRC_BUFFER_SIZE       (GPS_UBLOX_MAX_PAYLOAD_SIZE + 4)
 
 typedef enum {
     STATE_SYNC_CHAR_1 = 0,
@@ -44,6 +45,7 @@ typedef enum __attribute__((__packed__)) {
     CLASS_NAV = 0x01
 } UbloxClass_t;
 // *INDENT-ON*
+static_assert(sizeof(UbloxClass_t) == 1, "Wrong size");
 
 ///< use compile attribute otherwise a value of this type will be 4 bytes in size
 ///< it should be packed to correctly perform crc calculation
@@ -54,6 +56,7 @@ typedef enum __attribute__((__packed__)) {
     ID_NAV_COV = 0x36,
 } UbloxId_t;
 // *INDENT-ON*
+static_assert(sizeof(UbloxId_t) == 1, "Wrong size");
 
 typedef struct {
     uint8_t crc_a;
@@ -71,7 +74,7 @@ typedef struct {
     UbloxClass_t ubx_class;
     UbloxId_t id;
     uint16_t length;
-    uint8_t payload[128];
+    uint8_t payload[GPS_UBLOX_MAX_PAYLOAD_SIZE];
     uint16_t crc;
     uint8_t payload_counter;
     UbloxCrcCheckerUnion_t crc_checker;
@@ -85,7 +88,7 @@ extern "C" {
 /**
  * @brief Private functions. For tests only
  */
-uint16_t ubloxCrc16(const uint8_t buf[GPS_UBLOX_MAX_PACKAGE_SIZE], uint16_t size);
+uint16_t ubloxCrc16(const uint8_t buf[GPS_UBLOX_MAX_CRC_BUFFER_SIZE], uint16_t crc_buf_size);
 
 #ifdef __cplusplus
 }

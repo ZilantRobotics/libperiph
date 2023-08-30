@@ -40,9 +40,8 @@ float tfParseRange(const TfLunaSerialFrame_t* buffer_ptr) {
     return -1.0;
 }
 
-int8_t tfLunaFindFrameStart() {
-    int8_t idx;
-    for (idx = TF_LUNA_SERIAL_FRAME_SIZE; idx > 0; idx--) {
+static int8_t tfLunaFindFrameStart() {
+    for (int8_t idx = TF_LUNA_SERIAL_FRAME_SIZE; idx > 0; idx--) {
         if (buffer[idx] == HEAD_BYTE && buffer[idx + 1] == HEAD_BYTE && crc_8(buffer + idx, 8)) {
             return idx;
         }
@@ -50,13 +49,13 @@ int8_t tfLunaFindFrameStart() {
     return LIBPERIPH_ERROR;
 }
 
-float tfLunaParseData(int8_t idx) {
+static float tfLunaParseData(int8_t idx) {
     TfLunaSerialFrame_t* frame = (TfLunaSerialFrame_t*)&buffer[idx];
     uint16_t distance_sm = frame->distance;
     return distance_sm * 0.01f;
 }
 
-uint8_t crc_8(const uint8_t* buf, uint8_t size) {
+static uint8_t crc_8(const uint8_t* buf, uint8_t size) {
     uint8_t sum = 0;
     for (uint_fast8_t idx = 0; idx < size; idx++) {
         sum += buf[idx];

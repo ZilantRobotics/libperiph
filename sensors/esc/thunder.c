@@ -112,41 +112,6 @@ EscThunderMessage thunderParseMessageInRingBuffer(EscThunderFeedback* esc_thunde
     return ESC_THUNDER_UNKNOWN;
 }
 
-bool thunderCheckHeader(const uint8_t* buffer, EscThunderMessage msg_idx) {
-    for (uint_fast8_t byte_idx = 0; byte_idx < messages[msg_idx].head_len; byte_idx++) {
-        if (buffer[byte_idx] != messages[msg_idx].header[byte_idx]) {
-            return false;
-        }
-    }
-    return true;
-}
-
-void parseSpd(EscThunderFeedback* esc_thunder, const uint8_t* value) {
-    esc_thunder->spd = hexArrayToUint32(value, 4);
-}
-void parseTmos(EscThunderFeedback* esc_thunder, const uint8_t* value) {
-    esc_thunder->tmos = hexArrayToUint32(value, 4);
-}
-void parseTmot(EscThunderFeedback* esc_thunder, const uint8_t* value) {
-    esc_thunder->tmot = hexArrayToUint32(value, 4);
-}
-void parseCuri(EscThunderFeedback* esc_thunder, const uint8_t* value) {
-    esc_thunder->curi = 0.01 * hexArrayToUint32(value, 4);
-}
-void parseVolt(EscThunderFeedback* esc_thunder, const uint8_t* value) {
-    esc_thunder->volt = 0.01 * hexArrayToUint32(value, 4);
-}
-
-bool hexArrayIsCorrect(const uint8_t* hex_array, uint8_t array_size) {
-    for (uint_fast8_t idx = 0; idx < array_size; idx++) {
-        uint8_t hex = hex_array[idx];
-        if (!(hex >= '0' && hex <= '9') && !(hex >= 'A' && hex <= 'F')) {
-            return false;
-        }
-    }
-    return true;
-}
-
 uint32_t hexArrayToUint32(const uint8_t* hex_array, uint8_t array_size) {
     uint32_t res = 0;
     for (int_fast8_t idx = array_size - 1; idx >= 0; idx--) {
@@ -158,4 +123,39 @@ uint32_t hexArrayToUint32(const uint8_t* hex_array, uint8_t array_size) {
 
 uint8_t hexByteToUint8(uint8_t hex_byte) {
     return (hex_byte <= '9') ? hex_byte - '0' : 10 + hex_byte - 'A';
+}
+
+static bool thunderCheckHeader(const uint8_t* buffer, EscThunderMessage msg_idx) {
+    for (uint_fast8_t byte_idx = 0; byte_idx < messages[msg_idx].head_len; byte_idx++) {
+        if (buffer[byte_idx] != messages[msg_idx].header[byte_idx]) {
+            return false;
+        }
+    }
+    return true;
+}
+
+static void parseSpd(EscThunderFeedback* esc_thunder, const uint8_t* value) {
+    esc_thunder->spd = hexArrayToUint32(value, 4);
+}
+static void parseTmos(EscThunderFeedback* esc_thunder, const uint8_t* value) {
+    esc_thunder->tmos = hexArrayToUint32(value, 4);
+}
+static void parseTmot(EscThunderFeedback* esc_thunder, const uint8_t* value) {
+    esc_thunder->tmot = hexArrayToUint32(value, 4);
+}
+static void parseCuri(EscThunderFeedback* esc_thunder, const uint8_t* value) {
+    esc_thunder->curi = 0.01 * hexArrayToUint32(value, 4);
+}
+static void parseVolt(EscThunderFeedback* esc_thunder, const uint8_t* value) {
+    esc_thunder->volt = 0.01 * hexArrayToUint32(value, 4);
+}
+
+static bool hexArrayIsCorrect(const uint8_t* hex_array, uint8_t array_size) {
+    for (uint_fast8_t idx = 0; idx < array_size; idx++) {
+        uint8_t hex = hex_array[idx];
+        if (!(hex >= '0' && hex <= '9') && !(hex >= 'A' && hex <= 'F')) {
+            return false;
+        }
+    }
+    return true;
 }

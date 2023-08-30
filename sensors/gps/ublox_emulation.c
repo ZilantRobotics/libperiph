@@ -35,5 +35,5 @@ void ubloxCreateRawDataFromPackage(UbxNavPvtRaw_t* buffer, const GnssUblox_t* ua
     buffer->payload.fixType = uavcan_fix2->status;
     buffer->payload.pDOP = uavcan_fix2->pdop * 100;
 
-    buffer->crc = ubloxCrc16((uint8_t*)(&buffer->class_nav), buffer->payload_length + 4);
+    buffer->crc = ubloxCrc16(&buffer->class_nav, buffer->payload_length + 4);
 }

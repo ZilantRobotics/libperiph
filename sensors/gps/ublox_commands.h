@@ -43,7 +43,7 @@ typedef enum {
     UBX_CMD_RATE_10_HZ,
     UBX_CMD_SAVE_CONFIG,
 
-    UBX_UNKNOWN_COMMAND = 255,
+    UBX_UNKNOWN_COMMAND,
 } UbloxCommand;
 
 #ifdef __cplusplus

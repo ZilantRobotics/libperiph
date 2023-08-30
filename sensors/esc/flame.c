@@ -102,7 +102,7 @@ void escMotorNumberOfPoles(uint8_t mot_num_poles) {
     config.mot_num_poles = (mot_num_poles == 0) ? 1 : mot_num_poles;
 }
 
-bool escFlameIsItPackageStart(const uint8_t* raw_package_buffer) {
+LIBPERIPH_STATIC bool escFlameIsItPackageStart(const uint8_t* raw_package_buffer) {
     if (raw_package_buffer == NULL) {
         return false;
     }
@@ -110,7 +110,7 @@ bool escFlameIsItPackageStart(const uint8_t* raw_package_buffer) {
     return raw_package_buffer[0] == FIRST_BYTE && raw_package_buffer[1] == SECOND_BYTE;
 }
 
-void escFlameParse(const uint8_t* raw_package_buffer, EscFlame_t* esc_flame) {
+LIBPERIPH_STATIC void escFlameParse(const uint8_t* raw_package_buffer, EscFlame_t* esc_flame) {
     if (raw_package_buffer == NULL || esc_flame == NULL) {
         return;
     }
@@ -124,7 +124,7 @@ void escFlameParse(const uint8_t* raw_package_buffer, EscFlame_t* esc_flame) {
     esc_flame->power_rating_pct = swapBytesU16(buffer->throttle_in) * config.throttle;
 }
 
-uint16_t swapBytesU16(uint16_t u16) {
+static uint16_t swapBytesU16(uint16_t u16) {
     return (u16 >> 8) + ((u16 & 0xFF) << 8);
 }
 
@@ -134,6 +134,6 @@ uint16_t swapBytesU16(uint16_t u16) {
   * kelvin = (fahrenheit - 32) * 5 / 9 + 273
   * Here is an optimized version
   */
-float escRawTemperatureToKelvin(uint8_t raw_temperature) {
+static float escRawTemperatureToKelvin(uint8_t raw_temperature) {
     return (773 - raw_temperature) * 0.5555556f;
 }
