@@ -17,7 +17,7 @@
 static uint8_t ms4525do_rx_buf[I2C_RESPONSE_SIZE] = {0x00};
 
 int8_t ms4525doInit() {
-    return STATUS_OK;
+    return LIBPERIPH_OK;
 }
 
 void ms4525doMeasure() {

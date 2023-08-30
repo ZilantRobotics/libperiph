@@ -13,6 +13,7 @@ extern "C" {
 #endif
 
 #include <stdint.h>
+#include "libperiph_common.h"
 
 int8_t ms4525doInit();
 void ms4525doMeasure();

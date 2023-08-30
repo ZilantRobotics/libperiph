@@ -10,6 +10,7 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#include "libperiph_common.h"
 
 #ifdef __cplusplus
 typedef enum : uint8_t {

@@ -164,6 +164,10 @@ int8_t rm3100Measure() {
 }
 
 void rm310GetMeasurement(float* x, float* y, float* z) {
+    if (x == NULL || y == NULL || z == NULL) {
+        return;
+    }
+
     *x = rm3100.mag[0];
     *y = rm3100.mag[1];
     *z = rm3100.mag[2];

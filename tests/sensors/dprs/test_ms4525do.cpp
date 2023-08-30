@@ -19,6 +19,13 @@
 
 #define I2C_RESPONSE_SIZE   4
 
+TEST(ms4525do, test_ms4525doInit) {
+    ASSERT_EQ(LIBPERIPH_OK, ms4525doInit());
+}
+
+TEST(ms4525do, test_ms4525doMeasure) {
+    ms4525doMeasure();
+}
 
 /**
  * @brief MS4525DO. Page 5. Sensor Output at Significant Percentages

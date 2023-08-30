@@ -7,7 +7,6 @@
 
 #include "ublox_commands.h"
 #include <assert.h>
-#include "libperiph_common.h"
 
 
 static UbxTransmit_t ubxTransmit = NULL;
@@ -113,19 +112,22 @@ static_assert(UBLOX_COMMAND_AMOUNT == 25, "Wrong size");
 
 int8_t ubloxInit(UbxTransmit_t transmit, UbxDelay_t delay, UbxChangeBaudRate_t changeBaudRate) {
     if (transmit == NULL || delay == NULL || changeBaudRate == NULL) {
-        return -1;
+        ubxTransmit = NULL;
+        ubxDelay = NULL;
+        ubxChangeBaudRate = NULL;
+        return LIBPERIPH_ERROR;
     }
 
     ubxTransmit = transmit;
     ubxDelay = delay;
     ubxChangeBaudRate = changeBaudRate;
 
-    return 0;
+    return LIBPERIPH_OK;
 }
 
 int8_t ubloxExecuteCommand(UbloxCommand command) {
     if (ubxTransmit == NULL) {
-        return -1;
+        return LIBPERIPH_ERROR;
     }
 
     int8_t result;
@@ -210,7 +212,7 @@ int8_t ubloxExecuteCommand(UbloxCommand command) {
             break;
 
         default:
-            result = -1;
+            result = LIBPERIPH_ERROR;
             break;
     }
 
@@ -226,8 +228,11 @@ UbloxCommand ubloxGetCommand(uint8_t idx) {
 }
 
 int8_t ubloxConfigure(uint16_t delay) {
-    int8_t result = 0;
+    if (ubxTransmit == NULL) {
+        return LIBPERIPH_ERROR;
+    }
 
+    int8_t result = 0;
     for (uint_fast8_t cmd_idx = 0; cmd_idx < UBLOX_COMMAND_AMOUNT; cmd_idx++) {
         result |= ubloxExecuteCommand(ubxConfigurationSequence[cmd_idx]);
         ubxDelay(delay);

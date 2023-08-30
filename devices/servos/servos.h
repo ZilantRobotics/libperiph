@@ -18,6 +18,7 @@
 #include <stdint.h>
 #include "hal_timers.h"
 #include "common.h"
+#include "libperiph_common.h"
 
 
 #define SERVO_TIM_CHANNELS_AMOUNT   9
@@ -62,7 +63,7 @@ void servosApplyPwm(uint32_t crnt_ts_ms);
   */
 bool servosIsChannelInited(Channel_t tim_ch);
 int8_t servosGetPwmPercent(Channel_t tim_ch);
-uint32_t servosGetTimerSetpoint(Channel_t tim_ch);
+uint32_t servosGetTimerSetpointIndex(Channel_t tim_ch);
 Channel_t servosGetTimerChannelBySetpointChannel(uint32_t sp_ch);
 int16_t servosGetSetpoint(uint8_t sp_idx);
 bool servosGetArmingState(uint32_t crnt_time_ms);

@@ -16,33 +16,26 @@ cd $BUILD_DIR
 cmake $RUN_COVERAGE ../../tests
 make
 
-$BUILD_DIR/bmp280
-$BUILD_DIR/esc_thunder
-$BUILD_DIR/esc_flame
-$BUILD_DIR/ublox
-$BUILD_DIR/ms4525do
-$BUILD_DIR/stm32_temp
-$BUILD_DIR/hmc5883l
-$BUILD_DIR/rm3100
-$BUILD_DIR/ttl
-$BUILD_DIR/servo
-$BUILD_DIR/servo_common
-$BUILD_DIR/tf_luna
-$BUILD_DIR/ws2812
-$BUILD_DIR/ring_buffer
+sensor_executables=(bmp280 esc_flame esc_thunder ublox ublox_commands ms4525do stm32_temp hmc5883l rm3100 tf_luna)
+for sensor_executable in ${sensor_executables[@]}; do
+    $BUILD_DIR/$sensor_executable
+done
 
-$BUILD_DIR/adc
-$BUILD_DIR/i2c
-$BUILD_DIR/spi
-$BUILD_DIR/timers
-$BUILD_DIR/uart
+driver_executables=(ttl servo servo_common ws2812 ring_buffer)
+for driver_executable in ${driver_executables[@]}; do
+    $BUILD_DIR/$driver_executable
+done
+
+hal_executables=(adc i2c spi timers uart)
+for hal_executable in ${hal_executables[@]}; do
+    $BUILD_DIR/$hal_executable
+done
 
 if [[ $1 == "--coverage" ]]; then
 echo "Part 1:--------------------------------------------------"
 gcov $BUILD_DIR/CMakeFiles/bmp280.dir$REPO_DIR/sensors/barometer/*.gcda \
-     $BUILD_DIR/CMakeFiles/ublox.dir$REPO_DIR/sensors/gps/*.gcda \
-     $BUILD_DIR/CMakeFiles/esc_thunder.dir$REPO_DIR/sensors/esc/*.gcda \
-     $BUILD_DIR/CMakeFiles/esc_flame.dir$REPO_DIR/sensors/esc/*.gcda \
+     $BUILD_DIR/CMakeFiles/ublox.dir$REPO_DIR/sensors/gps/ublox.*.gcda \
+     $BUILD_DIR/CMakeFiles/ublox_commands.dir$REPO_DIR/sensors/gps/ublox_commands.*.gcda \
      $BUILD_DIR/CMakeFiles/hmc5883l.dir$REPO_DIR/sensors/magnetometer/hmc5883l*.gcda \
      $BUILD_DIR/CMakeFiles/rm3100.dir$REPO_DIR/sensors/magnetometer/rm3100*.gcda \
      $BUILD_DIR/CMakeFiles/stm32_temp.dir$REPO_DIR/sensors/temperature_sensor/*.gcda \
@@ -59,4 +52,6 @@ fi
 echo ""
 echo "Auxilliary:--------------------------------------------------"
 gcov $BUILD_DIR/CMakeFiles/ring_buffer.dir$REPO_DIR/common/*.gcda \
+     $BUILD_DIR/CMakeFiles/esc_flame.dir$REPO_DIR/sensors/esc/flame*.gcda \
+     $BUILD_DIR/CMakeFiles/esc_thunder.dir$REPO_DIR/sensors/esc/thunder*.gcda \
      $BUILD_DIR/CMakeFiles/ws2812.dir$REPO_DIR/devices/rgb_leds/ws2812*.gcda

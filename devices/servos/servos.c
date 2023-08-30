@@ -106,7 +106,7 @@ int8_t servosGetPwmPercent(Channel_t tim_ch) {
     return percent;
 }
 
-uint32_t servosGetTimerSetpoint(Channel_t tim_ch) {
+uint32_t servosGetTimerSetpointIndex(Channel_t tim_ch) {
     return params[tim_ch].ch;
 }
 
@@ -162,7 +162,7 @@ static void servosSetDefaultValueForChannel(Channel_t tim_ch) {
 }
 
 static void servosUpdateChannelStateAccordingToSetpoint(Channel_t tim_ch) {
-    uint8_t sp_idx = (uint8_t)servosGetTimerSetpoint(tim_ch);
+    uint8_t sp_idx = (uint8_t)servosGetTimerSetpointIndex(tim_ch);
     RawCommand_t val = servosGetSetpoint(sp_idx);
     PwmDurationMillisecond_t min = params[tim_ch].min;
     PwmDurationMillisecond_t max = params[tim_ch].max;

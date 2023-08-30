@@ -10,7 +10,7 @@
 #include "barometer/bmp280.h"
 
 
-TEST(BMP280, bmp280ParseData) {
+TEST(BMP280, test_bmp280ParseData) {
     bmp280Init();
     bmp280Calibrate();
 
@@ -23,6 +23,11 @@ TEST(BMP280, bmp280ParseData) {
     std::cout << "temperature: " << temperature << std::endl;
 
 }
+
+TEST(BMP280, test_bmp280IsInitialized) {
+    ASSERT_FALSE(bmp280IsInitialized());
+}
+
 
 int main (int argc, char *argv[]) {
     testing::InitGoogleTest(&argc, argv);

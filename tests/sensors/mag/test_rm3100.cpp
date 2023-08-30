@@ -9,9 +9,23 @@
 #include <gtest/gtest.h>
 #include "magnetometer/rm3100.h"
 
-TEST(rm3100, rm3100Init) {
+TEST(rm3100, test_rm3100Init) {
     ASSERT_EQ(rm3100Init(), -1);
 }
+
+TEST(rm3100, test_rm3100Measure) {
+    rm3100Measure();
+}
+
+TEST(rm3100, test_rm310GetMeasurement) {
+    float x, y, z;
+    rm310GetMeasurement(&x, &y, &z);
+
+    rm310GetMeasurement(NULL, &y, &z);
+    rm310GetMeasurement(&x, NULL, &z);
+    rm310GetMeasurement(&x, &y, NULL);
+}
+
 
 int main (int argc, char *argv[]) {
     testing::InitGoogleTest(&argc, argv);

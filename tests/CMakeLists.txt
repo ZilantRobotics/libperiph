@@ -43,6 +43,7 @@ gen_test(bmp280         sensors/test_bmp280.cpp             ../sensors/barometer
 gen_test(esc_flame      sensors/esc/test_esc_flame.cpp      ../sensors/esc/CMakeLists.txt)
 gen_test(esc_thunder    sensors/esc/test_esc_thunder.cpp    ../sensors/esc/CMakeLists.txt)
 gen_test(ublox          sensors/gnss_ublox/test_ublox.cpp   ../sensors/gps/CMakeLists.txt)
+gen_test(ublox_commands sensors/gnss_ublox/test_ublox_commands.cpp   ../sensors/gps/CMakeLists.txt)
 gen_test(ms4525do       sensors/dprs/test_ms4525do.cpp      ../sensors/differential_pressure/CMakeLists.txt)
 gen_test(stm32_temp     sensors/temperature_sensor/test.cpp ../sensors/temperature_sensor/CMakeLists.txt)
 gen_test(hmc5883l       sensors/mag/test_hmc5883l.cpp       ../sensors/magnetometer/CMakeLists.txt)
