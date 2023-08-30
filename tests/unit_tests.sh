@@ -17,8 +17,8 @@ cmake $RUN_COVERAGE ../../tests
 make
 
 $BUILD_DIR/bmp280
-$BUILD_DIR/esc_flame
 $BUILD_DIR/esc_thunder
+$BUILD_DIR/esc_flame
 $BUILD_DIR/ublox
 $BUILD_DIR/ms4525do
 $BUILD_DIR/stm32_temp
@@ -41,8 +41,8 @@ if [[ $1 == "--coverage" ]]; then
 echo "Part 1:--------------------------------------------------"
 gcov $BUILD_DIR/CMakeFiles/bmp280.dir$REPO_DIR/sensors/barometer/*.gcda \
      $BUILD_DIR/CMakeFiles/ublox.dir$REPO_DIR/sensors/gps/*.gcda \
-     $BUILD_DIR/CMakeFiles/esc_flame.dir$REPO_DIR/sensors/esc/*.gcda \
      $BUILD_DIR/CMakeFiles/esc_thunder.dir$REPO_DIR/sensors/esc/*.gcda \
+     $BUILD_DIR/CMakeFiles/esc_flame.dir$REPO_DIR/sensors/esc/*.gcda \
      $BUILD_DIR/CMakeFiles/hmc5883l.dir$REPO_DIR/sensors/magnetometer/hmc5883l*.gcda \
      $BUILD_DIR/CMakeFiles/rm3100.dir$REPO_DIR/sensors/magnetometer/rm3100*.gcda \
      $BUILD_DIR/CMakeFiles/stm32_temp.dir$REPO_DIR/sensors/temperature_sensor/*.gcda \
@@ -53,6 +53,10 @@ gcov $BUILD_DIR/CMakeFiles/bmp280.dir$REPO_DIR/sensors/barometer/*.gcda \
 echo ""
 echo "Part 2:--------------------------------------------------"
 gcov $BUILD_DIR/CMakeFiles/ms4525do.dir$REPO_DIR/sensors/differential_pressure/ms4525do*.gcda \
-     $BUILD_DIR/CMakeFiles/ws2812.dir$REPO_DIR/devices/rgb_leds/ws2812*.gcda \
      $BUILD_DIR/CMakeFiles/tf_luna.dir$REPO_DIR/sensors/rangefinder/tf_luna/*.gcda
 fi
+
+echo ""
+echo "Auxilliary:--------------------------------------------------"
+gcov $BUILD_DIR/CMakeFiles/ring_buffer.dir$REPO_DIR/common/*.gcda \
+     $BUILD_DIR/CMakeFiles/ws2812.dir$REPO_DIR/devices/rgb_leds/ws2812*.gcda

@@ -8,7 +8,6 @@
 #include "ws2812.h"
 #include <stdbool.h>
 #include <stddef.h>
-#include "config.h"
 
 
 #define BUF_OFFSET          4
@@ -29,13 +28,14 @@ int8_t ws2812bInit(uint8_t number_of_leds, TIM_HandleTypeDef* timer_ptr, uint32_
     if (number_of_leds > MAX_NUM_OF_LEDS || timer_ptr == NULL) {
         LEDS_NUM = 0;
         BUF_SIZE = 0;
-        return STATUS_ERROR;
+        return LIBPERIPH_ERROR;
     }
+
     LEDS_NUM = number_of_leds;
     BUF_SIZE = 2 * BUF_OFFSET + number_of_leds * SHADES_PER_LED * BITS_PER_SHADE;
     timer = timer_ptr;
     timer_channel = channel;
-    return STATUS_OK;
+    return LIBPERIPH_OK;
 }
 
 /**
@@ -58,13 +58,13 @@ void ws2812bSetColors(const Leds_Color_t* ledsColor) {
 }
 
 int8_t ws2812bStartOnce() {
-    if (timer == NULL) {
-        return STATUS_ERROR;
+    if (LEDS_NUM == 0) {
+        return LIBPERIPH_ERROR;
     }
     if (HAL_TIM_PWM_Start_DMA(timer, timer_channel, (uint32_t*)ccr_values, BUF_SIZE) != HAL_OK) {
-        return STATUS_ERROR;
+        return LIBPERIPH_ERROR;
     }
-    return STATUS_OK;
+    return LIBPERIPH_OK;
 }
 
 void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef* htim) {
