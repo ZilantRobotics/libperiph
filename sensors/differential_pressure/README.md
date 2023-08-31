@@ -20,6 +20,6 @@ If we consider temperature ~288 Kelvin and pressure 101325 Pa according to the I
 ## Usage
 
 ```c++
-ms4525doMeasure();
-DifferentialPressureData readings = ms4525doParse();
+ms4525CollectData();
+DifferentialPressureData readings = ms4525ParseCollectedData();
 ```

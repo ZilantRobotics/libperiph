@@ -6,3 +6,21 @@ Here we have a few rangefidners drivers.
 | ------ | ------- | ------- | -------- | -------- |
 | View | ![](https://github.com/ZilantRobotics/libperiph/blob/docs/assets/sensors/rangefinder/lw20.jpg?raw=true "lw20") | ![](https://github.com/ZilantRobotics/libperiph/blob/docs/assets/sensors/rangefinder/tf_luna.jpg?raw=true "Mini v1") | ![](https://github.com/ZilantRobotics/libperiph/blob/docs/assets/sensors/rangefinder/garmin_lite_v3.jpg?raw=true "Garmin Lite V3") | ![](https://github.com/ZilantRobotics/libperiph/blob/docs/assets/sensors/rangefinder/vl53l0x.jpg?raw=true "vl53l0x") |
 | Interface | i2c | uart | i2c | i2c |
+
+An i2c rangefinder has the following interface:
+
+```c++
+/**
+  * @brief Initialize internal variables, perform calibration or something else
+  */
+int8_t <name>Init();
+
+/**
+  * Collect data from i2c and parse them
+  * CollectData is a blocking function. It reads data from I2C and save it to the internal buffer.
+  * It returns LIBPERIPH_OK on success and < 0 on failure.
+  * ParseCollectedData parses the received buffer and returns the distance in meters.
+  */
+int8_t <name>CollectData();
+float <name>ParseCollectedData();
+```

@@ -20,11 +20,11 @@ int8_t ms4525doInit() {
     return LIBPERIPH_OK;
 }
 
-void ms4525doMeasure() {
+void ms4525CollectData() {
     i2cReceive(I2C_ID, ms4525do_rx_buf, I2C_RESPONSE_SIZE);
 }
 
-DifferentialPressureData ms4525doParse() {
+DifferentialPressureData ms4525ParseCollectedData() {
     int16_t dp_raw = 0;
     int16_t dT_raw = 0;
 

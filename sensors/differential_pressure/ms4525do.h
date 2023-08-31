@@ -27,13 +27,13 @@ int8_t ms4525doInit();
 
 
 /**
-  * @brief In a baremetal application you may want to call these functions one by one consequently.
-  * Alternatively, for example in RTOS applications, you can call them separately.
-  * ms4525doMeasure is blocking function and can take some time.
-  * ms4525doMeasure just perform data serialization.
+  * Collect data from i2c and parse them
+  * CollectData is a blocking function. It reads data from I2C and save it to the internal buffer.
+  * It returns LIBPERIPH_OK on success and < 0 on failure.
+  * ParseCollectedData parses the received buffer and returns the sensor data.
   */
-void ms4525doMeasure();
-DifferentialPressureData ms4525doParse();
+void ms4525CollectData();
+DifferentialPressureData ms4525ParseCollectedData();
 
 /**
   * @brief Only for test usage

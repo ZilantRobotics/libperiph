@@ -17,8 +17,8 @@ TEST(ms4525do, test_ms4525doInit) {
     ASSERT_EQ(LIBPERIPH_OK, ms4525doInit());
 }
 
-TEST(ms4525do, test_ms4525doMeasure) {
-    ms4525doMeasure();
+TEST(ms4525do, test_ms4525CollectData) {
+    ms4525CollectData();
 }
 
 /**
@@ -42,7 +42,7 @@ TEST(ms4525do, pressure_less_then_min) {
 
     for (auto pressure_pair : pressure_table) {
         fill_pressure(pressure_pair.first);
-        DifferentialPressureData data = ms4525doParse();
+        DifferentialPressureData data = ms4525ParseCollectedData();
         ASSERT_TRUE(abs(data.diff_pressure - pressure_pair.second) < 2.0);
     }
 }
@@ -58,7 +58,7 @@ void fill_temperature(uint16_t table_value) {
     ms4525do_rx_buf[3] = (0x07 & raw) << 5;
     ms4525doFillBuffer(ms4525do_rx_buf);
 }
-TEST(ms4525do, test_ms4525doParse) {
+TEST(ms4525do, test_ms4525ParseCollectedData) {
     std::vector<std::pair<uint16_t, float>> temperature_table {{
         {0x0000, -50},
         {0x01FF, 0},
@@ -69,7 +69,7 @@ TEST(ms4525do, test_ms4525doParse) {
 
     for (auto temperature_pair : temperature_table) {
         fill_temperature(temperature_pair.first);
-        DifferentialPressureData data = ms4525doParse();
+        DifferentialPressureData data = ms4525ParseCollectedData();
         ASSERT_EQ(round(data.temperature), temperature_pair.second);
     }
 }

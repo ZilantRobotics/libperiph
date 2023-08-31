@@ -10,33 +10,37 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include "libperiph_common.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /**
-  * @brief  Just save i2c_manager_id
-  */
-int8_t garminLiteInit(int8_t i2c_manager_id);
-
-
-/**
-  * @brief  Process measurement
-  * @note   Blocking operation. It should be performed as fast as possible.
-  */
-bool garminLiteCollectData(uint32_t measurement_period);
-
+ * @return LIBPERIPH_OK if there is no error, otherwise < 0
+ */
+int8_t garminLiteInit();
 
 /**
-  * @brief  Parse I2C rx buffer
+  * Collect data from i2c and parse them
+  * CollectData is a blocking function. It reads data from I2C and save it to the internal buffer.
+  * It returns LIBPERIPH_OK on success and < 0 on failure.
+  * ParseCollectedData parses the received buffer and returns the distance in meters.
   */
+int8_t garminLiteCollectData();
 float garminLiteParseCollectedData();
+
 
 /**
   * @brief  Get 2 bytes of serial number
   */
 void garminGetSerialNumber(uint8_t buffer[]);
+
+/**
+  * @brief  Process measurement
+  * @note   Blocking operation. It should be performed as fast as possible.
+  */
+bool garminLiteCollectDataPeriodically(int8_t i2c_manager_id, uint32_t measurement_period);
 
 #ifdef __cplusplus
 }

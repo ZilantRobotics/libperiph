@@ -31,10 +31,9 @@ extern "C" {
 #endif
 
 /**
- * @return STATUS_OK if there is no error, otherwise STATUS_ERROR
+ * @return LIBPERIPH_OK if there is no error, otherwise < 0
  */
 int8_t tfLunaInit();
-
 
 /**
  * @brief Parse UART buffer

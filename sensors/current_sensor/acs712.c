@@ -20,7 +20,7 @@ static Acs712Coeeficients acs712 = {
     .zero_current = 1970,
     .calib_current_raw = 0,
     .calib_iter = 0,
-    .adc_raw_to_dc_dc_out_current = 0.0216898,
+    .adc_raw_to_dc_dc_out_current = 0.0216898f,
 };
 
 

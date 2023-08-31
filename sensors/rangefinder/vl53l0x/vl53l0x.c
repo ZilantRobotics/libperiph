@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Dmitry Ponomarev <ponomarevda96@gmail.com>
+ * Copyright (C) 2022-2023 Dmitry Ponomarev <ponomarevda96@gmail.com>
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -10,7 +10,6 @@
 #include "main.h"
 #include "i2c_manager.h"
 #include "params.h"
-#include "libperiph_common.h"
 
 #define I2C_ID                                          (0x52)
 
@@ -41,7 +40,6 @@ typedef enum {
     CALIBRATION_TYPE_PHASE
 } Calibration_type_t;
 
-static int8_t i2c_manager_id = LIBPERIPH_ERROR;
 static uint16_t range = 0;
 static uint8_t stop_variable = 0;
 
@@ -50,17 +48,15 @@ static bool i2c_read_addr8_data8(uint8_t reg, uint8_t* value);
 static bool i2c_read_addr8_data16(uint8_t reg, uint16_t* value);
 
 static bool vl53l0xConfigureInterrupt();
+static bool vl53l0xPerformSingleRefCalibration(Calibration_type_t calib_type);
 static bool vl53l0xDataInit();
 static bool vl53l0xStaticInit();
 static bool vl53l0xPerformRefCalibration();
-static void vl53l0xMeasureCallback();
 static bool vl53l0xProcessSingleMeasurement();
 static bool vl53l0xSetSequenceStepsEnabled(uint8_t sequence_step);
-static bool vl53l0xPerformSingleRefCalibration(Calibration_type_t calib_type);
 
 
-int8_t vl53l0xInit(int8_t new_i2c_manager_id) {
-    i2c_manager_id = new_i2c_manager_id;
+int8_t vl53l0xInit() {
     vl53l0xConfigureInterrupt();
 
     if (!vl53l0xDataInit()) {
@@ -78,21 +74,18 @@ int8_t vl53l0xInit(int8_t new_i2c_manager_id) {
     return LIBPERIPH_OK;
 }
 
+int8_t vl53l0xCollectData() {
+    range = 0;
 
-bool vl53l0xCollectData(uint32_t measurement_period) {
-    static uint32_t next_measurement_time_ms = 0;
-    uint32_t crnt_time = HAL_GetTick();
-
-    if (i2c_manager_id == LIBPERIPH_ERROR || crnt_time < next_measurement_time_ms) {
-        return false;
-    }
-    next_measurement_time_ms = crnt_time + measurement_period;
-
-    if (i2cManagerPerformRequest(i2c_manager_id, &vl53l0xMeasureCallback) == LIBPERIPH_ERROR) {
-        return false;
+    uint16_t uid = 0;
+    i2c_read_addr8_data16(REG_IDENTIFICATION_MODEL_ID, &uid);
+    if ((uid >> 8) != 0xEE) {
+        return;
     }
 
-    return true;
+    vl53l0xProcessSingleMeasurement();
+
+    return LIBPERIPH_OK;
 }
 
 float vl53l0xParseCollectedData() {
@@ -104,24 +97,36 @@ float vl53l0xParseCollectedData() {
     return range;
 }
 
-bool i2c_write_addr8_data8(uint8_t reg, uint8_t value) {
+bool vl53l0xCollectDataPeriodically(int8_t i2c_manager_id, uint32_t measurement_period) {
+    static uint32_t next_measurement_time_ms = 0;
+    uint32_t crnt_time = HAL_GetTick();
+
+    if (i2c_manager_id < 0 || crnt_time < next_measurement_time_ms) {
+        return false;
+    }
+    next_measurement_time_ms = crnt_time + measurement_period;
+
+    if (i2cManagerPerformRequest(i2c_manager_id, &vl53l0xCollectData) == LIBPERIPH_ERROR) {
+        return false;
+    }
+
+    return true;
+}
+
+static bool i2c_write_addr8_data8(uint8_t reg, uint8_t value) {
     return 0 == i2cWriteRegisterOneByte(I2C_ID, reg, value);
 }
-bool i2c_read_addr8_data8(uint8_t reg, uint8_t* value) {
+static bool i2c_read_addr8_data8(uint8_t reg, uint8_t* value) {
     return 0 == i2cReadRegister(I2C_ID, reg, value, 1);
 }
-bool i2c_read_addr8_data16(uint8_t reg, uint16_t* value) {
+static bool i2c_read_addr8_data16(uint8_t reg, uint16_t* value) {
     uint8_t buf[2] = {};
     int8_t res = i2cReadRegister(I2C_ID, reg, (uint8_t*)buf, 2);
     *value = (uint16_t)buf[1] + ((uint16_t)buf[0] << 8);
     return 0 == res;
 }
 
-bool vl53l0xSetSequenceStepsEnabled(uint8_t sequence_step) {
-    return i2c_write_addr8_data8(REG_SYSTEM_SEQUENCE_CONFIG, sequence_step);
-}
-
-bool vl53l0xConfigureInterrupt() {
+static bool vl53l0xConfigureInterrupt() {
     /* Interrupt on new sample ready */
     if (!i2c_write_addr8_data8(REG_SYSTEM_INTERRUPT_CONFIG_GPIO, 0x04)) {
         return false;
@@ -143,7 +148,7 @@ bool vl53l0xConfigureInterrupt() {
     return true;
 }
 
-bool vl53l0xPerformSingleRefCalibration(Calibration_type_t calib_type) {
+static bool vl53l0xPerformSingleRefCalibration(Calibration_type_t calib_type) {
     uint8_t sysrange_start = 0;
     uint8_t sequence_config = 0;
 
@@ -214,7 +219,7 @@ bool vl53l0xPerformRefCalibration() {
     return true;
 }
 
-bool vl53l0xStaticInit() {
+static bool vl53l0xStaticInit() {
     if (!vl53l0xConfigureInterrupt()) {
         return false;
     }
@@ -228,7 +233,7 @@ bool vl53l0xStaticInit() {
     return true;
 }
 
-bool vl53l0xDataInit() {
+static bool vl53l0xDataInit() {
     /* Set 2v8 mode */
     uint8_t vhv_config_scl_sda = 0;
     if (!i2c_read_addr8_data8(REG_VHV_CONFIG_PAD_SCL_SDA_EXTSUP_HV, &vhv_config_scl_sda)) {
@@ -253,7 +258,7 @@ bool vl53l0xDataInit() {
     return success;
 }
 
-bool vl53l0xRequestMeasurement() {
+static bool vl53l0xRequestMeasurement() {
     if (!i2c_write_addr8_data8(REG_SYSTEM_INTERRUPT_CLEAR, 0x01)) {
         return false;
     }
@@ -277,7 +282,7 @@ bool vl53l0xRequestMeasurement() {
     return true;
 }
 
-bool vl53l0xWaitForResult(uint16_t max_tries) {
+static bool vl53l0xWaitForResult(uint16_t max_tries) {
     uint8_t sysrange_start = 0;
     uint_fast16_t attempt;
     bool success = false;
@@ -316,7 +321,7 @@ bool vl53l0xWaitForResult(uint16_t max_tries) {
     return true;
 }
 
-bool vl53l0xReadMeasurement() {
+static bool vl53l0xReadMeasurement() {
     if (!i2c_read_addr8_data16(REG_RESULT_RANGE_STATUS + 10, &range)) {
         return false;
     }
@@ -328,21 +333,12 @@ bool vl53l0xReadMeasurement() {
     return true;
 }
 
-bool vl53l0xProcessSingleMeasurement() {
+static bool vl53l0xProcessSingleMeasurement() {
     vl53l0xWaitForResult(100);
     vl53l0xReadMeasurement();
     return vl53l0xRequestMeasurement();
 }
 
-
-void vl53l0xMeasureCallback() {
-    range = 0;
-
-    uint16_t uid = 0;
-    i2c_read_addr8_data16(REG_IDENTIFICATION_MODEL_ID, &uid);
-    if ((uid >> 8) != 0xEE) {
-        return;
-    }
-
-    vl53l0xProcessSingleMeasurement();
+static bool vl53l0xSetSequenceStepsEnabled(uint8_t sequence_step) {
+    return i2c_write_addr8_data8(REG_SYSTEM_SEQUENCE_CONFIG, sequence_step);
 }
