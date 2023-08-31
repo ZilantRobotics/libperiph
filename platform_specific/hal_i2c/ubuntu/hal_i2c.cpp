@@ -7,10 +7,8 @@
 
 #include "hal_i2c.h"
 #include <string.h>
+#include "sitl_i2c.hpp"
 #include "libperiph_common.h"
-
-uint8_t ubuntu_i2c_id __attribute__((weak)) = 0;
-uint8_t ubuntu_i2c_buffer[256] __attribute__((weak)) = {};
 
 
 int8_t i2cTransmit(uint8_t id, const uint8_t tx[], uint8_t len) {
@@ -18,8 +16,10 @@ int8_t i2cTransmit(uint8_t id, const uint8_t tx[], uint8_t len) {
         return LIBPERIPH_ERROR;
     }
 
-    ubuntu_i2c_id = id;
-    memcpy(ubuntu_i2c_buffer, tx, len);
+    for (size_t idx = 0; idx < SitlI2CSensor::number_of_sensor; idx++) {
+        SitlI2CSensor::i2c_sensors[idx]->callback_on_i2c_transmit(id, tx, len);
+    }
+
     return LIBPERIPH_OK;
 }
 
@@ -28,6 +28,18 @@ int8_t i2cReceive(uint8_t id, uint8_t* rx, uint8_t len) {
         return LIBPERIPH_ERROR;
     }
 
-    memcpy(rx, ubuntu_i2c_buffer, len);
+    for (size_t idx = 0; idx < SitlI2CSensor::number_of_sensor; idx++) {
+        SitlI2CSensor::i2c_sensors[idx]->callback_on_i2c_receive(id, rx, len);
+    }
+
     return LIBPERIPH_OK;
 }
+
+std::array<SitlI2CSensor*, SitlI2CSensor::MAX_NUMBER_OF_SENSOR> SitlI2CSensor::i2c_sensors;
+size_t SitlI2CSensor::number_of_sensor;
+SitlI2CSensor::SitlI2CSensor(uint8_t id) : identifier(id) {
+    if (number_of_sensor < MAX_NUMBER_OF_SENSOR) {
+        i2c_sensors[number_of_sensor] = this;
+        number_of_sensor++;
+    }
+};
