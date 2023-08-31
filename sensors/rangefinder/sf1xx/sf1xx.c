@@ -26,7 +26,7 @@ int8_t sf1xxCollectData() {
 }
 
 float sf1xxParseCollectedData() {
-    return ((i2c_response_buf[0] << 8) + i2c_response_buf[1]) * 0.01;
+    return ((i2c_response_buf[0] << 8) + i2c_response_buf[1]) * 0.01f;
 }
 
 bool sf1xxCollectDataPeriodically(int8_t i2c_manager_id, uint32_t measurement_period) {

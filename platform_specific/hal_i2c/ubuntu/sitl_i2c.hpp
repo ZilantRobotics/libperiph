@@ -17,7 +17,7 @@ extern "C" {
 #endif
 
 struct SitlI2CSensor {
-    SitlI2CSensor(uint8_t id);
+    explicit SitlI2CSensor(uint8_t id);
 
     virtual int8_t callback_on_i2c_transmit(uint8_t id, const uint8_t tx[], uint8_t len) = 0;
     virtual int8_t callback_on_i2c_receive(uint8_t id, uint8_t* rx, uint8_t len) = 0;

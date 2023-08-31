@@ -16,7 +16,7 @@ cd $BUILD_DIR
 cmake $RUN_COVERAGE ../../tests
 make
 
-sensor_executables=(acs712 bmp280 esc_flame esc_thunder ublox ublox_commands ms4525do stm32_temp hmc5883l rm3100 tf_luna)
+sensor_executables=(acs712 bmp280 esc_flame esc_thunder ublox ublox_commands ms4525do stm32_temp hmc5883l rm3100 tf_luna garmin_lite)
 for sensor_executable in ${sensor_executables[@]}; do
     $BUILD_DIR/$sensor_executable
 done
@@ -47,6 +47,7 @@ echo ""
 echo "Part 2:--------------------------------------------------"
 gcov $BUILD_DIR/CMakeFiles/acs712.dir$REPO_DIR/sensors/current_sensor/*.gcda \
      $BUILD_DIR/CMakeFiles/ms4525do.dir$REPO_DIR/sensors/differential_pressure/ms4525do*.gcda \
+     $BUILD_DIR/CMakeFiles/garmin_lite.dir$REPO_DIR/sensors/rangefinder/garmin_lite/*.gcda \
      $BUILD_DIR/CMakeFiles/tf_luna.dir$REPO_DIR/sensors/rangefinder/tf_luna/*.gcda
 fi
 

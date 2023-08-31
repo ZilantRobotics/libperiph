@@ -8,7 +8,7 @@ The Garmin / PulsedLight LIDAR-Lite rangefinder is a low-cost optical distance m
 | - | - |
 | Reference | [Datasheet](https://static.garmin.com/pumac/LIDAR_Lite_v3_Operation_Manual_and_Technical_Specifications.pdf) |
 | Requred periphery | I2C |
-| Unit tests | not yet |
+| Unit tests | [test_garmin_lite.cpp](../../../tests/sensors/rangefinder/test_garmin_lite.cpp) |
 
 ## Implementation details
 

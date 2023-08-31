@@ -41,7 +41,7 @@ int8_t garminLiteInit() {
 }
 
 float garminLiteParseCollectedData() {
-    return ((i2c_response_buf[0] << 8) + i2c_response_buf[1]) * 0.01;
+    return ((i2c_response_buf[0] << 8) + i2c_response_buf[1]) * 0.01f;
 }
 
 int8_t garminLiteCollectData() {

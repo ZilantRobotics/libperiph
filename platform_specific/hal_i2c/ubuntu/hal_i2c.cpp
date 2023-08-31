@@ -42,4 +42,4 @@ SitlI2CSensor::SitlI2CSensor(uint8_t id) : identifier(id) {
         i2c_sensors[number_of_sensor] = this;
         number_of_sensor++;
     }
-};
+}
