@@ -2,8 +2,11 @@ if(NOT LIBPERIPH_PLATFORM)
   message(SEND_ERROR "LIBPERIPH_PLATFORM is not specified")
 endif()
 
+FILE(GLOB platform_related_sources ${CMAKE_CURRENT_LIST_DIR}/${LIBPERIPH_PLATFORM}/*.*)
+
 list(APPEND LIBPERIPH_PERIPHERY_SOURCE
-    ${CMAKE_CURRENT_LIST_DIR}/${LIBPERIPH_PLATFORM}/hal_i2c.c
+    ${CMAKE_CURRENT_LIST_DIR}/i2c_common.c
+    ${platform_related_sources}
 )
 
 list(APPEND LIBPERIPH_PERIPHERY_HEADERS
