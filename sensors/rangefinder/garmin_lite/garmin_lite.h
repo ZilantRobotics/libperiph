@@ -16,6 +16,10 @@
 extern "C" {
 #endif
 
+typedef struct {
+    uint8_t buffer[2];
+} GarminLiteSerialNumber;
+
 /**
  * @return LIBPERIPH_OK if there is no error, otherwise < 0
  */
@@ -34,13 +38,7 @@ float garminLiteParseCollectedData();
 /**
   * @brief  Get 2 bytes of serial number
   */
-void garminGetSerialNumber(uint8_t buffer[]);
-
-/**
-  * @brief  Process measurement
-  * @note   Blocking operation. It should be performed as fast as possible.
-  */
-bool garminLiteCollectDataPeriodically(int8_t i2c_manager_id, uint32_t measurement_period);
+void garminGetSerialNumber(GarminLiteSerialNumber serial_number);
 
 #ifdef __cplusplus
 }

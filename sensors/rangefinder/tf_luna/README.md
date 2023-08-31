@@ -8,4 +8,4 @@ TF-Luna is a single-point ranging LiDAR, based on the TOF (Time of Flight) princ
 | - | - |
 | Reference | [Datasheet](https://files.seeedstudio.com/wiki/Grove-TF_Mini_LiDAR/res/SJ-PM-TF-Luna-A03-Product-Manual.pdf) |
 | Requred periphery | UART |
-| Unit tests | [tf_luna.cpp](../../../tests/sensors/rangefinder/tf_luna.cpp) |
+| Unit tests | [test_tf_luna.cpp](../../../tests/sensors/rangefinder/test_tf_luna.cpp) |
