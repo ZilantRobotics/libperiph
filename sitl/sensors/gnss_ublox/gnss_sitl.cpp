@@ -8,7 +8,7 @@
 
 using namespace std::chrono_literals;
 
-#define GNSS_BUFFER_SIZE 200
+#define GNSS_BUFFER_SIZE 400
 extern uint8_t gnss_buffer[GNSS_BUFFER_SIZE];
 
 struct UbloxBuffer {
@@ -98,7 +98,6 @@ void GnssSitlStartTask() {
         const auto crnt_time = std::chrono::steady_clock::now();
         auto elapsed_time = std::chrono::duration_cast<std::chrono::milliseconds>(crnt_time - init_time).count();
         if (ubx_byte_counter % UbloxBuffer::SIZE == 0) {
-            std::cout << elapsed_time << std::endl;
             buffer.ubx_nav_pvt_raw.payload.time_of_week_ms = elapsed_time;
             buffer.construct();
         }

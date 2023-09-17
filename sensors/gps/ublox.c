@@ -38,7 +38,7 @@ uint64_t dayToUnixTimestamp(uint16_t y, uint8_t mo, uint8_t d, uint8_t h, uint8_
 }
 
 UbloxPackageType_t ubloxParse(const uint8_t buffer[], size_t size, size_t* num_of_parsed_bytes) {
-    if (buffer == NULL || size > 256 || num_of_parsed_bytes == NULL) {
+    if (buffer == NULL || size > 400 || num_of_parsed_bytes == NULL) {
         return UBX_UNKNOWN_PKG;
     }
 
@@ -57,7 +57,7 @@ UbloxPackageType_t ubloxParse(const uint8_t buffer[], size_t size, size_t* num_o
         }
     }
 
-    *num_of_parsed_bytes = idx + received_package;
+    *num_of_parsed_bytes = idx + (received_package != UBX_UNKNOWN_PKG);
 
     return received_package;
 }
@@ -122,9 +122,6 @@ double ubloxRawToRad(int32_t ublox_raw_deg_1e_7) {
 }
 
 ///< *************************** PRIVATE FUNCTIONS ***************************
-/**
- * @note All args checks must be done out of here scope
- */
 
 /**
  * @return true when package is finished, otherwise false
