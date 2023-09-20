@@ -38,7 +38,8 @@ void UbloxBuffer::create_ubx_nav_pvt_package(UbxNavPvtRaw_t& buffer) {
     buffer.class_nav = CLASS_NAV;
     buffer.id_nav_pvt = ID_NAV_PVT;
     buffer.payload_length = sizeof(UbxNavPvt_t);
-    buffer.crc = ubloxCrc16(&buffer.class_nav, sizeof(buffer) - 4);
+    const UbloxCrcBuffer_t* crc_buf = (const UbloxCrcBuffer_t*)&buffer.class_nav;
+    buffer.crc = ubloxCrc16(crc_buf, sizeof(buffer) - 4);
 }
 
 void UbloxBuffer::create_ubx_nav_cov_package(UbxNavCovRaw_t& buffer) {
@@ -47,7 +48,8 @@ void UbloxBuffer::create_ubx_nav_cov_package(UbxNavCovRaw_t& buffer) {
     buffer.class_nav = CLASS_NAV;
     buffer.id_nav_pvt = ID_NAV_COV;
     buffer.payload_length = sizeof(UbxNavCov_t);
-    buffer.crc = ubloxCrc16(&buffer.class_nav, sizeof(buffer) - 4);
+    const UbloxCrcBuffer_t* crc_buf = (const UbloxCrcBuffer_t*)&buffer.class_nav;
+    buffer.crc = ubloxCrc16(crc_buf, sizeof(buffer) - 4);
 }
 
 void UbloxBuffer::create_ubx_nav_status_package(UbxNavStatusRaw_t& buffer) {
@@ -56,7 +58,8 @@ void UbloxBuffer::create_ubx_nav_status_package(UbxNavStatusRaw_t& buffer) {
     buffer.class_nav = CLASS_NAV;
     buffer.id_nav_pvt = ID_NAV_STATUS;
     buffer.payload_length = sizeof(UbxNavStatus_t);
-    buffer.crc = ubloxCrc16(&buffer.class_nav, sizeof(buffer) - 4);
+    const UbloxCrcBuffer_t* crc_buf = (const UbloxCrcBuffer_t*)&buffer.class_nav;
+    buffer.crc = ubloxCrc16(crc_buf, sizeof(buffer) - 4);
 }
 
 
