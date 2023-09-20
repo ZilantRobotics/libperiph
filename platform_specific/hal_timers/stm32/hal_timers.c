@@ -19,6 +19,7 @@
 #endif
 
 #if defined(PIN_PB4_SET_TIM3_CH1) || defined(PIN_PB5_SET_TIM3_CH2)
+    extern TIM_HandleTypeDef htim2;
     extern TIM_HandleTypeDef htim3;
 #endif
 
@@ -65,7 +66,7 @@ static volatile TimChannel_t channels[TIM_CH_AMOUNT] = {
 #endif
 
 #if defined(PIN_PB4_SET_TIM3_CH1) || defined(PIN_PB5_SET_TIM3_CH2)
-    {&TIM3->CCR1,   &htim3, TIM_CHANNEL_1,  TIMER_NOT_CONFIGURED},  // PIN_PB4_TIM3_CH1
+    {&TIM2->CCR2,   &htim2, TIM_CHANNEL_2,  TIMER_NOT_CONFIGURED},  // weird pb3
     {&TIM3->CCR2,   &htim3, TIM_CHANNEL_2,  TIMER_NOT_CONFIGURED},  // PIN_PB5_TIM3_CH2
     {&TIM3->CCR3,   &htim3, TIM_CHANNEL_3,  TIMER_NOT_CONFIGURED},  // PIN_PB0_TIM3_CH3
 #else
