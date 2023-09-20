@@ -2,7 +2,7 @@
 
 Here are drivers for 2 magnetometers:
 - hmc588l ([datasheet](https://cdn.sparkfun.com/datasheets/Sensors/Magneto/HMC5883L-FDS.pdf)),
-- rm3100 ([datasheet](https://www.terraelectronica.ru/pdf/show?pdf_file=%252Fds%252Fpdf%252FR%252FRM3100.pdf)).
+- rm3100 ([datasheet](https://www.tri-m.com/products/pni/RM3100-User-Manual.pdf)).
 
 ## hmc5883l usage example
 
@@ -22,6 +22,8 @@ hmc5883GetMeasurement(&x, &y, &z);
 ## rm3100 usage example
 
 rm3100 magnetometer is based on SPI driver.
+
+It measures magnetic field in gauses.
 
 ```c++
 // application initialization
