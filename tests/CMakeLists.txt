@@ -47,6 +47,7 @@ gen_test(servo_common   devices/servos/test_common.cpp          ../devices/servo
 gen_test(ws2812         devices/rgb_leds/test_ws2812.cpp        ../devices/rgb_leds/CMakeLists.txt)
 
 gen_test(acs712         sensors/current_sensor/test_acs712.cpp  ../sensors/current_sensor/CMakeLists.txt)
+gen_test(esc_alpha      sensors/esc/test_esc_alpha.cpp          ../sensors/esc/CMakeLists.txt)
 gen_test(esc_flame      sensors/esc/test_esc_flame.cpp          ../sensors/esc/CMakeLists.txt)
 gen_test(esc_thunder    sensors/esc/test_esc_thunder.cpp        ../sensors/esc/CMakeLists.txt)
 gen_test(ublox          sensors/gnss_ublox/test_ublox.cpp       ../sensors/gps/CMakeLists.txt)
