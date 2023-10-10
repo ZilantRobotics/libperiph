@@ -21,16 +21,15 @@
 
 typedef struct {
     uint16_t header;            // 0-1      Bytes are: 155, 22
-    uint16_t bale_no;           // 2-3
+    uint16_t bale_no;           // 2-3      ESC Flame: [4, 2], ESC Alpha: [1, 2]
     uint16_t counter;           // 4-5
     uint16_t throttle_in;       // 6-7
     uint16_t throttle_out;      // 8-9
     uint16_t rpm;               // 10-11
     uint16_t voltage;           // 12-13
     uint16_t current;           // 14-15
-    uint16_t current_phase;     // 16-17
-    uint8_t temperature_1;      // 18-19
-    uint8_t temperature_2;      // 18-19
+    uint16_t current_phase;     // 16-17    ESC Flame: always zero
+    uint16_t temperature;       // 18-19
     uint16_t status_code;       // 20-21
     uint16_t crc16;             // 22-23
 } EscFlameRaw_t;
@@ -44,22 +43,27 @@ typedef struct {
     float rpm;
     float current;
     float throttle;
+    float temp_slope;
+    float temp_intercept;
+    uint16_t temp_mask;
     uint8_t mot_num_poles;
 } Multipliers_t;
 
-// ESC coefficients (ESC Flame by default)
 static Multipliers_t config = {
-    .voltage = 1.0f / 59.0f,
-    .rpm = 60.0f / 3.27f * 28.0f,
-    .current = 0,
-    .throttle = 100.0f / 1024.0f,
-    .mot_num_poles = 28,
+    .voltage = 1.0f,
+    .rpm = 1.0f,
+    .current = 1.0f,
+    .throttle = 1.0f,
+    .temp_slope = 1.0f,
+    .temp_intercept = 0.0f,
+    .temp_mask = 0xFFFF,
+    .mot_num_poles = 1,
 };
 
 LIBPERIPH_STATIC bool escFlameIsItPackageStart(const uint8_t* buffer);
 LIBPERIPH_STATIC void escFlameParse(const uint8_t* buffer, EscFlame_t* esc_status);
 static uint16_t swapBytesU16(uint16_t u16);
-static float escRawTemperatureToKelvin(uint8_t raw_temperature);
+static float escRawTemperatureToKelvin(uint16_t raw_temperature);
 
 
 bool escFlameParseDma(size_t last_idx, DmaUartHandler_t* parser, EscFlame_t* esc_flame) {
@@ -92,9 +96,30 @@ bool escFlameParseDma(size_t last_idx, DmaUartHandler_t* parser, EscFlame_t* esc
 
 void escSetAlphaParameters() {
     config.voltage = 1 / 10.0;
-    config.rpm = 20.258398f;  // experimental value
+    config.rpm = 20.258398f;            // Experimental value
     config.current = 0.000015625;
     config.throttle = 100.0 / 1024.0;
+
+    /**
+     * @note Actual formula is:
+     * fahrenheit = 273 - raw_temperature
+     * kelvin = (fahrenheit - 32) * 5 / 9 + 273
+     */
+    config.temp_slope = -0.5555556f,
+    config.temp_intercept = 429.44f,
+    config.temp_mask = 0xFF,
+
+    config.mot_num_poles = 28;
+}
+
+void escSetFlameParameters() {
+    config.voltage = 1 / 59.0;
+    config.rpm = 60.0 / 3.27 * 28;
+    config.current = 1.0;               // Unknown
+    config.throttle = 100.0 / 1024.0;
+    config.temp_slope = 1.0,            // Unknown
+    config.temp_intercept = 0.0,        // Unknown
+    config.temp_mask = 0xFFFF,          // Unknown
     config.mot_num_poles = 28;
 }
 
@@ -116,11 +141,11 @@ LIBPERIPH_STATIC void escFlameParse(const uint8_t* raw_package_buffer, EscFlame_
     }
 
     const EscFlameRaw_t* buffer = (const EscFlameRaw_t*)raw_package_buffer;
-    esc_flame->counter = buffer->counter;
+    esc_flame->counter = swapBytesU16(buffer->counter);
     esc_flame->rpm = swapBytesU16(buffer->rpm) * config.rpm / config.mot_num_poles;
     esc_flame->voltage = swapBytesU16(buffer->voltage) * config.voltage;
     esc_flame->current = swapBytesU16(buffer->current) * config.current;
-    esc_flame->temperature = escRawTemperatureToKelvin(buffer->temperature_1);
+    esc_flame->temperature = escRawTemperatureToKelvin(swapBytesU16(buffer->temperature));
     esc_flame->power_rating_pct = swapBytesU16(buffer->throttle_in) * config.throttle;
 }
 
@@ -128,12 +153,6 @@ static uint16_t swapBytesU16(uint16_t u16) {
     return (u16 >> 8) + ((u16 & 0xFF) << 8);
 }
 
-/**
-  * @note Actual formula is:
-  * fahrenheit = 273 - raw_temperature
-  * kelvin = (fahrenheit - 32) * 5 / 9 + 273
-  * Here is an optimized version
-  */
-static float escRawTemperatureToKelvin(uint8_t raw_temperature) {
-    return (773 - raw_temperature) * 0.5555556f;
+static float escRawTemperatureToKelvin(uint16_t raw_temperature) {
+    return (config.temp_mask & raw_temperature) * config.temp_slope + config.temp_intercept;
 }

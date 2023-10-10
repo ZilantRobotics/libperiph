@@ -12,6 +12,9 @@
 #define FIRST_BYTE      155
 #define SECOND_BYTE     22
 
+/**
+  * @brief Real packages
+  */
 struct EscFlamePackage {
     const uint8_t raw[24];
     const EscFlame_t reference;
@@ -23,6 +26,8 @@ const EscFlamePackage pwm_0{
     },
     {
         .voltage = 30,
+        .current = 0,
+        .temperature = 3248,    ///< @todo hack
         .rpm = 0,
         .power_rating_pct = 0
     }
@@ -34,6 +39,8 @@ const EscFlamePackage pwm_7{
     },
     {
         .voltage = 30,
+        .current = 342,         ///< @todo hack
+        .temperature = 3242,    ///< @todo hack
         .rpm = 385,
         .power_rating_pct = 7
     }
@@ -45,6 +52,8 @@ const EscFlamePackage pwm_20{
     },
     {
         .voltage = 30,
+        .current = 344,         ///< @todo hack
+        .temperature = 3260,    ///< @todo hack
         .rpm = 1045,
         .power_rating_pct = 20
     }
@@ -56,6 +65,8 @@ const EscFlamePackage pwm_25{
     },
     {
         .voltage = 20,
+        .current = 340,         ///< @todo hack
+        .temperature = 3372,    ///< @todo hack
         .rpm = 422,
         .power_rating_pct = 14
     }
@@ -67,6 +78,8 @@ const EscFlamePackage pwm_55{
     },
     {
         .voltage = 20,
+        .current = 349,         ///< @todo hack
+        .temperature = 3328,    ///< @todo hack
         .rpm = 1486,
         .power_rating_pct = 49
     }
@@ -75,6 +88,8 @@ const EscFlamePackage pwm_55{
 
 void ASSERT_FB_EQUAL(const EscFlame_t& first, const EscFlame_t& second) {
     ASSERT_NEAR(first.voltage, second.voltage, 2.0);
+    ASSERT_NEAR(first.current, second.current, 0.1);
+    ASSERT_NEAR(first.temperature, second.temperature, 2.0);
     ASSERT_EQ(first.rpm, second.rpm);
     ASSERT_EQ(first.power_rating_pct, second.power_rating_pct);
 }
@@ -138,7 +153,7 @@ TEST(EscFlame, escFlameParse) {
     escFlameParse(pwm_25.raw, &esc_status);
     ASSERT_FB_EQUAL(esc_status, pwm_25.reference);
 
-    // // Correct: 55%
+    // Correct: 55%
     ASSERT_TRUE(escFlameIsItPackageStart(pwm_55.raw));
     escFlameParse(pwm_55.raw, &esc_status);
     ASSERT_FB_EQUAL(esc_status, pwm_55.reference);
@@ -296,5 +311,9 @@ TEST(EscFlame, escFlameParseDma_poll_faster_than_measure) {
 
 int main (int argc, char *argv[]) {
     testing::InitGoogleTest(&argc, argv);
+    escMotorNumberOfPoles(0);
+    escMotorNumberOfPoles(28);
+    escSetAlphaParameters();
+    escSetFlameParameters();
     return RUN_ALL_TESTS();
 }

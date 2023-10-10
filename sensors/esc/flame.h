@@ -30,6 +30,8 @@ typedef struct {
 
 
 void escSetAlphaParameters();
+void escSetFlameParameters();
+
 bool escFlameParseDma(size_t last_recv_idx, DmaUartHandler_t* parser, EscFlame_t* esc_status);
 void escMotorNumberOfPoles(uint8_t mot_num_poles);
 

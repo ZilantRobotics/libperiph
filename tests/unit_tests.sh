@@ -16,7 +16,7 @@ cd $BUILD_DIR
 cmake $RUN_COVERAGE ../../tests
 make
 
-sensor_executables=(acs712 bmp280 esc_flame esc_thunder ublox ublox_commands ms4525do stm32_temp hmc5883l rm3100 tf_luna garmin_lite)
+sensor_executables=(acs712 bmp280 esc_alpha esc_flame esc_thunder ublox ublox_commands ms4525do stm32_temp hmc5883l rm3100 tf_luna garmin_lite)
 for sensor_executable in ${sensor_executables[@]}; do
     $BUILD_DIR/$sensor_executable
 done
@@ -54,6 +54,7 @@ fi
 echo ""
 echo "Auxilliary:--------------------------------------------------"
 gcov $BUILD_DIR/CMakeFiles/ring_buffer.dir$REPO_DIR/common/*.gcda \
+     $BUILD_DIR/CMakeFiles/esc_alpha.dir$REPO_DIR/sensors/esc/alpha*.gcda \
      $BUILD_DIR/CMakeFiles/esc_flame.dir$REPO_DIR/sensors/esc/flame*.gcda \
      $BUILD_DIR/CMakeFiles/esc_thunder.dir$REPO_DIR/sensors/esc/thunder*.gcda \
      $BUILD_DIR/CMakeFiles/ws2812.dir$REPO_DIR/devices/rgb_leds/ws2812*.gcda
