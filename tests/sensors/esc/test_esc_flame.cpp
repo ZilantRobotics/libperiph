@@ -5,12 +5,6 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-/**
- * @file test_esc_flame.cpp
- * @author d.ponomarev
- * @date Apr 16, 2021
- */
-
 #include <iostream>
 #include <gtest/gtest.h>
 #include "esc/flame.h"
@@ -18,47 +12,71 @@
 #define FIRST_BYTE      155
 #define SECOND_BYTE     22
 
-// Real data set
-const uint8_t PWM_0_PERCENT[24] = {
-    155,    22,     4,      2,      98,
-    147,    0,      0,      0,      47,
-    0,      0,      7,      32,     0,
-    0,      0,      0,      12,     176,
-    12,     222,    168,    3
+struct EscFlamePackage {
+    const uint8_t raw[24];
+    const EscFlame_t reference;
 };
 
-const uint8_t PWM_20_PERCENT[24] = {
-    155,    22,     4,      2,      2,
-    216,    0,      211,    0,      211,
-    0,      57,     7,      33,     1,
-    88,     0,      0,      12,     188,
-    12,     248,    189,    5
+const EscFlamePackage pwm_0{
+    {
+        155, 22, 4, 2, 0, 1, 0, 0, 0, 47, 0, 0, 7, 32, 0, 0, 0, 0, 12, 176, 12, 222, 109, 2
+    },
+    {
+        .voltage = 30,
+        .rpm = 0,
+        .power_rating_pct = 0
+    }
 };
 
-const uint8_t PWM_7_PERCENT[24] = {
-    155,    22,     4,      2,      108,
-    242,    0,      81,     0,      81,
-    0,      21,     7,      31,     1,
-    86,     0,      0,      12,     170,
-    12,     226,    237,    4
+const EscFlamePackage pwm_7{
+    {
+        155, 22, 4, 2, 108, 242, 0, 81, 0, 81, 0, 21, 7, 31, 1, 86, 0, 0, 12, 170, 12, 226, 237, 4
+    },
+    {
+        .voltage = 30,
+        .rpm = 385,
+        .power_rating_pct = 7
+    }
 };
 
-void check_pwm_0_percent(const EscFlame_t& esc_status) {
-    ASSERT_TRUE(esc_status.voltage > 25 && esc_status.voltage < 35);
-    ASSERT_TRUE(esc_status.rpm == 0);
-    ASSERT_TRUE(esc_status.power_rating_pct == 0);
-}
+const EscFlamePackage pwm_20{
+    {
+        155, 22, 4, 2, 2, 216, 0, 211, 0, 211, 0, 57, 7, 33, 1, 88, 0, 0, 12, 188, 12, 248, 189, 5
+    },
+    {
+        .voltage = 30,
+        .rpm = 1045,
+        .power_rating_pct = 20
+    }
+};
 
-void check_pwm_7_percent(const EscFlame_t& esc_status) {
-    ASSERT_TRUE(esc_status.voltage > 25 && esc_status.voltage < 35);
-    ASSERT_TRUE(esc_status.rpm == 385);
-    ASSERT_TRUE(esc_status.power_rating_pct == 7);
-}
+const EscFlamePackage pwm_25{
+    {
+        155, 22, 4, 2, 3, 27, 0, 149, 0, 149, 0, 23, 4, 136, 1, 84, 0, 0, 13, 44, 13, 69, 130, 3
+    },
+    {
+        .voltage = 20,
+        .rpm = 422,
+        .power_rating_pct = 14
+    }
+};
 
-void check_pwm_20_percent(const EscFlame_t& esc_status) {
-    ASSERT_TRUE(esc_status.voltage > 25 && esc_status.voltage < 35);
-    ASSERT_TRUE(esc_status.rpm == 1045);
-    ASSERT_TRUE(esc_status.power_rating_pct == 20);
+const EscFlamePackage pwm_55{
+    {
+        155, 22, 4, 2, 6, 155, 1, 250, 1, 250, 0, 81, 4, 52, 1, 93, 0, 0, 13, 0, 13, 31, 110, 4
+    },
+    {
+        .voltage = 20,
+        .rpm = 1486,
+        .power_rating_pct = 49
+    }
+};
+
+
+void ASSERT_FB_EQUAL(const EscFlame_t& first, const EscFlame_t& second) {
+    ASSERT_NEAR(first.voltage, second.voltage, 2.0);
+    ASSERT_EQ(first.rpm, second.rpm);
+    ASSERT_EQ(first.power_rating_pct, second.power_rating_pct);
 }
 
 void fill_buffer_with_frame(DmaUartHandler_t& parser, size_t parser_buf_idx, const uint8_t* real_case) {
@@ -101,19 +119,29 @@ TEST(EscFlame, escFlameParse) {
     escFlameParse(raw_package_buffer, NULL);
 
     // Correct: 0%
-    ASSERT_TRUE(escFlameIsItPackageStart(PWM_0_PERCENT));
-    escFlameParse(PWM_0_PERCENT, &esc_status);
-    check_pwm_0_percent(esc_status);
-
-    // Correct: 20%
-    ASSERT_TRUE(escFlameIsItPackageStart(PWM_20_PERCENT));
-    escFlameParse(PWM_20_PERCENT, &esc_status);
-    check_pwm_20_percent(esc_status);
+    ASSERT_TRUE(escFlameIsItPackageStart(pwm_0.raw));
+    escFlameParse(pwm_0.raw, &esc_status);
+    ASSERT_FB_EQUAL(esc_status, pwm_0.reference);
 
     // Correct: 7%
-    ASSERT_TRUE(escFlameIsItPackageStart(PWM_7_PERCENT));
-    escFlameParse(PWM_7_PERCENT, &esc_status);
-    check_pwm_7_percent(esc_status);
+    ASSERT_TRUE(escFlameIsItPackageStart(pwm_7.raw));
+    escFlameParse(pwm_7.raw, &esc_status);
+    ASSERT_FB_EQUAL(esc_status, pwm_7.reference);
+
+    // Correct: 20%
+    ASSERT_TRUE(escFlameIsItPackageStart(pwm_20.raw));
+    escFlameParse(pwm_20.raw, &esc_status);
+    ASSERT_FB_EQUAL(esc_status, pwm_20.reference);
+
+    // Correct: 25%
+    ASSERT_TRUE(escFlameIsItPackageStart(pwm_25.raw));
+    escFlameParse(pwm_25.raw, &esc_status);
+    ASSERT_FB_EQUAL(esc_status, pwm_25.reference);
+
+    // // Correct: 55%
+    ASSERT_TRUE(escFlameIsItPackageStart(pwm_55.raw));
+    escFlameParse(pwm_55.raw, &esc_status);
+    ASSERT_FB_EQUAL(esc_status, pwm_55.reference);
 }
 
 TEST(EscFlame, escFlameParseDma_wrong_args) {
@@ -156,11 +184,11 @@ TEST(EscFlame, escFlameParseDma_perfect_sequence) {
 
         const uint8_t* real_case;
         if (package_idx % 3 == 0) {
-            real_case = PWM_0_PERCENT;
+            real_case = pwm_0.raw;
         } else if (package_idx % 3 == 1) {
-            real_case = PWM_7_PERCENT;
+            real_case = pwm_7.raw;
         } else if (package_idx % 3 == 2) {
-            real_case = PWM_20_PERCENT;
+            real_case = pwm_20.raw;
         }
 
         fill_buffer_with_frame(parser, parser_buf_idx, real_case);
@@ -169,11 +197,11 @@ TEST(EscFlame, escFlameParseDma_perfect_sequence) {
         ASSERT_EQ(parser.saved_idx, recv_idx);
 
         if (package_idx % 3 == 0) {
-            check_pwm_0_percent(esc_status);
+            ASSERT_FB_EQUAL(esc_status, pwm_0.reference);
         } else if (package_idx % 3 == 1) {
-            check_pwm_7_percent(esc_status);
+            ASSERT_FB_EQUAL(esc_status, pwm_7.reference);
         } else if (package_idx % 3 == 2) {
-            check_pwm_20_percent(esc_status);
+            ASSERT_FB_EQUAL(esc_status, pwm_20.reference);
         }
     }
 }
@@ -192,11 +220,11 @@ TEST(EscFlame, escFlameParseDma_offset_sequence) {
 
         const uint8_t* real_case;
         if (package_idx % 3 == 0) {
-            real_case = PWM_0_PERCENT;
+            real_case = pwm_0.raw;
         } else if (package_idx % 3 == 1) {
-            real_case = PWM_7_PERCENT;
+            real_case = pwm_7.raw;
         } else if (package_idx % 3 == 2) {
-            real_case = PWM_20_PERCENT;
+            real_case = pwm_20.raw;
         }
 
         fill_buffer_with_frame(parser, parser_buf_idx, real_case);
@@ -205,11 +233,11 @@ TEST(EscFlame, escFlameParseDma_offset_sequence) {
         ASSERT_EQ(parser.saved_idx, recv_idx);
 
         if (package_idx % 3 == 0) {
-            check_pwm_0_percent(esc_status);
+            ASSERT_FB_EQUAL(esc_status, pwm_0.reference);
         } else if (package_idx % 3 == 1) {
-            check_pwm_7_percent(esc_status);
+            ASSERT_FB_EQUAL(esc_status, pwm_7.reference);
         } else if (package_idx % 3 == 2) {
-            check_pwm_20_percent(esc_status);
+            ASSERT_FB_EQUAL(esc_status, pwm_20.reference);
         }
 
         size_t intermediate_idx;
@@ -236,11 +264,11 @@ TEST(EscFlame, escFlameParseDma_poll_faster_than_measure) {
 
         const uint8_t* real_case;
         if (package_idx % 3 == 0) {
-            real_case = PWM_0_PERCENT;
+            real_case = pwm_0.raw;
         } else if (package_idx % 3 == 1) {
-            real_case = PWM_7_PERCENT;
+            real_case = pwm_7.raw;
         } else if (package_idx % 3 == 2) {
-            real_case = PWM_20_PERCENT;
+            real_case = pwm_20.raw;
         }
 
         fill_buffer_with_frame(parser, parser_buf_idx, real_case);
@@ -249,11 +277,11 @@ TEST(EscFlame, escFlameParseDma_poll_faster_than_measure) {
         ASSERT_EQ(parser.saved_idx, recv_idx);
 
         if (package_idx % 3 == 0) {
-            check_pwm_0_percent(esc_status);
+            ASSERT_FB_EQUAL(esc_status, pwm_0.reference);
         } else if (package_idx % 3 == 1) {
-            check_pwm_7_percent(esc_status);
+            ASSERT_FB_EQUAL(esc_status, pwm_7.reference);
         } else if (package_idx % 3 == 2) {
-            check_pwm_20_percent(esc_status);
+            ASSERT_FB_EQUAL(esc_status, pwm_20.reference);
         }
 
         size_t intermediate_idx;
