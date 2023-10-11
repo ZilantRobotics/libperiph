@@ -23,6 +23,7 @@ int8_t sf1xxInit() {
 int8_t sf1xxCollectData() {
     memset(i2c_response_buf, 0x00, I2C_RESPONSE_SIZE);
     i2cReceive(I2C_ID, i2c_response_buf, I2C_RESPONSE_SIZE);
+    return LIBPERIPH_OK;
 }
 
 float sf1xxParseCollectedData() {

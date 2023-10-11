@@ -21,7 +21,8 @@ int8_t i2cManagerRegister(uint8_t priority);
  * @brief Set a flag that a node is ready for performing request and
  * take a semaphore until this request is completed
  */
-int8_t i2cManagerPerformRequest(int8_t device_id, void (*function)());
+typedef int8_t (*I2C_RequestFunction)();
+int8_t i2cManagerPerformRequest(int8_t device_id, I2C_RequestFunction request);
 
 /**
  * @brief Spin all requests
