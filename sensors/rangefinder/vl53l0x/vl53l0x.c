@@ -80,7 +80,7 @@ int8_t vl53l0xCollectData() {
     uint16_t uid = 0;
     i2c_read_addr8_data16(REG_IDENTIFICATION_MODEL_ID, &uid);
     if ((uid >> 8) != 0xEE) {
-        return;
+        return LIBPERIPH_ERROR;
     }
 
     vl53l0xProcessSingleMeasurement();

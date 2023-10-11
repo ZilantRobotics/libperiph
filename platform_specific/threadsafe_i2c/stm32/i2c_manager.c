@@ -25,7 +25,7 @@
 typedef struct {
     xSemaphoreHandle semaphore;
     StaticSemaphore_t sem_buffer;
-    void (*function)();
+    I2C_RequestFunction function;
     uint8_t status;
     uint8_t priority;
 } I2C_Request_t;
@@ -59,7 +59,7 @@ int8_t i2cManagerRegister(uint8_t priority) {
     return STATUS_ERROR;
 }
 
-int8_t i2cManagerPerformRequest(int8_t dev, void (*function)()) {
+int8_t i2cManagerPerformRequest(int8_t dev, I2C_RequestFunction function) {
     if (dev >= 0 && dev < sensors_amount && function != NULL) {
         requests[dev].status = STATUS_WORKING;
         requests[dev].function = function;
