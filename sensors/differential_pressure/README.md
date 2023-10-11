@@ -19,7 +19,15 @@ If we consider temperature ~288 Kelvin and pressure 101325 Pa according to the I
 
 ## Usage
 
-```c++
-ms4525CollectData();
-DifferentialPressureData readings = ms4525ParseCollectedData();
-```
+Installation:
+1. Include the header file `ms4525do.h` and source file `ms4525do.c` in your C/C++ code.
+2. Ensure that the required dependencies are installed, such as the STM32 HAL library or any other libraries specific to your STM32 development environment.
+
+Usage:
+1. During the boot of your application initialize I2C driver and then call `ms4525doInit()`
+2. Periodically (with rate 10 Hz) call `ms4525doCollectData()`. If it returns `LIBPERIPH_OK`, then call `ms4525doParseCollectedData()`.
+
+## Additional info
+
+- Sensor connection with Ardupilot based autopilots: https://ardupilot.org/plane/docs/airspeed.html
+- Sensor connection with PX4 based autopilots: https://docs.px4.io/main/en/sensor/airspeed.html
