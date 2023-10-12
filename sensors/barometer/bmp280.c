@@ -89,10 +89,12 @@ static BMP280_processed_calib_param_t processed_calib;
 static BMP280_t bmp280;
 
 
-void bmp280Init() {
+int8_t bmp280Init() {
     bmp280CheckDeviceId();
     bmp280SetCtrlMeas();
     bmp280GetCalibration();
+
+    return LIBPERIPH_OK;
 }
 
 bool bmp280IsInitialized() {

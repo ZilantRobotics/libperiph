@@ -81,13 +81,15 @@ void hmc5883GetMeasurement(float* x, float* y, float* z) {
     *z = hmc5883.mag[2];
 }
 
-void hmc5883lMeasure() {
+int8_t hmc5883lMeasure() {
     memset(rx_buf, 0x00, 6);
     const uint8_t TX_BUF_1[1] = {REG_DATA_OUT_X_MSB};
     if (i2cReceive(I2C_ID_READ, rx_buf, 6) == STATUS_ERROR ||
             i2cTransmit(I2C_ID_READ, TX_BUF_1, 1) == STATUS_ERROR) {
         asm("NOP");
     }
+
+    return LIBPERIPH_OK;
 }
 
 void hmc5883lFillRxBuffer(const uint8_t new_buf[6]) {

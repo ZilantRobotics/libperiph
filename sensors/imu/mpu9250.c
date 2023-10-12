@@ -92,7 +92,7 @@ bool mpu9250Init() {
 }
 
 
-void mpu9250Measure() {
+int8_t mpu9250Measure() {
     uint8_t tx_buf_recv[1] = {ACCEL_XOUT_H};
     i2cTransmit(I2C_SENSOR_ID_SHIFTED, tx_buf_recv, 1);
     i2cReceive(I2C_SENSOR_ID_SHIFTED, (uint8_t*)(&rx_buffer), 14);

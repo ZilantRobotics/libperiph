@@ -18,7 +18,7 @@ extern "C" {
 
 int8_t hmc5883Init();
 
-void hmc5883lMeasure();
+int8_t hmc5883lMeasure();
 void hmc5883GetMeasurement(float* x, float* y, float* z);
 
 

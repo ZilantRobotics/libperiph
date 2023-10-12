@@ -18,7 +18,7 @@ extern "C" {
 
 #define BMP280_MAX_MEASUREMENT_FREQUENCY 50
 
-void bmp280Init();
+int8_t bmp280Init();
 bool bmp280IsInitialized();
 void bmp280Calibrate();
 int8_t bmp280CollectData();

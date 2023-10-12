@@ -12,9 +12,10 @@
 #define SENSORS_IMU_MPU9250_H_
 
 #include <stdbool.h>
+#include <stdint.h>
 
 bool mpu9250Init();
-void mpu9250Measure();
+int8_t mpu9250Measure();
 void mpu9250GetMeasurements(float linear_acceleration[3], float angular_velocity[3]);
 
 #endif  // SENSORS_IMU_MPU9250_H_
