@@ -117,7 +117,7 @@ void bmp280Calibrate() {
     processed_calib.p9 = stored_calib.p9 * powf(2, -35);
 }
 
-void bmp280CollectData() {
+int8_t bmp280CollectData() {
     uint8_t tx[1] = {PRESS_REG};
     BMP280_measurement_registers_t data;
     i2cTransmit(I2C_ID, tx, 1);
@@ -125,6 +125,8 @@ void bmp280CollectData() {
 
     bmp280.static_pressure = (float)(data.p_msb << 12 | data.p_lsb << 4 | data.p_xlsb >> 4);
     bmp280.static_temperature = (float)(data.t_msb << 12 | data.t_lsb << 4 | data.t_xlsb >> 4);
+
+    return LIBPERIPH_OK;
 }
 
 

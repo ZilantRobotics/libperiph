@@ -14,12 +14,14 @@
 extern "C" {
 #endif
 
+#include <stdint.h>
+
 #define BMP280_MAX_MEASUREMENT_FREQUENCY 50
 
 void bmp280Init();
 bool bmp280IsInitialized();
 void bmp280Calibrate();
-void bmp280CollectData();
+int8_t bmp280CollectData();
 void bmp280ParseData();
 
 float bmp280GetStaticPressure();
