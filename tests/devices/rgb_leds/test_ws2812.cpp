@@ -20,22 +20,22 @@ int8_t HAL_TIM_PWM_Stop_DMA(TIM_HandleTypeDef*, uint32_t) {
 TEST(ws2812, test_ws2812bInit) {
     TIM_HandleTypeDef tim;
 
-    ASSERT_EQ(LIBPERIPH_OK, ws2812bInit(4, &tim, 0));
-    ASSERT_EQ(LIBPERIPH_ERROR, ws2812bInit(MAX_NUM_OF_LEDS + 1, &tim, 0));
-    ASSERT_EQ(LIBPERIPH_ERROR, ws2812bInit(4, NULL, 0));
+    ASSERT_EQ(WS2812_OK, ws2812bInit(4, &tim, 0));
+    ASSERT_EQ(WS2812_ERROR, ws2812bInit(MAX_NUM_OF_LEDS + 1, &tim, 0));
+    ASSERT_EQ(WS2812_ERROR, ws2812bInit(4, NULL, 0));
 }
 
 TEST(ws2812, test_ws2812bSetColors) {
     TIM_HandleTypeDef tim;
     Leds_Color_t leds_colors;
 
-    ASSERT_EQ(LIBPERIPH_OK, ws2812bInit(4, &tim, 0));
+    ASSERT_EQ(WS2812_OK, ws2812bInit(4, &tim, 0));
     ws2812bSetColors(&leds_colors);
-    ASSERT_EQ(LIBPERIPH_OK, ws2812bStartOnce());
+    ASSERT_EQ(WS2812_OK, ws2812bStartOnce());
 
-    ASSERT_EQ(LIBPERIPH_ERROR, ws2812bInit(4, NULL, 0));
+    ASSERT_EQ(WS2812_ERROR, ws2812bInit(4, NULL, 0));
     ws2812bSetColors(&leds_colors);
-    ASSERT_EQ(LIBPERIPH_ERROR, ws2812bStartOnce());
+    ASSERT_EQ(WS2812_ERROR, ws2812bStartOnce());
 }
 
 

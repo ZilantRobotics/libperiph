@@ -1,13 +1,8 @@
 /*
- * Copyright (C) 2019 Dmitry Ponomarev <ponomarevda96@gmail.com>
+ * Copyright (C) 2019-2023 Dmitry Ponomarev <ponomarevda96@gmail.com>
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
- */
-
-/**
- * @file rgb_color.h
- * @author d.ponomarev
  */
 
 #ifndef DEVICES_RGB_LEDS_RGB_COLOR_

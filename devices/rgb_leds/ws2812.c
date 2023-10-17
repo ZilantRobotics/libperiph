@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Dmitry Ponomarev <ponomarevda96@gmail.com>
+ * Copyright (C) 2019-2023 Dmitry Ponomarev <ponomarevda96@gmail.com>
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -28,14 +28,14 @@ int8_t ws2812bInit(uint8_t number_of_leds, TIM_HandleTypeDef* timer_ptr, uint32_
     if (number_of_leds > MAX_NUM_OF_LEDS || timer_ptr == NULL) {
         LEDS_NUM = 0;
         BUF_SIZE = 0;
-        return LIBPERIPH_ERROR;
+        return WS2812_ERROR;
     }
 
     LEDS_NUM = number_of_leds;
     BUF_SIZE = 2 * BUF_OFFSET + number_of_leds * SHADES_PER_LED * BITS_PER_SHADE;
     timer = timer_ptr;
     timer_channel = channel;
-    return LIBPERIPH_OK;
+    return WS2812_OK;
 }
 
 /**
@@ -59,12 +59,12 @@ void ws2812bSetColors(const Leds_Color_t* ledsColor) {
 
 int8_t ws2812bStartOnce() {
     if (LEDS_NUM == 0) {
-        return LIBPERIPH_ERROR;
+        return WS2812_ERROR;
     }
     if (HAL_TIM_PWM_Start_DMA(timer, timer_channel, (uint32_t*)ccr_values, BUF_SIZE) != HAL_OK) {
-        return LIBPERIPH_ERROR;
+        return WS2812_ERROR;
     }
-    return LIBPERIPH_OK;
+    return WS2812_OK;
 }
 
 void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef* htim) {
