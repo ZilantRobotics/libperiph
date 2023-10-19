@@ -32,7 +32,7 @@ int8_t ms4525doInit();
   * It returns LIBPERIPH_OK on success and < 0 on failure.
   * ParseCollectedData parses the received buffer and returns the sensor data.
   */
-void ms4525CollectData();
+int8_t ms4525CollectData();
 DifferentialPressureData ms4525ParseCollectedData();
 
 /**
