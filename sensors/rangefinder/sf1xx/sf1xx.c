@@ -11,7 +11,7 @@
 #include "i2c_manager.h"
 #include "params.h"
 
-#define I2C_ID                  (0x68 << 1)
+#define I2C_ID                  (0x66 << 1)
 #define I2C_RESPONSE_SIZE       2
 static uint8_t i2c_response_buf[I2C_RESPONSE_SIZE];
 
