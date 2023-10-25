@@ -8,11 +8,9 @@ jobs:
       - name: Install GIT
         run: sudo apt-get update && sudo apt-get install -y git
 
-      - uses: actions/checkout@v2
-        with:
-          path: 'repository'
+      - uses: actions/checkout@v3
 
       - name: Install dependencies
         run: sudo apt-get install -y make gcc-arm-none-eabi
 
-      - run: cd repository && mkdir build && ./tests/build_arm.sh
+      - run: mkdir build && ./tests/build_arm.sh
