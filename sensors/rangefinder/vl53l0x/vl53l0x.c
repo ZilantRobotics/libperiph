@@ -9,7 +9,6 @@
 #include <string.h>
 #include "main.h"
 #include "i2c_manager.h"
-#include "params.h"
 
 #define I2C_ID                                          (0x52)
 
