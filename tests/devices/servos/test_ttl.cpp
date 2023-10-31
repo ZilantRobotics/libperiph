@@ -20,22 +20,22 @@ TEST(TTL, test_set_get_timeout) {
 TEST(TTL, test_set_get_setpoint_timestamp) {
     ttlSetSetpointTimestamp(0, 1000);
     ttlSetSetpointTimestamp(10, 2000);
-    ttlSetSetpointTimestamp(19, 3000);
+    ttlSetSetpointTimestamp(30, 3000);
 
     ASSERT_EQ(1000, ttlGetSetpointTimestamp(0));
     ASSERT_EQ(2000, ttlGetSetpointTimestamp(10));
-    ASSERT_EQ(3000, ttlGetSetpointTimestamp(19));
+    ASSERT_EQ(3000, ttlGetSetpointTimestamp(30));
 
     // bad argument should not affect on the application, getter should always return 0
-    ttlSetSetpointTimestamp(20, 4000);
-    ASSERT_EQ(0, ttlGetSetpointTimestamp(20));
+    ttlSetSetpointTimestamp(31, 4000);
+    ASSERT_EQ(0, ttlGetSetpointTimestamp(31));
 }
 
 TEST(TTL, test_is_alive) {
     ttlSetTimeout(1000);
     ttlSetSetpointTimestamp(0, 1000);
     ttlSetSetpointTimestamp(10, 2000);
-    ttlSetSetpointTimestamp(19, 3000);
+    ttlSetSetpointTimestamp(30, 3000);
 
     ASSERT_EQ(true, ttlIsSetpointAlive(0, 1999));
     ASSERT_EQ(false, ttlIsSetpointAlive(0, 2001));
@@ -43,8 +43,8 @@ TEST(TTL, test_is_alive) {
     ASSERT_EQ(true, ttlIsSetpointAlive(10, 2999));
     ASSERT_EQ(false, ttlIsSetpointAlive(10, 3001));
 
-    ASSERT_EQ(true, ttlIsSetpointAlive(19, 3999));
-    ASSERT_EQ(false, ttlIsSetpointAlive(19, 4001));
+    ASSERT_EQ(true, ttlIsSetpointAlive(30, 3999));
+    ASSERT_EQ(false, ttlIsSetpointAlive(30, 4001));
 }
 
 TEST(TTL, test_best_timestamp_and_alive) {
@@ -55,7 +55,7 @@ TEST(TTL, test_best_timestamp_and_alive) {
 
     ttlSetSetpointTimestamp(0, 1000);
     ttlSetSetpointTimestamp(10, 2000);
-    ttlSetSetpointTimestamp(19, 1000);
+    ttlSetSetpointTimestamp(30, 1000);
 
     ASSERT_EQ(2000, ttlGetBestTimestamp());
 

@@ -13,7 +13,9 @@
 
 #include "ttl.h"
 
-#define SETPOINTS_AMOUNT 20
+#ifndef SETPOINTS_AMOUNT
+    #define SETPOINTS_AMOUNT            31
+#endif
 
 static uint32_t setpoints_ts_ms[SETPOINTS_AMOUNT] = {};
 static uint32_t ttl_ms = 500;

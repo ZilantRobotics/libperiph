@@ -22,8 +22,10 @@
 
 
 #define SERVO_TIM_CHANNELS_AMOUNT   9
-#define SETPOINTS_AMOUNT            20
 
+#ifndef SETPOINTS_AMOUNT
+    #define SETPOINTS_AMOUNT            31
+#endif
 
 typedef enum {
     SETPOINT_RAW_COMMAND,
