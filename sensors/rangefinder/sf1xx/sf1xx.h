@@ -30,13 +30,6 @@ int8_t sf1xxInit();
 int8_t sf1xxCollectData();
 float sf1xxParseCollectedData();
 
-
-/**
-  * @brief  Process measurement
-  * @note   Blocking operation. It should be performed as fast as possible.
-  */
-bool sf1xxCollectDataPeriodically(int8_t i2c_manager_id, uint32_t measurement_period);
-
 #ifdef __cplusplus
 }
 #endif
