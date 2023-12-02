@@ -20,6 +20,32 @@ Usage:
 1. During the boot of your application initialize I2C driver and then call `sf1xxInit()`
 2. Periodically (with rate 10 Hz) call `sf1xxCollectData()`. If it returns `LIBPERIPH_OK`, then call `sf1xxParseCollectedData()`.
 
+## Sensors types
+
+Lightware rangefinders:
+
+1. SF10/a (25m 32Hz)
+    - min_distance: 0.01
+    - max_distance: 25.0
+2. SF10/b (50m 32Hz)
+    - min_distance: 0.01f
+    - max_distance: 50.0f
+3. SF10/c (100m 16Hz)
+    - min_distance: 0.01
+    - max_distance: 100.0
+4. SF11/c (120m 20Hz)
+    - min_distance: 0.2f
+    - max_distance: 120.0
+5. SF/LW20/b (50m 48-388Hz)
+    - min_distance: 0.2
+    - max_distance: 50.0
+6. **SF/LW20/c (100m 48-388Hz)**
+    - min_distance: 0.2
+    - max_distance: 100.0
+7. SF/LW30/d (200m 49-20'000Hz)
+    - min_distance: 0.2
+    - max_distance: 200.0
+
 ## Additional info
 
 - Sensor connection with Ardupilot based autopilots: https://ardupilot.org/copter/docs/common-lightware-sf10-lidar.html
