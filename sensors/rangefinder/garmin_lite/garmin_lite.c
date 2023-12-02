@@ -46,11 +46,12 @@ float garminLiteParseCollectedData() {
 
 int8_t garminLiteCollectData() {
     memset(i2c_response_buf, 0x00, I2C_RESPONSE_SIZE);
-    i2cReadRegister(I2C_ID, REG_GET_MEASUREMENT, &i2c_response_buf[0], I2C_RESPONSE_SIZE);
+    int8_t res;
 
-    i2cWriteRegisterOneByte(I2C_ID, REG_ACQ_COMMAND, ACQ_COMMAND_TAKE_RAW_DISTANCE);
+    res = i2cReadRegister(I2C_ID, REG_GET_MEASUREMENT, &i2c_response_buf[0], I2C_RESPONSE_SIZE);
+    res = i2cWriteRegisterOneByte(I2C_ID, REG_ACQ_COMMAND, ACQ_COMMAND_TAKE_RAW_DISTANCE);
 
-    return LIBPERIPH_OK;
+    return res;
 }
 
 void garminGetSerialNumber(GarminLiteSerialNumber serial_number) {
