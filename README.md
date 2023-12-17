@@ -90,3 +90,7 @@ The code style is checked by [astyle](https://astyle.sourceforge.net/) and [cppl
 ## LICENSE
 
 This software is distributed under [MPL 2.0](license) license conditions.
+
+## Acknowledgements
+
+This project has been supported by funds from The Foundation for Assistance to Small Innovative Enterprises (FASIE). Moreover, we are honored to be distinguished as laureates of the "Digital Technologies Code" competition, under the federal project "Digital Technologies". We express our profound gratitude for their invaluable support and endorsement.
