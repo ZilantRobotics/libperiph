@@ -9,9 +9,23 @@
 #include <gtest/gtest.h>
 #include "hal_i2c.h"
 #include "libperiph_common.h"
+#include "ubuntu/sitl_i2c.hpp"
 
 uint8_t ubuntu_i2c_id = 42;
 uint8_t ubuntu_i2c_buffer[256] = {};
+
+class SimpleSitlI2CSensor : public SitlI2CSensor {
+public:
+    SimpleSitlI2CSensor() : SitlI2CSensor(0xFF) {}
+    int8_t callback_on_i2c_transmit(uint8_t id, const uint8_t tx[], uint8_t len) override {
+        return 0;
+    }
+    int8_t callback_on_i2c_receive(uint8_t id, uint8_t* rx, uint8_t len) override {
+        return 0;
+    }
+};
+
+static SimpleSitlI2CSensor simple_sitl_i2c_sensor;
 
 TEST(hal_i2c, test_i2cTransmit) {
     uint8_t tx_buffer = 42;

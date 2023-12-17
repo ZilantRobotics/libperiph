@@ -18,10 +18,19 @@ extern "C" {
 
 #define BMP280_MAX_MEASUREMENT_FREQUENCY 50
 
+#define LIBPERIPH_BPM280_OK             0
+#define LIBPERIPH_BPM280_NO_RESPONSE    -1
+#define LIBPERIPH_BPM280_BAD_RESPONSE   -2
+
 int8_t bmp280Init();
 bool bmp280IsInitialized();
 void bmp280Calibrate();
+
+/**
+ * @return LIBPERIPH_BPM280_OK is ok, otherwise error code < 0
+ */
 int8_t bmp280CollectData();
+
 void bmp280ParseData();
 
 float bmp280GetStaticPressure();
