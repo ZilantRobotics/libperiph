@@ -16,11 +16,14 @@ int8_t i2cTransmit(uint8_t id, const uint8_t tx[], uint8_t len) {
         return LIBPERIPH_ERROR;
     }
 
+    bool is_transmited = false;
     for (size_t idx = 0; idx < SitlI2CSensor::number_of_sensor; idx++) {
-        SitlI2CSensor::i2c_sensors[idx]->callback_on_i2c_transmit(id, tx, len);
+        if (SitlI2CSensor::i2c_sensors[idx]->callback_on_i2c_transmit(id, tx, len) >= 0) {
+            is_transmited = true;
+        }
     }
 
-    return LIBPERIPH_OK;
+    return is_transmited ? LIBPERIPH_OK : LIBPERIPH_ERROR;
 }
 
 int8_t i2cReceive(uint8_t id, uint8_t* rx, uint8_t len) {
@@ -28,11 +31,14 @@ int8_t i2cReceive(uint8_t id, uint8_t* rx, uint8_t len) {
         return LIBPERIPH_ERROR;
     }
 
+    bool is_received = false;
     for (size_t idx = 0; idx < SitlI2CSensor::number_of_sensor; idx++) {
-        SitlI2CSensor::i2c_sensors[idx]->callback_on_i2c_receive(id, rx, len);
+        if (SitlI2CSensor::i2c_sensors[idx]->callback_on_i2c_receive(id, rx, len) >= 0) {
+            is_received = true;
+        }
     }
 
-    return LIBPERIPH_OK;
+    return is_received ? LIBPERIPH_OK : LIBPERIPH_ERROR;
 }
 
 std::array<SitlI2CSensor*, SitlI2CSensor::MAX_NUMBER_OF_SENSOR> SitlI2CSensor::i2c_sensors;
