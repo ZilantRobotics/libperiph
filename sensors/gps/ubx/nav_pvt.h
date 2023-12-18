@@ -11,6 +11,14 @@
 #include <assert.h>
 
 typedef struct {
+    uint8_t validDate       : 1;
+    uint8_t validTime       : 1;
+    uint8_t fullyResolved   : 1;
+    uint8_t validMsg        : 1;
+} UbxNavPvtValid;
+static_assert(sizeof(UbxNavPvtValid) == 1, "Wrong size");
+
+typedef struct {
     uint32_t time_of_week_ms;   ///< GPS Time of Week [ms]
     uint16_t year_utc;          ///< Year (UTC)
     uint8_t month_utc;          ///< Month, range 1..12 (UTC)
@@ -18,7 +26,7 @@ typedef struct {
     uint8_t hour_utc;           ///< Hour of day, range 0..23 (UTC)
     uint8_t min_utc;            ///< Minute of hour, range 0..59 (UTC)
     uint8_t sec_utc;            ///< Seconds of minute, range 0..60 (UTC)
-    uint8_t valid;
+    UbxNavPvtValid valid;
     uint32_t tAcc;              ///< Time accuracy estimate (UTC), ns
     int32_t nano;               ///< Fraction of second, range -1e9 .. 1e9 (UTC)
     uint8_t fixType;
