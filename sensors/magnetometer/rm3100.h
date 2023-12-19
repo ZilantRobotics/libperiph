@@ -16,8 +16,19 @@
 extern "C" {
 #endif
 
+/**
+ * @return LIBPERIPH_OK on success, otherwise LIBPERIPH_ERROR
+ */
 int8_t rm3100Init();
+
+/**
+ * @return LIBPERIPH_OK on success, otherwise LIBPERIPH_ERROR
+ */
 int8_t rm3100Measure();
+
+/**
+ * @return Magnetic field strenght in gausses
+ */
 void rm310GetMeasurement(float* x, float* y, float* z);
 
 #ifdef __cplusplus
