@@ -24,6 +24,10 @@ int8_t adcInitDma(uint8_t num_of_channels) {
     return LIBPERIPH_OK;
 }
 
+bool adcIsInited() {
+    return is_adc_already_inited;
+}
+
 int8_t adcGetAll(uint16_t* adc_measurements) {
     if (adc_measurements == NULL) {
         return LIBPERIPH_ERROR;
@@ -38,9 +42,9 @@ uint16_t adcGet(uint8_t rank) {
 }
 
 int8_t adcInitWithoutDma(uint8_t num_of_channels) {
-    return STATUS_OK;
+    return LIBPERIPH_OK;
 }
 
 int8_t adcMeasureWithoutDma(uint16_t values[]) {
-    return STATUS_OK;
+    return LIBPERIPH_OK;
 }
