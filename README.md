@@ -89,7 +89,7 @@ The code style is checked by [astyle](https://astyle.sourceforge.net/) and [cppl
 
 ## LICENSE
 
-This software is distributed under [MPL 2.0](license) license conditions.
+This software is distributed under [MPL 2.0](LICENSE) license conditions.
 
 ## Acknowledgements
 
