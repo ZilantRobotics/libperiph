@@ -62,10 +62,10 @@ Other (devices, platform specific and common):
 
 ## Usage
 
-You can either use the repository as submodule in your project or copy only the required drivers.
+You can either use the repository as a submodule in your project or copy only the required drivers.
 
 Typically, each driver has `.c` and `.h` files. Include them into your project. For specific usage
-details please refer to the corresponded README.md file in the driver folder.
+details please refer to the corresponding README.md file in the driver folder.
 
 ## For developers
 
