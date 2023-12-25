@@ -53,7 +53,7 @@ Sensors:
 | [Temperature sensor](sensors/temperature_sensor)              | ADC          |
 | [Rangefinder garmin lite](sensors/rangefinder/garmin_lite)    | i2c          |
 | [Rangefinder sf1xx](sensors/rangefinder/sf1xx)                | i2c          |
-| [Rangefinder tf_luna](sensors/rangefinder/tf_luna)            | UART         |
+| [Rangefinder tf_mini](sensors/rangefinder/tf_mini)            | UART         |
 | [Rangefinder vl53l0x](sensors/rangefinder/vl53l0x)            | i2c          |
 | Encoder as5600                                                | gpio         |
 | Inclinometer mpu9250                                          | i2c          |

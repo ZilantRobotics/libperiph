@@ -1,4 +1,9 @@
 #!/bin/bash
+# Copyright (C) 2023 Dmitry Ponomarev <ponomarevda96@gmail.com>
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
 CC=arm-none-eabi-gcc
 CXX=arm-none-eabi-g++
 FLAGS="-c --specs=nosys.specs"
@@ -25,7 +30,7 @@ $CC $FLAGS sensors/current_sensor/acs712.c          $INC -o build/acs712.o
 $CC $FLAGS sensors/differential_pressure/ms4525do.c $INC -o build/ms4525do.o
 # $CC $FLAGS sensors/rangefinder/sf1xx.c              $INC -o build/sf1xx.o
 # $CC $FLAGS sensors/rangefinder/garmin_lite.c        $INC -o build/uarmin_lite.o
-$CC $FLAGS sensors/rangefinder/tf_luna/tf_luna.c    $INC -o build/tf_luna.o
+$CC $FLAGS sensors/rangefinder/tf_mini/tf_mini.c    $INC -o build/tf_mini.o
 
 # Auxiliary
 # $CC $FLAGS devices/ws2812.c                         $INC -o build/ws2812.o

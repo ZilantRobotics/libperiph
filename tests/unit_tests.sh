@@ -1,4 +1,9 @@
 #!/bin/bash
+# Copyright (C) 2022-2023 Dmitry Ponomarev <ponomarevda96@gmail.com>
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
 THIS_SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 REPO_DIR="$(dirname "$THIS_SCRIPT_DIR")"
 BUILD_DIR=$REPO_DIR/build/tests
@@ -16,7 +21,7 @@ cd $BUILD_DIR
 cmake $RUN_COVERAGE ../../tests
 make
 
-sensor_executables=(acs712 bmp280 esc_alpha esc_flame esc_thunder ublox ublox_commands ms4525do stm32_temp hmc5883l rm3100 tf_luna garmin_lite)
+sensor_executables=(acs712 bmp280 esc_alpha esc_flame esc_thunder ublox ublox_commands ms4525do stm32_temp hmc5883l rm3100 tf_mini garmin_lite)
 for sensor_executable in ${sensor_executables[@]}; do
     $BUILD_DIR/$sensor_executable
 done
@@ -48,7 +53,7 @@ echo "Part 2:--------------------------------------------------"
 gcov $BUILD_DIR/CMakeFiles/acs712.dir$REPO_DIR/sensors/current_sensor/*.gcda \
      $BUILD_DIR/CMakeFiles/ms4525do.dir$REPO_DIR/sensors/differential_pressure/ms4525do*.gcda \
      $BUILD_DIR/CMakeFiles/garmin_lite.dir$REPO_DIR/sensors/rangefinder/garmin_lite/*.gcda \
-     $BUILD_DIR/CMakeFiles/tf_luna.dir$REPO_DIR/sensors/rangefinder/tf_luna/*.gcda
+     $BUILD_DIR/CMakeFiles/tf_mini.dir$REPO_DIR/sensors/rangefinder/tf_mini/*.gcda
 fi
 
 echo ""

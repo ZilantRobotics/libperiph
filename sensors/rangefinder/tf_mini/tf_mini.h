@@ -1,12 +1,12 @@
 /*
- * Copyright (C) 2021-2023 Dmitry Ponomarev <ponomarevda96@gmail.com>
+ * Copyright (C) 2022-2023 Dmitry Ponomarev <ponomarevda96@gmail.com>
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-#ifndef SENSORS_RANGESENSOR_TF_LUNA_H_
-#define SENSORS_RANGESENSOR_TF_LUNA_H_
+#ifndef SENSORS_RANGESENSOR_TF_MINI_H_
+#define SENSORS_RANGESENSOR_TF_MINI_H_
 
 #include <stdint.h>
 #include <stddef.h>
@@ -45,4 +45,4 @@ float tfParseRange(const TfLunaSerialFrame_t* frame);
 }
 #endif
 
-#endif  // SENSORS_RANGESENSOR_TF_LUNA_H_
+#endif  // SENSORS_RANGESENSOR_TF_MINI_H_

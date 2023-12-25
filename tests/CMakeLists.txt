@@ -56,7 +56,7 @@ gen_test(ms4525do       sensors/dprs/test_ms4525do.cpp          ../sensors/diffe
 gen_test(stm32_temp     sensors/temperature_sensor/test.cpp     ../sensors/temperature_sensor/CMakeLists.txt)
 gen_test(hmc5883l       sensors/mag/test_hmc5883l.cpp           ../sensors/magnetometer/CMakeLists.txt)
 gen_test(rm3100         sensors/mag/test_rm3100.cpp             ../sensors/magnetometer/CMakeLists.txt)
-gen_test(tf_luna        sensors/rangefinder/test_tf_luna.cpp    ../sensors/rangefinder/tf_luna/CMakeLists.txt)
+gen_test(tf_mini        sensors/rangefinder/test_tf_mini.cpp    ../sensors/rangefinder/tf_mini/CMakeLists.txt)
 gen_test(garmin_lite    sensors/rangefinder/test_garmin_lite.cpp ../sensors/rangefinder/garmin_lite/CMakeLists.txt)
 gen_test(bmp280         sensors/test_bmp280.cpp                 ../sensors/barometer/CMakeLists.txt)
 

@@ -7,7 +7,7 @@
 
 #include <gtest/gtest.h>
 #include <iostream>
-#include "rangefinder/tf_luna/tf_luna.h"
+#include "rangefinder/tf_mini/tf_mini.h"
 
 uint8_t frame_ok_1[] =   {'Y', 'Y', 53, 0, 25, 0, 3,   16,  19};
 uint8_t frame_ok_2[] =   {'Y', 'Y', 0,  0, 0,  0, 205, 55,  182};
@@ -20,11 +20,11 @@ uint8_t frame_ok_5_2[] = {'Y', 'Y', 95, 0, 95, 1, 168, 103, 128};
 uint8_t frame_ok_6_1[] = {95, 0, 96, 1, 140, 95,  93, 'Y', 'Y'};
 uint8_t frame_ok_6_2[] = {95, 0, 95, 1, 168, 103, 128, 'Y', 'Y', };
 
-TEST(tf_luna, test_tfLunaInit) {
+TEST(tf_mini, test_tfLunaInit) {
     ASSERT_EQ(LIBPERIPH_OK, tfLunaInit());
 }
 
-TEST(tf_luna, test_tfParseRange) {
+TEST(tf_mini, test_tfParseRange) {
     ASSERT_FLOAT_EQ(0.53, tfParseRange((const TfLunaSerialFrame_t*)frame_ok_1));
     ASSERT_FLOAT_EQ(0.0, tfParseRange((const TfLunaSerialFrame_t*)frame_ok_2));
     ASSERT_FLOAT_EQ(0.0, tfParseRange((const TfLunaSerialFrame_t*)frame_ok_3));
