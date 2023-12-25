@@ -1,8 +1,16 @@
 # libperiph ![badge](https://github.com/PonomarevDA/libperiph/actions/workflows/arm_build.yml/badge.svg) ![badge](https://github.com/PonomarevDA/libperiph/actions/workflows/code_style.yml/badge.svg) ![badge](https://github.com/PonomarevDA/libperiph/actions/workflows/unit_tests.yml/badge.svg) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=ZilantRobotics_libperiph&metric=coverage)](https://sonarcloud.io/summary/new_code?id=ZilantRobotics_libperiph) [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=ZilantRobotics_libperiph&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=ZilantRobotics_libperiph) [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=ZilantRobotics_libperiph&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=ZilantRobotics_libperiph)
 
-libperiph is a collection of open source avionics drivers written in C.
+**Purpose**
 
-It contains a minimal set of drivers needed for a UAV application from a simple quadcopter (barometer, magnetometer, GNSS, actuators) to complex VTOL (airspeed, rangefinders, current sensor, navigation lights), etc.
+libperiph is a collection of open source avionics drivers. It contains a minimal set of peripheral drivers needed for a UAV application from a simple quadcopter (barometer, magnetometer, GNSS, servos and ESC, temperature sensor) to complex VTOL (airspeed, rangefinders, current sensor, navigation lights), etc. The library's drivers are intended to be used in real-time embedded applications.
+
+**Minimal requirements**
+
+The codebase is implemented in C99/C11.
+
+The library was tested on stm32f103 (128 Kbytes) and stm32g0 (512 Kbytes). These hardware can be considered as minimal required.
+
+**Design**
 
 The drivers are designed to be platform independent. You can port them to stm32, arduino or anything else that has the required interfaces. Some sample platform implementations have been written to make it easy to get started: HAL based peripheral drivers for stm32 and dummy drivers for Ununtu to run them in SITL mode. Please see [platform_specific](platform_specific) for details.
 
@@ -49,7 +57,6 @@ Sensors:
 | [Rangefinder vl53l0x](sensors/rangefinder/vl53l0x)            | i2c          |
 | Encoder as5600                                                | gpio         |
 | Inclinometer mpu9250                                          | i2c          |
-| Rangefinder SRF05                                             | refactor me  |
 
 Other (devices, platform specific and common):
 
