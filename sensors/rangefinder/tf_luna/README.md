@@ -1,12 +1,21 @@
-# Benewake TF Luna driver
+# Benewake TF-Luna / TFmini driver
 
-TF-Luna is a single-point ranging LiDAR, based on the TOF (Time of Flight) principle. It is mainly used for stable, accurate and high-frame-rate range detection. The TF-Luna has a range of 8m indoor, and 3m outdoor and weighs 5g. The sensor must be connected to a UART/serial bus.
+This driver is intended to be used for [Benewake](https://en.benewake.com/) TF-Luna and TFmini UART single-point short distance sensors based on the TOF (Time of Flight) principle.
 
-<img src="https://github.com/ZilantRobotics/libperiph/blob/docs/assets/sensors/rangefinder/tf_luna.jpg?raw=true" alt="drawing" width="256">
+These lidars mainly used for stable, accurate and high-frame-rate range detection.
+
+The supported list of sensors are:
+
+| Sensor      | Image | All supported protocols | Distance |
+| ----------- | ----- | ----------------------- | -------- |
+| TF-Luna     | <img src="https://github.com/ZilantRobotics/libperiph/blob/docs/assets/sensors/rangefinder/tf_luna.jpg?raw=true" alt="drawing" width="64"> | UART, I2C, I/O          | 0.2 - 8 meters |
+| TFmini-S / TFmini Plus | <img src="https://docs.px4.io/main/assets/img/tfmini_hero.d1a57ff6.jpg" alt="drawing" width="64"> | UART, I2C, I/O          | 0.1 - 12 meters |
+
+## Details
 
 |   |   |
 | - | - |
-| Reference | [Datasheet](https://files.seeedstudio.com/wiki/Grove-TF_Mini_LiDAR/res/SJ-PM-TF-Luna-A03-Product-Manual.pdf) |
+| Reference | [TF-Luna datasheet](https://files.seeedstudio.com/wiki/Grove-TF_Mini_LiDAR/res/SJ-PM-TF-Luna-A03-Product-Manual.pdf) </br> [TFmini datasheet](https://cdn.sparkfun.com/assets/d/9/e/c/d/TFmini-I__C-Product_Manual_V1.1_EN.pdf) |
 | Requred periphery | UART |
 | Unit tests | [test_tf_luna.cpp](../../../tests/sensors/rangefinder/test_tf_luna.cpp) |
 
