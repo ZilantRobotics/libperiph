@@ -12,36 +12,38 @@
 #define HEAD_BYTE 0x59
 
 
-static int8_t tfLunaFindFrameStart();
-static float tfLunaParseData(int8_t idx);
+static int8_t tfMiniFindFrameStart();
+static float tfMiniParseData(int8_t idx);
 static uint8_t crc_8(const uint8_t* buf, uint8_t size);
 
 // This buffer should have previous frame and current!
-static uint8_t buffer[TF_LUNA_BUFFER_SIZE];
+static uint8_t buffer[TF_MINI_BUFFER_SIZE];
 
 
-int8_t tfLunaInit() {
+int8_t tfMiniInit() {
     return LIBPERIPH_OK;
 }
 
-float tfParseRange(const TfLunaSerialFrame_t* buffer_ptr) {
+float tfParseRange(const TfMiniSerialFrame_t* buffer_ptr) {
     if (!buffer_ptr) {
         return -1.0;
     }
 
     // copy previous frame to the beginning and save the new one
-    memcpy(buffer, buffer + TF_LUNA_SERIAL_FRAME_SIZE, TF_LUNA_SERIAL_FRAME_SIZE);
-    memcpy(buffer + TF_LUNA_SERIAL_FRAME_SIZE, buffer_ptr, TF_LUNA_SERIAL_FRAME_SIZE);
+    memcpy(buffer, buffer + TF_MINI_SERIAL_FRAME_SIZE, TF_MINI_SERIAL_FRAME_SIZE);
+    memcpy(buffer + TF_MINI_SERIAL_FRAME_SIZE, buffer_ptr, TF_MINI_SERIAL_FRAME_SIZE);
 
-    int8_t idx = tfLunaFindFrameStart();
+    int8_t idx = tfMiniFindFrameStart();
     if (idx >= 0) {
-        return tfLunaParseData(idx);
+        return tfMiniParseData(idx);
     }
     return -1.0;
 }
 
-static int8_t tfLunaFindFrameStart() {
-    for (int8_t idx = TF_LUNA_SERIAL_FRAME_SIZE; idx > 0; idx--) {
+///< *************************** PRIVATE FUNCTIONS ****************************
+
+static int8_t tfMiniFindFrameStart() {
+    for (int8_t idx = TF_MINI_SERIAL_FRAME_SIZE; idx > 0; idx--) {
         if (buffer[idx] == HEAD_BYTE && buffer[idx + 1] == HEAD_BYTE && crc_8(buffer + idx, 8)) {
             return idx;
         }
@@ -49,8 +51,8 @@ static int8_t tfLunaFindFrameStart() {
     return LIBPERIPH_ERROR;
 }
 
-static float tfLunaParseData(int8_t idx) {
-    const TfLunaSerialFrame_t* frame = (const TfLunaSerialFrame_t*)&buffer[idx];
+static float tfMiniParseData(int8_t idx) {
+    const TfMiniSerialFrame_t* frame = (const TfMiniSerialFrame_t*)&buffer[idx];
     uint16_t distance_sm = frame->distance;
     return distance_sm * 0.01f;
 }

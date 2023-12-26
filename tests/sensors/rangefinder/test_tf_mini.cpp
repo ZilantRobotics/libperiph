@@ -20,20 +20,20 @@ uint8_t frame_ok_5_2[] = {'Y', 'Y', 95, 0, 95, 1, 168, 103, 128};
 uint8_t frame_ok_6_1[] = {95, 0, 96, 1, 140, 95,  93, 'Y', 'Y'};
 uint8_t frame_ok_6_2[] = {95, 0, 95, 1, 168, 103, 128, 'Y', 'Y', };
 
-TEST(tf_mini, test_tfLunaInit) {
-    ASSERT_EQ(LIBPERIPH_OK, tfLunaInit());
+TEST(tf_mini, test_tfMiniInit) {
+    ASSERT_EQ(LIBPERIPH_OK, tfMiniInit());
 }
 
 TEST(tf_mini, test_tfParseRange) {
-    ASSERT_FLOAT_EQ(0.53, tfParseRange((const TfLunaSerialFrame_t*)frame_ok_1));
-    ASSERT_FLOAT_EQ(0.0, tfParseRange((const TfLunaSerialFrame_t*)frame_ok_2));
-    ASSERT_FLOAT_EQ(0.0, tfParseRange((const TfLunaSerialFrame_t*)frame_ok_3));
-    ASSERT_FLOAT_EQ(0.0, tfParseRange((const TfLunaSerialFrame_t*)frame_ok_4));
-    ASSERT_FLOAT_EQ(0.95, tfParseRange((const TfLunaSerialFrame_t*)frame_ok_5_1));
-    ASSERT_FLOAT_EQ(0.95, tfParseRange((const TfLunaSerialFrame_t*)frame_ok_5_2));
+    ASSERT_FLOAT_EQ(0.53, tfParseRange((const TfMiniSerialFrame_t*)frame_ok_1));
+    ASSERT_FLOAT_EQ(0.0, tfParseRange((const TfMiniSerialFrame_t*)frame_ok_2));
+    ASSERT_FLOAT_EQ(0.0, tfParseRange((const TfMiniSerialFrame_t*)frame_ok_3));
+    ASSERT_FLOAT_EQ(0.0, tfParseRange((const TfMiniSerialFrame_t*)frame_ok_4));
+    ASSERT_FLOAT_EQ(0.95, tfParseRange((const TfMiniSerialFrame_t*)frame_ok_5_1));
+    ASSERT_FLOAT_EQ(0.95, tfParseRange((const TfMiniSerialFrame_t*)frame_ok_5_2));
 
-    tfParseRange((const TfLunaSerialFrame_t*)frame_ok_6_1);
-    ASSERT_FLOAT_EQ(0.95, tfParseRange((const TfLunaSerialFrame_t*)frame_ok_6_2));
+    tfParseRange((const TfMiniSerialFrame_t*)frame_ok_6_1);
+    ASSERT_FLOAT_EQ(0.95, tfParseRange((const TfMiniSerialFrame_t*)frame_ok_6_2));
 
     // Bad argument
     ASSERT_FLOAT_EQ(-1.0f, tfParseRange(NULL));

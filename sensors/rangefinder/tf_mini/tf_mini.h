@@ -14,8 +14,8 @@
 #include <assert.h>
 #include "libperiph_common.h"
 
-#define TF_LUNA_SERIAL_FRAME_SIZE   9
-#define TF_LUNA_BUFFER_SIZE         18
+#define TF_MINI_SERIAL_FRAME_SIZE   9
+#define TF_MINI_BUFFER_SIZE         18
 
 typedef struct __attribute__((__packed__)) {
     uint16_t header;
@@ -23,8 +23,8 @@ typedef struct __attribute__((__packed__)) {
     uint16_t amp;
     uint16_t temp;
     uint8_t check_sum;
-} TfLunaSerialFrame_t;
-static_assert(sizeof(TfLunaSerialFrame_t) == TF_LUNA_SERIAL_FRAME_SIZE, "Wrong type size");
+} TfMiniSerialFrame_t;
+static_assert(sizeof(TfMiniSerialFrame_t) == TF_MINI_SERIAL_FRAME_SIZE, "Wrong type size");
 
 #ifdef __cplusplus
 extern "C" {
@@ -33,13 +33,13 @@ extern "C" {
 /**
  * @return LIBPERIPH_OK if there is no error, otherwise < 0
  */
-int8_t tfLunaInit();
+int8_t tfMiniInit();
 
 /**
  * @brief Parse UART buffer
  * @return true if frame appear, otherwise false
  */
-float tfParseRange(const TfLunaSerialFrame_t* frame);
+float tfParseRange(const TfMiniSerialFrame_t* frame);
 
 #ifdef __cplusplus
 }
