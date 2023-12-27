@@ -11,6 +11,8 @@ The supported list of sensors are:
 | TFmini-S / TFmini Plus | <img src="https://docs.px4.io/main/assets/img/tfmini_hero.d1a57ff6.jpg" alt="drawing" width="64"> | UART, I2C, I/O          | 0.1 - 12 meters |
 | TF-Luna     | <img src="https://github.com/ZilantRobotics/libperiph/blob/docs/assets/sensors/rangefinder/tf_luna.jpg?raw=true" alt="drawing" width="64"> | UART, I2C, I/O          | 0.2 - 8 meters |
 
+> The driver for the sensors is the same, except head byte.
+
 ## Details
 
 |   |   |
@@ -26,7 +28,7 @@ Installation:
 2. Ensure that the required dependencies are installed, such as the STM32 HAL library or any other libraries specific to your STM32 development environment.
 
 Usage:
-1. Call `tfMiniInit()` in the beginning of your program
+1. Call `tfMiniInit(Benewake_tf_lidar_t lidar)` in the beginning of your program
 2. Obtain data from UART/serial.
 3. Call `tfParseRange` to parse the raw data.
 
