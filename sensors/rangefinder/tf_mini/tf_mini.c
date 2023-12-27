@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022-2023 Dmitry Ponomarev <ponomarevda96@gmail.com>
+ * Copyright (C) 2022-2023 Dmitry Ponomarev <ponomarevda96@gmail.com>, sainquake <sainquake@gmail.com>
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -9,8 +9,8 @@
 #include <string.h>
 #include "libperiph_common.h"
 
-#define HEAD_BYTE 0x59
-
+#define TF_LUNA_HEAD_BYTE 0x5A
+#define TF_MINI_HEAD_BYTE 0x59
 
 static int8_t tfMiniFindFrameStart();
 static float tfMiniParseData(int8_t idx);
@@ -19,8 +19,15 @@ static uint8_t crc_8(const uint8_t* buf, uint8_t size);
 // This buffer should have previous frame and current!
 static uint8_t buffer[TF_MINI_BUFFER_SIZE];
 
+// TF_MINI by default
+static uint8_t head_byte = TF_MINI_HEAD_BYTE;
 
-int8_t tfMiniInit() {
+int8_t tfMiniInit(Benewake_tf_lidar_t lidar) {
+    if (lidar == TF_LUNA_HEAD_BYTE) {
+        head_byte = TF_LUNA_HEAD_BYTE;
+    } else {
+        head_byte = TF_MINI_HEAD_BYTE;
+    }
     return LIBPERIPH_OK;
 }
 
