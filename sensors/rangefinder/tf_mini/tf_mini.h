@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022-2023 Dmitry Ponomarev <ponomarevda96@gmail.com>
+ * Copyright (C) 2022-2023 Dmitry Ponomarev <ponomarevda96@gmail.com>, Sainquake <sainquake@gmail.com>
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -26,6 +26,11 @@ typedef struct __attribute__((__packed__)) {
 } TfMiniSerialFrame_t;
 static_assert(sizeof(TfMiniSerialFrame_t) == TF_MINI_SERIAL_FRAME_SIZE, "Wrong type size");
 
+typedef enum {
+    BW_TF_MINI,
+    BW_TF_LUNA,
+} Benewake_tf_lidar_t;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -33,7 +38,7 @@ extern "C" {
 /**
  * @return LIBPERIPH_OK if there is no error, otherwise < 0
  */
-int8_t tfMiniInit();
+int8_t tfMiniInit(Benewake_tf_lidar_t lidar);
 
 /**
  * @brief Parse UART buffer
