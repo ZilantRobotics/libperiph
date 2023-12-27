@@ -51,7 +51,7 @@ float tfParseRange(const TfMiniSerialFrame_t* buffer_ptr) {
 
 static int8_t tfMiniFindFrameStart() {
     for (int8_t idx = TF_MINI_SERIAL_FRAME_SIZE; idx > 0; idx--) {
-        if (buffer[idx] == HEAD_BYTE && buffer[idx + 1] == HEAD_BYTE && crc_8(buffer + idx, 8)) {
+        if (buffer[idx] == head_byte && buffer[idx + 1] == head_byte && crc_8(buffer + idx, 8)) {
             return idx;
         }
     }
