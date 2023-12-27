@@ -9,7 +9,7 @@ The supported list of sensors are:
 | Sensor      | Image | All supported protocols | Distance |
 | ----------- | ----- | ----------------------- | -------- |
 | TFmini-S / TFmini Plus | <img src="https://docs.px4.io/main/assets/img/tfmini_hero.d1a57ff6.jpg" alt="drawing" width="64"> | UART, I2C, I/O          | 0.1 - 12 meters |
-| TF-Luna     | <img src="https://github.com/ZilantRobotics/libperiph/blob/docs/assets/sensors/rangefinder/tf_mini.jpg?raw=true" alt="drawing" width="64"> | UART, I2C, I/O          | 0.2 - 8 meters |
+| TF-Luna     | <img src="https://github.com/ZilantRobotics/libperiph/blob/docs/assets/sensors/rangefinder/tf_luna.jpg?raw=true" alt="drawing" width="64"> | UART, I2C, I/O          | 0.2 - 8 meters |
 
 ## Details
 
