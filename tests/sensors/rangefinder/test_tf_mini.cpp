@@ -21,7 +21,7 @@ uint8_t frame_ok_6_1[] = {95, 0, 96, 1, 140, 95,  93, 'Y', 'Y'};
 uint8_t frame_ok_6_2[] = {95, 0, 95, 1, 168, 103, 128, 'Y', 'Y', };
 
 TEST(tf_mini, test_tfMiniInit) {
-    ASSERT_EQ(LIBPERIPH_OK, tfMiniInit());
+    ASSERT_EQ(LIBPERIPH_OK, tfMiniInit(BW_TF_MINI));
 }
 
 TEST(tf_mini, test_tfParseRange) {
