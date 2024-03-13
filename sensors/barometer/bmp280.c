@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2023 Dmitry Ponomarev <ponomarevda96@gmail.com>
+ * Copyright (C) 2020-2024 Dmitry Ponomarev <ponomarevda96@gmail.com>
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -8,7 +8,9 @@
 #include "bmp280.h"
 #include <stdint.h>
 #include <stdbool.h>
+#include <stddef.h>
 #include <math.h>
+#include <assert.h>
 #include "libperiph_common.h"
 #include "hal_i2c.h"
 
@@ -22,7 +24,6 @@
 #define PRESS_REG               0xF7        // 4.3.6 Register 0xF7…0xF9 “press”
 #define TEMP_REG                0xFA        // 4.3.7 Register 0xFA…0xFC “temp”
 
-// 4.3.4 Register 0xF4 “ctrl_meas”
 #define PRESS_OVERSAMPLING_8    0x4 << 2    // 3.3.1 Pressure measurement
 #define TEMP_OVERSAMPLING       0x4 << 5    // 3.3.2 Temperature measurement
 #define CTRL_MEAS_NORMAL_MODE   3           // 3.6 Power modes
@@ -31,42 +32,32 @@
 #define DEVICE_ID               0x58
 #define RESET_CMD               0xB6
 
+/**
+ * @note The “id” register contains the chip identification number chip_id[7:0], which is 0x58.
+ * This number can be read as soon as the device finished the power-on-reset.
+ */
 typedef struct {
-    float static_pressure;
-    float static_temperature;
-} BMP280_t;
+    uint16_t dig_T1;
+    int16_t dig_T2;
+    int16_t dig_T3;
+
+    uint16_t dig_P1;
+    int16_t dig_P2;
+    int16_t dig_P3;
+    int16_t dig_P4;
+    int16_t dig_P5;
+    int16_t dig_P6;
+    int16_t dig_P7;
+    int16_t dig_P8;
+    int16_t dig_P9;
+} TrimmingParameters_t;
+static_assert(sizeof(TrimmingParameters_t) == 24);
 
 typedef struct {
-    uint16_t t1;
-    int16_t t2;
-    int16_t t3;
-
-    uint16_t p1;
-    int16_t p2;
-    int16_t p3;
-    int16_t p4;
-    int16_t p5;
-    int16_t p6;
-    int16_t p7;
-    int16_t p8;
-    int16_t p9;
-} BMP280_stored_calib_param_t;
-
-typedef struct {
-    float t1;
-    float t2;
-    float t3;
-
-    float p1;
-    float p2;
-    float p3;
-    float p4;
-    float p5;
-    float p6;
-    float p7;
-    float p8;
-    float p9;
-} BMP280_processed_calib_param_t;
+    float t[3];
+    float p[9];
+} ProcessedCalibParam_t;
+static_assert(sizeof(ProcessedCalibParam_t) == 48);
 
 typedef struct {
     uint8_t p_msb;
@@ -76,115 +67,190 @@ typedef struct {
     uint8_t t_lsb;
     uint8_t t_xlsb;
 } BMP280_measurement_registers_t;
+static_assert(sizeof(BMP280_measurement_registers_t) == 6);
+
+typedef struct {
+    ProcessedCalibParam_t calib;
+    BarometerMeasurements raw;
+    uint32_t stale_counter;
+    bool dev_id_confirmed;
+} BarometerBmp280Instance;
+static_assert(sizeof(BarometerBmp280Instance) == 64);
 
 
-static void bmp280CheckDeviceId();
-static void bmp280SetCtrlMeas();
-static void bmp280GetCalibration();
+static int8_t _checkDeviceId();
+static int8_t _setCtrlMeas();
+static int8_t _calibrate();
 
 
-static bool dev_id_confirmed = false;
-static BMP280_stored_calib_param_t stored_calib;
-static BMP280_processed_calib_param_t processed_calib;
-static BMP280_t bmp280;
+static BarometerBmp280Instance bmp280;
 
 
 int8_t bmp280Init() {
-    bmp280CheckDeviceId();
-    bmp280SetCtrlMeas();
-    bmp280GetCalibration();
+    if (_checkDeviceId() < 0) {
+        return LIBPERIPH_BPM280_INIT_CHECK_DEV_ID_ERROR;
+    }
 
-    return LIBPERIPH_OK;
+    if (_setCtrlMeas() < 0) {
+        return LIBPERIPH_BPM280_INIT_SET_CTRL_MEAS_ERROR;
+    }
+
+    if (_calibrate() < 0) {
+        return LIBPERIPH_BPM280_INIT_CALIBRATION_ERROR;
+    }
+
+    return (bmp280IsInitialized()) ? LIBPERIPH_BPM280_OK : LIBPERIPH_BPM280_INIT_WRONG_DEV_ID;
 }
 
 bool bmp280IsInitialized() {
-    return dev_id_confirmed;
+    return bmp280.dev_id_confirmed;
 }
 
-void bmp280Calibrate() {
-    processed_calib.t1 = stored_calib.t1 * powf(2,  4);
-    processed_calib.t2 = stored_calib.t2 * powf(2, -14);
-    processed_calib.t3 = stored_calib.t3 * powf(2, -34);
+int8_t bmp280GetData(BarometerMeasurements* out_data) {
+    if (bmp280CollectData() < 0) {
+        return -1;
+    }
 
-    processed_calib.p1 = stored_calib.p1 * (powf(2, 4) / -100000.0f);
-    processed_calib.p2 = stored_calib.p1 * stored_calib.p2 * (powf(2, -31) / -100000.0f);
-    processed_calib.p3 = stored_calib.p1 * stored_calib.p3 * (powf(2, -51) / -100000.0f);
+    if (bmp280ParseCollectedData(out_data) < 0) {
+        return -1;
+    }
 
-    processed_calib.p4 = stored_calib.p4 * powf(2, 4) - powf(2, 20);
-    processed_calib.p5 = stored_calib.p5 * powf(2, -14);
-    processed_calib.p6 = stored_calib.p6 * powf(2, -31);
-
-    processed_calib.p7 = stored_calib.p7 * powf(2, -4);
-    processed_calib.p8 = stored_calib.p8 * powf(2, -19) + 1.0f;
-    processed_calib.p9 = stored_calib.p9 * powf(2, -35);
+    return 0;
 }
 
 int8_t bmp280CollectData() {
     uint8_t tx[1] = {PRESS_REG};
-    BMP280_measurement_registers_t data = {};
-
-    int8_t res = LIBPERIPH_BPM280_OK;
     if (i2cTransmit(I2C_ID, tx, 1) < 0) {
-        res = LIBPERIPH_BPM280_NO_RESPONSE;
+        return LIBPERIPH_BPM280_NO_RESPONSE;
     }
 
+    BMP280_measurement_registers_t data = {};
     if (i2cReceive(I2C_ID + 1, (uint8_t*)&data, 6) < 0) {
-        res = LIBPERIPH_BPM280_NO_RESPONSE;
+        return LIBPERIPH_BPM280_NO_RESPONSE;
     }
 
-    bmp280.static_pressure = (float)(data.p_msb << 12 | data.p_lsb << 4 | data.p_xlsb >> 4);
-    bmp280.static_temperature = (float)(data.t_msb << 12 | data.t_lsb << 4 | data.t_xlsb >> 4);
+    BarometerMeasurements temp = {
+        .pressure = (float)(data.p_msb << 12 | data.p_lsb << 4 | data.p_xlsb >> 4),
+        .temperature = (float)(data.t_msb << 12 | data.t_lsb << 4 | data.t_xlsb >> 4),
+    };
 
-    return res;
+    if (temp.pressure == bmp280.raw.pressure && temp.temperature == bmp280.raw.temperature) {
+        bmp280.stale_counter++;
+    } else {
+        bmp280.stale_counter = 0;
+    }
+
+    bmp280.raw = temp;
+
+    return LIBPERIPH_BPM280_OK;
 }
 
 
-void bmp280ParseData() {
-    float static_temperature;
-    float static_pressure;
+int8_t bmp280ParseCollectedData(BarometerMeasurements* out_data) {
+    if (out_data == NULL) {
+        return -1;
+    }
 
-    float ofs = bmp280.static_temperature - processed_calib.t1;
-    float t_fine = (ofs * processed_calib.t3 + processed_calib.t2) * ofs;
-    static_temperature = t_fine * (1.0f / 5120.0f) + 273;
+    float ofs = bmp280.raw.temperature - bmp280.calib.t[0];
+    float t_fine = (ofs * bmp280.calib.t[2] + bmp280.calib.t[1]) * ofs;
+    out_data->temperature = t_fine * (1.0f / 5120.0f) + 273;
 
     float tf = t_fine - 128000.0f;
-    float x1 = (tf * processed_calib.p6 + processed_calib.p5) * tf + processed_calib.p4;
-    float x2 = (tf * processed_calib.p3 + processed_calib.p2) * tf + processed_calib.p1;
-    float pf = (bmp280.static_pressure + x1) / x2;
-    static_pressure = (pf * processed_calib.p9 + processed_calib.p8) * pf + processed_calib.p7;
+    float x1 = (tf * bmp280.calib.p[5] + bmp280.calib.p[4]) * tf + bmp280.calib.p[3];
+    float x2 = (tf * bmp280.calib.p[2] + bmp280.calib.p[1]) * tf + bmp280.calib.p[0];
+    if (x2 == 0) {
+        return -1;
+    }
+    float pf = (bmp280.raw.pressure + x1) / x2;
+    out_data->pressure = (pf * bmp280.calib.p[8] + bmp280.calib.p[7]) * pf + bmp280.calib.p[6];
 
-    bmp280.static_temperature = static_temperature;
-    bmp280.static_pressure = static_pressure;
+    return 0;
 }
 
-float bmp280GetStaticPressure() {
-    return bmp280.static_pressure;
+
+int8_t bmp280VerifyData(const BarometerMeasurements* data) {
+    if (data->pressure < 30000 || data->pressure > 110000) {
+        return -1;  // out of bound
+    }
+
+    if (data->temperature < 233 || data->temperature > 368) {
+        return -1;  // out of bound
+    }
+
+    if (bmp280.stale_counter >= 10) {
+        return -1;  // stale
+    }
+
+    return 0;
 }
 
-float bmp280GetStaticTemperature() {
-    return bmp280.static_temperature;
-}
 
-static void bmp280CheckDeviceId() {
+/**
+ * @note The “id” register contains the chip identification number chip_id[7:0], which is 0x58.
+ * This number can be read as soon as the device finished the power-on-reset.
+ */
+static int8_t _checkDeviceId() {
     uint8_t tx[1] = {ID_REG};
+    if (i2cTransmit(I2C_ID, tx, 1) < 0) {
+        return -1;
+    }
+
     uint8_t rx[1] = {0};
+    if (i2cReceive(I2C_ID, rx, 1) < 0) {
+        return -1;
+    }
 
-    i2cTransmit(I2C_ID, tx, 1);
-    i2cReceive(I2C_ID, rx, 1);
+    bmp280.dev_id_confirmed = (rx[0] == DEVICE_ID) ? true : false;
 
-    dev_id_confirmed = (rx[0] == DEVICE_ID) ? true : false;
+    return 0;
 }
 
-
-static void bmp280SetCtrlMeas() {
+/**
+ * @note The “ctrl_meas” register sets the data acquisition options of the device.
+ */
+static int8_t _setCtrlMeas() {
     uint8_t tx[2] = {CTRL_MEAS_REG, CTRL_MEAS_SETTINGS};
+    if (i2cTransmit(I2C_ID, tx, 2) < 0) {
+        return -1;
+    }
+
     uint8_t rx[1] = {0};
-    i2cTransmit(I2C_ID, tx, 2);
-    i2cReceive(I2C_ID, rx, 1);
+    if (i2cReceive(I2C_ID, rx, 1) < 0) {
+        return -1;
+    }
+
+    return 0;
 }
 
-static void bmp280GetCalibration() {
+/**
+ * @note Trimming parameter readout
+ */
+static int8_t _calibrate() {
     uint8_t tx[1] = {0x88};
-    i2cTransmit(I2C_ID, tx, 1);
-    i2cReceive(I2C_ID, (uint8_t*)(&stored_calib), 24);
+    if (i2cTransmit(I2C_ID, tx, 1) < 0) {
+        return -1;
+    }
+
+    TrimmingParameters_t params;
+    if (i2cReceive(I2C_ID, (uint8_t*)(&params), 24) < 0) {
+        return -1;
+    }
+
+    bmp280.calib.t[0] = params.dig_T1 * powf(2,  4);
+    bmp280.calib.t[1] = params.dig_T2 * powf(2, -14);
+    bmp280.calib.t[2] = params.dig_T3 * powf(2, -34);
+
+    bmp280.calib.p[0] = params.dig_P1 * (powf(2, 4) / -100000.0f);
+    bmp280.calib.p[1] = params.dig_P1 * params.dig_P2 * (powf(2, -31) / -100000.0f);
+    bmp280.calib.p[2] = params.dig_P1 * params.dig_P3 * (powf(2, -51) / -100000.0f);
+
+    bmp280.calib.p[3] = params.dig_P4 * powf(2, 4) - powf(2, 20);
+    bmp280.calib.p[4] = params.dig_P5 * powf(2, -14);
+    bmp280.calib.p[5] = params.dig_P6 * powf(2, -31);
+
+    bmp280.calib.p[6] = params.dig_P7 * powf(2, -4);
+    bmp280.calib.p[7] = params.dig_P8 * powf(2, -19) + 1.0f;
+    bmp280.calib.p[8] = params.dig_P9 * powf(2, -35);
+
+    return 0;
 }

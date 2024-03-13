@@ -25,23 +25,19 @@ struct Bmp280 : public SitlI2CSensor {
 
 static Bmp280 bmp280;
 
-TEST(BMP280, test_bmp280ParseData_normal) {
+TEST(BMP280, test_bmp280ParseCollectedData_normal) {
     bmp280.i2c_tx_status = 0;
     bmp280.i2c_rx_status = 0;
 
     bmp280Init();
-    bmp280Calibrate();
 
     ASSERT_TRUE(bmp280CollectData() >= 0);
-    bmp280ParseData();
-
-    bmp280GetStaticPressure();
-    bmp280GetStaticTemperature();
+    BarometerMeasurements data;
+    bmp280ParseCollectedData(&data);
 }
 
-TEST(BMP280, test_bmp280ParseData_no_rx_response) {
+TEST(BMP280, test_bmp280CollectData_no_rx_response) {
     bmp280Init();
-    bmp280Calibrate();
 
     bmp280.i2c_tx_status = -1;
     bmp280.i2c_rx_status = 0;
@@ -49,9 +45,8 @@ TEST(BMP280, test_bmp280ParseData_no_rx_response) {
     ASSERT_FALSE(bmp280CollectData() >= 0);
 }
 
-TEST(BMP280, test_bmp280ParseData_no_tx_response) {
+TEST(BMP280, test_bmp280CollectData_no_tx_response) {
     bmp280Init();
-    bmp280Calibrate();
 
     bmp280.i2c_tx_status = 0;
     bmp280.i2c_rx_status = -1;
