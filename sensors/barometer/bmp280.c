@@ -87,19 +87,22 @@ static BarometerBmp280Instance bmp280;
 
 
 int8_t bmp280Init() {
+    bmp280.stale_counter = 0;
+    bmp280.dev_id_confirmed = false;
+
     if (_checkDeviceId() < 0) {
-        return LIBPERIPH_BPM280_INIT_CHECK_DEV_ID_ERROR;
+        return -LIBPERIPH_BPM280_INIT_CHECK_DEV_ID_ERROR;
     }
 
     if (_setCtrlMeas() < 0) {
-        return LIBPERIPH_BPM280_INIT_SET_CTRL_MEAS_ERROR;
+        return -LIBPERIPH_BPM280_INIT_SET_CTRL_MEAS_ERROR;
     }
 
     if (_calibrate() < 0) {
-        return LIBPERIPH_BPM280_INIT_CALIBRATION_ERROR;
+        return -LIBPERIPH_BPM280_INIT_CALIBRATION_ERROR;
     }
 
-    return (bmp280IsInitialized()) ? LIBPERIPH_BPM280_OK : LIBPERIPH_BPM280_INIT_WRONG_DEV_ID;
+    return (bmp280IsInitialized()) ? LIBPERIPH_BPM280_OK : -LIBPERIPH_BPM280_INIT_WRONG_DEV_ID;
 }
 
 bool bmp280IsInitialized() {
@@ -107,26 +110,28 @@ bool bmp280IsInitialized() {
 }
 
 int8_t bmp280GetData(BarometerMeasurements* out_data) {
-    if (bmp280CollectData() < 0) {
-        return -1;
+    int8_t res = bmp280CollectData();
+    if (res < 0) {
+        return res;
     }
 
-    if (bmp280ParseCollectedData(out_data) < 0) {
-        return -1;
+    res = bmp280ParseCollectedData(out_data);
+    if (res < 0) {
+        return res;
     }
 
-    return 0;
+    return bmp280VerifyData(out_data);
 }
 
 int8_t bmp280CollectData() {
     uint8_t tx[1] = {PRESS_REG};
     if (i2cTransmit(I2C_ID, tx, 1) < 0) {
-        return LIBPERIPH_BPM280_NO_RESPONSE;
+        return -LIBPERIPH_BPM280_I2C_NO_RESPONSE;
     }
 
     BMP280_measurement_registers_t data = {};
     if (i2cReceive(I2C_ID + 1, (uint8_t*)&data, 6) < 0) {
-        return LIBPERIPH_BPM280_NO_RESPONSE;
+        return -LIBPERIPH_BPM280_I2C_NO_RESPONSE;
     }
 
     BarometerMeasurements temp = {
@@ -148,7 +153,7 @@ int8_t bmp280CollectData() {
 
 int8_t bmp280ParseCollectedData(BarometerMeasurements* out_data) {
     if (out_data == NULL) {
-        return -1;
+        return -LIBPERIPH_BPM280_INTERNAL_ERROR;
     }
 
     float ofs = bmp280.raw.temperature - bmp280.calib.t[0];
@@ -159,29 +164,29 @@ int8_t bmp280ParseCollectedData(BarometerMeasurements* out_data) {
     float x1 = (tf * bmp280.calib.p[5] + bmp280.calib.p[4]) * tf + bmp280.calib.p[3];
     float x2 = (tf * bmp280.calib.p[2] + bmp280.calib.p[1]) * tf + bmp280.calib.p[0];
     if (x2 == 0) {
-        return -1;
+        return -LIBPERIPH_BPM280_INTERNAL_ERROR;
     }
     float pf = (bmp280.raw.pressure + x1) / x2;
     out_data->pressure = (pf * bmp280.calib.p[8] + bmp280.calib.p[7]) * pf + bmp280.calib.p[6];
 
-    return 0;
+    return LIBPERIPH_BPM280_OK;
 }
 
 
 int8_t bmp280VerifyData(const BarometerMeasurements* data) {
     if (data->pressure < 30000 || data->pressure > 110000) {
-        return -1;  // out of bound
+        return -LIBPERIPH_BPM280_VERIFICATION_PRESSURE_OUT_OF_BOUND;
     }
 
     if (data->temperature < 233 || data->temperature > 368) {
-        return -1;  // out of bound
+        return -LIBPERIPH_BPM280_VERIFICATION_TEMPERATURE_OUT_OF_BOUND;
     }
 
     if (bmp280.stale_counter >= 10) {
-        return -1;  // stale
+        return -LIBPERIPH_BPM280_VERIFICATION_STALE;
     }
 
-    return 0;
+    return LIBPERIPH_BPM280_OK;
 }
 
 
@@ -192,17 +197,17 @@ int8_t bmp280VerifyData(const BarometerMeasurements* data) {
 static int8_t _checkDeviceId() {
     uint8_t tx[1] = {ID_REG};
     if (i2cTransmit(I2C_ID, tx, 1) < 0) {
-        return -1;
+        return -LIBPERIPH_BPM280_I2C_NO_RESPONSE;
     }
 
     uint8_t rx[1] = {0};
     if (i2cReceive(I2C_ID, rx, 1) < 0) {
-        return -1;
+        return -LIBPERIPH_BPM280_I2C_NO_RESPONSE;
     }
 
     bmp280.dev_id_confirmed = (rx[0] == DEVICE_ID) ? true : false;
 
-    return 0;
+    return LIBPERIPH_BPM280_OK;
 }
 
 /**
@@ -211,15 +216,15 @@ static int8_t _checkDeviceId() {
 static int8_t _setCtrlMeas() {
     uint8_t tx[2] = {CTRL_MEAS_REG, CTRL_MEAS_SETTINGS};
     if (i2cTransmit(I2C_ID, tx, 2) < 0) {
-        return -1;
+        return -LIBPERIPH_BPM280_I2C_NO_RESPONSE;
     }
 
     uint8_t rx[1] = {0};
     if (i2cReceive(I2C_ID, rx, 1) < 0) {
-        return -1;
+        return -LIBPERIPH_BPM280_I2C_NO_RESPONSE;
     }
 
-    return 0;
+    return LIBPERIPH_BPM280_OK;
 }
 
 /**
@@ -228,12 +233,12 @@ static int8_t _setCtrlMeas() {
 static int8_t _calibrate() {
     uint8_t tx[1] = {0x88};
     if (i2cTransmit(I2C_ID, tx, 1) < 0) {
-        return -1;
+        return -LIBPERIPH_BPM280_I2C_NO_RESPONSE;
     }
 
     TrimmingParameters_t params;
     if (i2cReceive(I2C_ID, (uint8_t*)(&params), 24) < 0) {
-        return -1;
+        return -LIBPERIPH_BPM280_I2C_NO_RESPONSE;
     }
 
     bmp280.calib.t[0] = params.dig_T1 * powf(2,  4);
@@ -252,5 +257,5 @@ static int8_t _calibrate() {
     bmp280.calib.p[7] = params.dig_P8 * powf(2, -19) + 1.0f;
     bmp280.calib.p[8] = params.dig_P9 * powf(2, -35);
 
-    return 0;
+    return LIBPERIPH_BPM280_OK;
 }

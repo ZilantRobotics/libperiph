@@ -13,6 +13,7 @@ void application_init() {
         // 1. The sensor doesn't respond on i2c bus
         // 2. DevID register returns wrong value
         // 3. Calibration registers cannot be read successfully
+        return;
     }
 }
 
